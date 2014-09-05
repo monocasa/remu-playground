@@ -50,7 +50,7 @@ void emulator_init(Emulator* );
 int emulator_is_running(Emulator* );
 uint64_t emulator_get_time();
 uint64_t emulator_get_system_timer(Emulator*);
-void Emulatorick(Emulator* );
+void emulator_tick(Emulator* );
 void emulator_info(Emulator*, const char *, ...);
 void emulator_error(Emulator*, const char *, ...);
 void emulator_fatal(Emulator*, const char *, ...) __attribute__((noreturn));

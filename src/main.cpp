@@ -172,7 +172,7 @@ main(int argc, char **argv)
 
   while (emulator_is_running(&emu))
   {
-    Emulatorick(&emu);
+    emulator_tick(&emu);
   }
 
   if (!emu.quiet)

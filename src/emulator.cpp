@@ -126,7 +126,7 @@ emulator_get_system_timer(Emulator* emu)
  * @param emu Reference to the emulator structure
  */
 void
-Emulatorick(Emulator* emu)
+emulator_tick(Emulator* emu)
 {
   cpu_tick(&emu->cpu);
 
