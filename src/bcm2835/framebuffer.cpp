@@ -14,7 +14,7 @@ fb_init(framebuffer_t* fb, Emulator* emu)
   fb->emu = emu;
 
   /* If not in graphic mode, do not create a window */
-  if (!fb->emu->graphics)
+  if (!fb->emu->isGraphicsEnabled())
   {
     return;
   }
@@ -38,7 +38,7 @@ fb_init(framebuffer_t* fb, Emulator* emu)
 void
 fb_destroy(framebuffer_t* fb)
 {
-  if (!fb || !fb->emu->graphics)
+  if (!fb || !fb->emu->isGraphicsEnabled())
   {
     return;
   }
@@ -192,7 +192,7 @@ void
 fb_tick(framebuffer_t* fb)
 {
   assert(fb);
-  assert(fb->emu->graphics);
+  assert(fb->emu->isGraphicsEnabled());
 
   /* Handle all SDL events */
   SDL_Event event;
@@ -200,7 +200,7 @@ fb_tick(framebuffer_t* fb)
   {
     if (event.type == SDL_QUIT)
     {
-      fb->emu->terminated = 1;
+      fb->emu->terminate();
     }
 
     /* Route keyboard presses to the NES module if enabled */
@@ -211,12 +211,12 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->emu->gpio.ports[fb->emu->gpio_test_offset + port].state = 1;
+          fb->emu->gpio.ports[fb->emu->getGpioTestOffset() + port].state = 1;
           break;
         }
         default:
         {
-          if (fb->emu->nes_enabled)
+          if (fb->emu->isNesEnabled())
           {
             nes_on_key_down(&fb->emu->nes, event.key.keysym.sym);
           }
@@ -231,12 +231,12 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->emu->gpio.ports[fb->emu->gpio_test_offset + port].state = 0;
+          fb->emu->gpio.ports[fb->emu->getGpioTestOffset() + port].state = 0;
           break;
         }
         default:
         {
-          if (fb->emu->nes_enabled)
+          if (fb->emu->isNesEnabled())
           {
             nes_on_key_up(&fb->emu->nes, event.key.keysym.sym);
           }
@@ -289,7 +289,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   fb->error = 0;
 
   /* Graphic flag must be set*/
-  if (!fb->emu->graphics)
+  if (!fb->emu->isGraphicsEnabled())
   {
     fb->emu->error("Graphic mode must be enabled for framebuffer");
     fb->error = 1;
@@ -334,7 +334,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   req.fb.pitch = fb->fb_pitch + (4 - (fb->fb_pitch % 4)) % 4;
   req.fb.size = fb->fb_size = fb->fb_pitch * req.fb.virt_height;
   fb->framebuffer = static_cast<uint8_t*>( malloc(fb->fb_size) );
-  req.fb.addr = fb->fb_address = fb->emu->mem_size;
+  req.fb.addr = fb->fb_address = fb->emu->getMemSize();
   fb->width = req.fb.virt_width;
   fb->height = req.fb.virt_height;
 
@@ -360,7 +360,7 @@ fb_write_word(framebuffer_t* fb, uint32_t address, uint16_t data)
   uint32_t addr;
 
   assert(fb);
-  assert(fb->emu->graphics);
+  assert(fb->emu->isGraphicsEnabled());
   assert(fb->framebuffer);
 
   addr = address - fb->fb_address;
@@ -381,7 +381,7 @@ fb_write_dword(framebuffer_t* fb, uint32_t address, uint32_t data)
   uint32_t addr;
 
   assert(fb);
-  assert(fb->emu->graphics);
+  assert(fb->emu->isGraphicsEnabled());
   assert(fb->framebuffer);
 
   addr = address - fb->fb_address;
@@ -404,7 +404,7 @@ fb_is_buffer(framebuffer_t *fb, uint32_t address)
   assert(fb);
 
   /* Graphic mode must be enabled */
-  if (!fb->emu->graphics)
+  if (!fb->emu->isGraphicsEnabled())
   {
     return 0;
   }

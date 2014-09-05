@@ -1547,7 +1547,7 @@ debug_break(cpu_t *cpu)
       }
       case 'q':
       {
-        cpu->emu->terminated = 1;
+        cpu->emu->terminate();
         return;
       }
       default:
@@ -1588,7 +1588,7 @@ cpu_init(cpu_t* cpu, Emulator* emu)
   memset(&cpu->spsr, 0, sizeof(cpu->spsr));
 
   /* Load start address */
-  cpu_write_register(cpu, PC, emu->start_addr);
+  cpu_write_register(cpu, PC, emu->getStartAddr());
 }
 
 /**
@@ -1609,7 +1609,7 @@ cpu_tick(cpu_t* cpu)
   /* Terminate on NOP */
   if (instr == 0x0)
   {
-    cpu->emu->terminated = 1;
+    cpu->emu->terminate();
     return;
   }
 

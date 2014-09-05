@@ -2,7 +2,8 @@
 #include <sys/time.h>
 
 Emulator::Emulator(const EmulatorOptions &opt)
-  : terminated( 0 )
+  : err_msg( nullptr )
+  , terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
   , start_addr( opt.start_addr )

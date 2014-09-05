@@ -138,7 +138,7 @@ gpio_write_port(gpio_t* gpio, uint32_t address, uint32_t val)
           gpio->ports[offset + i].state = 1;
 
           /* Catch writes */
-          if (gpio->emu->nes_enabled && offset == 0)
+          if (gpio->emu->isNesEnabled() && offset == 0)
           {
             nes_gpio_write(&gpio->emu->nes, i, 1);
           }
@@ -159,7 +159,7 @@ gpio_write_port(gpio_t* gpio, uint32_t address, uint32_t val)
           gpio->ports[offset + i].state = 0;
 
           /* Catch writes */
-          if (gpio->emu->nes_enabled && offset == 0)
+          if (gpio->emu->isNesEnabled() && offset == 0)
           {
             nes_gpio_write(&gpio->emu->nes, i, 0);
           }

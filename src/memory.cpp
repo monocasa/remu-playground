@@ -19,8 +19,8 @@ void
 memory_init(memory_t* m, Emulator* emu)
 {
   m->emu = emu;
-  m->data = (uint8_t*)malloc(emu->mem_size);
-  memset(m->data, 0, emu->mem_size);
+  m->data = (uint8_t*)malloc(emu->getMemSize());
+  memset(m->data, 0, emu->getMemSize());
   assert(m->data);
 }
 
@@ -34,7 +34,7 @@ memory_dump(memory_t* m)
   size_t i = 0;
   printf("Non-zero memory:\n");
 
-  for (i = 0; i < m->emu->mem_size && i < 65535; i += 4)
+  for (i = 0; i < m->emu->getMemSize() && i < 65535; i += 4)
   {
     uint32_t data = memory_read_dword_be(m, i);
     if (data != 0)
@@ -73,7 +73,7 @@ memory_read_byte(memory_t* m, uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr < m->emu->mem_size, 1))
+  if (__builtin_expect(addr < m->emu->getMemSize(), 1))
   {
     return m->data[addr];
   }
@@ -96,7 +96,7 @@ memory_read_word_le(memory_t* m, uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 1 < m->emu->mem_size, 1))
+  if (__builtin_expect(addr + 1 < m->emu->getMemSize(), 1))
   {
     base = addr & ~0x01;
     off = addr & 0x01;
@@ -128,7 +128,7 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM Read */
-  if (__builtin_expect(addr + 3 < m->emu->mem_size, 1))
+  if (__builtin_expect(addr + 3 < m->emu->getMemSize(), 1))
   {
     base = addr & ~0x03;
     off = addr & 0x03;
@@ -191,7 +191,7 @@ memory_write_byte(memory_t* m, uint32_t addr, uint8_t data)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr < m->emu->mem_size, 1))
+  if (__builtin_expect(addr < m->emu->getMemSize(), 1))
   {
     m->data[addr] = data;
     return;
@@ -212,7 +212,7 @@ memory_write_word_le(memory_t* m, uint32_t addr, uint16_t data)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 1 < m->emu->mem_size, 1))
+  if (__builtin_expect(addr + 1 < m->emu->getMemSize(), 1))
   {
     m->data[addr + 0] = (data >> 0) & 0xFF;
     m->data[addr + 1] = (data >> 8) & 0xFF;
@@ -241,7 +241,7 @@ memory_write_dword_le(memory_t* m, uint32_t addr, uint32_t data)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 3 < m->emu->mem_size, 1))
+  if (__builtin_expect(addr + 3 < m->emu->getMemSize(), 1))
   {
     m->data[addr + 0] = (data >>  0) & 0xFF;
     m->data[addr + 1] = (data >>  8) & 0xFF;

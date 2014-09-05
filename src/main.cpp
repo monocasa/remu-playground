@@ -174,7 +174,7 @@ main(int argc, char **argv)
     emu.tick();
   }
 
-  if (!emu.quiet)
+  if (!opt.quiet)
   {
     emu.dump();
   }

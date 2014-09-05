@@ -47,27 +47,33 @@ public:
 
   void dump();
 
-private:
-  uint64_t getTime() const;
+  size_t getMemSize() const {
+    return mem_size;
+  }
 
-public:
-  int           terminated;
+  void terminate() {
+    terminated = true;
+  }
 
-  /* Kernel image */
-  const char   *image;
+  uint32_t getStartAddr() const {
+    return start_addr;
+  }
+
+  bool isNesEnabled() const {
+    return nes_enabled;
+  }
+
+  bool isGraphicsEnabled() const {
+    return graphics;
+  }
+
+  int getGpioTestOffset() const {
+    return gpio_test_offset;
+  }
 
   /* Error handling */
   jmp_buf       err_jmp;
   char*         err_msg;
-
-  /* Arguments */
-  size_t        mem_size;
-  uint32_t      start_addr;
-  int           graphics;
-  int           usage;
-  int           quiet;
-  int           nes_enabled;
-  int           gpio_test_offset;
 
   /* Modules */
   framebuffer_t fb;
@@ -78,6 +84,23 @@ public:
   peripheral_t  pr;
   vfp_t         vfp;
   nes_t         nes;
+
+private:
+  uint64_t getTime() const;
+
+  int           terminated;
+
+  /* Kernel image */
+  const char   *image;
+
+  /* Arguments */
+  size_t        mem_size;
+  uint32_t      start_addr;
+  int           graphics;
+  int           usage;
+  int           quiet;
+  int           nes_enabled;
+  int           gpio_test_offset;
 
   /* System Timer */
   uint64_t      system_timer_base;
