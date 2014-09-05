@@ -333,7 +333,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   fb->fb_pitch = req.fb.virt_width * fb->fb_bpp;
   req.fb.pitch = fb->fb_pitch + (4 - (fb->fb_pitch % 4)) % 4;
   req.fb.size = fb->fb_size = fb->fb_pitch * req.fb.virt_height;
-  fb->framebuffer = malloc(fb->fb_size);
+  fb->framebuffer = static_cast<uint8_t*>( malloc(fb->fb_size) );
   req.fb.addr = fb->fb_address = fb->emu->mem_size;
   fb->width = req.fb.virt_width;
   fb->height = req.fb.virt_height;

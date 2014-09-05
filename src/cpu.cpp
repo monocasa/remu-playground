@@ -8,7 +8,7 @@
  * @return    1 if condition matches
  */
 int
-check_cond(const cpu_t* cpu, armCond_t cc)
+check_cond(const cpu_t* cpu, int cc)
 {
   switch (cc)
   {
@@ -41,7 +41,7 @@ check_cond(const cpu_t* cpu, armCond_t cc)
  * @return Value of the register
  */
 uint32_t
-cpu_read_register(const cpu_t* cpu, armReg_t reg)
+cpu_read_register(const cpu_t* cpu, int reg)
 {
   assert(cpu != NULL);
   assert(reg <= 0xF);
@@ -97,7 +97,7 @@ cpu_read_register(const cpu_t* cpu, armReg_t reg)
  * @param value Value to be written
  */
 void
-cpu_write_register(cpu_t* cpu, armReg_t reg, uint32_t value)
+cpu_write_register(cpu_t* cpu, int reg, uint32_t value)
 {
   assert(cpu != NULL);
   assert(reg <= 0xF);

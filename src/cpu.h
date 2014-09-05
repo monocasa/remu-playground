@@ -182,8 +182,8 @@ typedef struct
   } cpsr;
 } cpu_t;
 
-uint32_t cpu_read_register(const cpu_t* cpu, armReg_t reg);
-void cpu_write_register(cpu_t* cpu, armReg_t reg, uint32_t value);
+uint32_t cpu_read_register(const cpu_t* cpu, int reg);
+void cpu_write_register(cpu_t* cpu, int reg, uint32_t value);
 void cpu_init(cpu_t*, emulator_t*);
 void cpu_tick(cpu_t*);
 void cpu_destroy(cpu_t*);
