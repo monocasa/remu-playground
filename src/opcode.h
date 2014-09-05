@@ -1,5 +1,5 @@
-#ifndef __CPU_INSTR_H__
-#define __CPU_INSTR_H__
+#ifndef REMU_OPCODE_H
+#define REMU_OPCODE_H
 
 /**
  * Multiply long encoding
@@ -226,4 +226,5 @@ typedef struct
   uint32_t        : 8;
 } op_swi_t;
 
-#endif /* __CPU_INSTR_H__ */
+#endif /* REMU_OPCODE_H */
+

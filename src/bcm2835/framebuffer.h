@@ -1,5 +1,5 @@
-#ifndef __FRAMEBUFFER_H__
-#define __FRAMEBUFFER_H__
+#ifndef REMU_BCM2835_FRAMEBUFFER_H
+#define REMU_BCM2835_FRAMEBUFFER_H
 
 /**
  * Framebuffer request structure
@@ -58,4 +58,4 @@ void fb_write_word(framebuffer_t*, uint32_t address, uint16_t data);
 void fb_write_dword(framebuffer_t*, uint32_t address, uint32_t data);
 int  fb_is_buffer(framebuffer_t*, uint32_t address);
 
-#endif /* __FRAMEBUFFER_H__ */
+#endif /* REMU_BCM2835_FRAMEBUFFER_H */

@@ -1,5 +1,5 @@
-#ifndef __MEMORY_H__
-#define __MEMORY_H__
+#ifndef REMU_MEMORY_H
+#define REMU_MEMORY_H
 
 /**
  * Memory system
@@ -66,4 +66,4 @@ memory_write_dword_be(memory_t* m, uint32_t addr, uint32_t data)
   memory_write_word_le(m, addr, __builtin_bswap16(data));
 }
 
-#endif /* __MEMORY_H__ */
+#endif /* REMU_MEMORY_H */

@@ -1,5 +1,5 @@
-#ifndef __MBOX_H__
-#define __MBOX_H__
+#ifndef REMU_BCM2835_MBOX_H
+#define REMU_BCM2835_MBOX_H
 
 /**
  * List of mailbox register addresses
@@ -44,4 +44,4 @@ mbox_is_port(uint32_t addr)
   return MBOX_BASE <= addr && addr <= MBOX_WRITE;
 }
 
-#endif /*__MBOX_H__*/
+#endif /*REMU_BCM2835_MBOX_H*/

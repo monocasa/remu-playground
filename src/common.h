@@ -1,5 +1,5 @@
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef REMU_COMMON_H
+#define REMU_COMMON_H
 
 /* Standard C */
 #include <stdio.h>
@@ -41,4 +41,4 @@ typedef struct _emulator_t emulator_t;
 /* Emulator */
 #include "emulator.h"
 
-#endif /*__COMMON_H__*/
+#endif /*REMU_COMMON_H */

@@ -1,5 +1,5 @@
-#ifndef __PERIPHERAL_H__
-#define __PERIPHERAL_H__
+#ifndef REMU_PERIPHERAL_H
+#define REMU_PERIPHERAL_H
 
 /**
  * List of auxiliary peripherial ports
@@ -65,4 +65,4 @@ void pr_write(peripheral_t*, uint32_t port, uint8_t data);
 uint32_t pr_read(peripheral_t*, uint32_t port);
 int pr_is_aux_port(uint32_t addr);
 
-#endif /* __PERIPHERAL_H__ */
+#endif /* REMU_PERIPHERAL_H */

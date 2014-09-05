@@ -1,5 +1,5 @@
-#ifndef __CPU_H__
-#define __CPU_H__
+#ifndef REMU_CPU_H
+#define REMU_CPU_H
 
 /**
  * ARM condition codes
@@ -189,4 +189,5 @@ void cpu_tick(cpu_t*);
 void cpu_destroy(cpu_t*);
 void cpu_dump(cpu_t*);
 
-#endif /* __CPU_H__ */
+#endif /* REMU_CPU_H */
+

@@ -1,5 +1,5 @@
-#ifndef __GPIO_H__
-#define __GPIO_H__
+#ifndef REMU_BCM2835_GPIO_H
+#define REMU_BCM2835_GPIO_H
 
 #define GPIO_PORT_COUNT     54
 
@@ -64,4 +64,4 @@ uint32_t  gpio_read_port(gpio_t*, uint32_t);
 void      gpio_write_port(gpio_t*, uint32_t, uint32_t);
 int       gpio_is_port(uint32_t addr);
 
-#endif /* __GPIO_H__ */
+#endif /* REMU_BCM2835_GPIO_H */

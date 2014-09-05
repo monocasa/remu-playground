@@ -1,5 +1,5 @@
-#ifndef __VFP_H__
-#define __VFP_H__
+#ifndef REMU_VFP_H
+#define REMU_VFP_H
 
 typedef struct
 {
@@ -64,4 +64,5 @@ void vfp_data_proc(vfp_t*, op_coproc_data_proc_t* instr);
 void vfp_data_transfer(vfp_t*, op_coproc_data_transfer_t* instr);
 void vfp_reg_transfer(vfp_t*, op_coproc_reg_transfer_t* instr);
 
-#endif /* __VFP_H__ */
+#endif /* REMU_VFP_H */
+

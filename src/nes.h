@@ -1,5 +1,5 @@
-#ifndef __NES_H__
-#define __NES_H__
+#ifndef REMU_NES_H
+#define REMU_NES_H
 
 #define NES_GPIO_PORT_LATCH 11
 #define NES_GPIO_PORT_CLOCK 10
@@ -36,4 +36,5 @@ void nes_gpio_write(nes_t*, uint32_t, uint32_t);
 void nes_on_key_down(nes_t*, SDLKey);
 void nes_on_key_up(nes_t*, SDLKey);
 
-#endif /* __NES_H__ */
+#endif /* REMU_NES_H */
+

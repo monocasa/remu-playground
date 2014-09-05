@@ -1,5 +1,5 @@
-#ifndef __EMULATOR_H__
-#define __EMULATOR_H__
+#ifndef REMU_EMULATOR_H
+#define REMU_EMULATOR_H
 
 /**
  * Emulator state
@@ -53,5 +53,5 @@ void emulator_destroy(emulator_t* );
 void emulator_dump(emulator_t* );
 void emulator_load(emulator_t* , const char*);
 
-#endif /* __EMULATOR_H__ */
+#endif /* REMU_EMULATOR_H */
 
