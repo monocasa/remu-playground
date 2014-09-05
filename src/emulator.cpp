@@ -1,16 +1,16 @@
 #include "common.h"
 #include <sys/time.h>
 
-Emulator::Emulator()
+Emulator::Emulator(const EmulatorOptions &opt)
   : terminated( 0 )
-  , image( nullptr )
-  , mem_size( 0 )
-  , start_addr( 0 )
-  , graphics( 0 )
-  , usage( 0 )
-  , quiet( 0 )
-  , nes_enabled( 0 )
-  , gpio_test_offset( 0 )
+  , image( opt.image )
+  , mem_size( opt.mem_size )
+  , start_addr( opt.start_addr )
+  , graphics( opt.graphics )
+  , usage( opt.usage )
+  , quiet( opt.quiet )
+  , nes_enabled( opt.nes_enabled )
+  , gpio_test_offset( opt.gpio_test_offset )
   , system_timer_base( 0 )
   , last_refresh( 0 )
 {

@@ -1,13 +1,37 @@
 #ifndef REMU_EMULATOR_H
 #define REMU_EMULATOR_H
 
+struct EmulatorOptions
+{
+  EmulatorOptions()
+	: image( nullptr )
+    , mem_size( 0 )
+    , start_addr( 0 )
+    , graphics( 0 )
+    , usage( 0 )
+    , quiet( 0 )
+    , nes_enabled( 0 )
+    , gpio_test_offset( 0 )
+  { }
+
+  const char   *image;
+
+  size_t        mem_size;
+  uint32_t      start_addr;
+  int           graphics;
+  int           usage;
+  int           quiet;
+  int           nes_enabled;
+  int           gpio_test_offset;
+};
+
 /**
  * Emulator state
  */
 class Emulator
 {
 public:
-  Emulator();
+  Emulator(const EmulatorOptions &opt);
 
   virtual ~Emulator();
 

@@ -23,14 +23,14 @@ cmdline_usage(int argc, char **argv)
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_parse(Emulator *emu, int argc, char **argv)
+cmdline_parse(EmulatorOptions &opt, int argc, char **argv)
 {
   struct option options[] =
   {
-    { "graphics",  no_argument,        &emu->graphics,     1 },
-    { "help",      no_argument,        &emu->usage,        1 },
-    { "quiet",     no_argument,        &emu->quiet,        1 },
-    { "nes",       no_argument,        &emu->nes_enabled,  1 },
+    { "graphics",  no_argument,        &opt.graphics,     1 },
+    { "help",      no_argument,        &opt.usage,        1 },
+    { "quiet",     no_argument,        &opt.quiet,        1 },
+    { "nes",       no_argument,        &opt.nes_enabled,  1 },
     { "memory",    required_argument, 0,                 'm' },
     { "addr",      required_argument, 0,                 'a' },
     { "gpio-test", required_argument, 0,                 'i' },
@@ -40,16 +40,16 @@ cmdline_parse(Emulator *emu, int argc, char **argv)
   int c, index;
 
   /* Default args */
-  emu->mem_size = 0x10000;
+  opt.mem_size = 0x10000;
 
   /* Read all arguments */
   while ((c = getopt_long(argc, argv, "vghsm:a:", options, &index)) != -1)
   {
     switch (c)
     {
-      case 'q': emu->quiet = 1; break;
-      case 'g': emu->graphics = 1; break;
-      case 'h': emu->usage = 1; break;
+      case 'q': opt.quiet = 1; break;
+      case 'g': opt.graphics = 1; break;
+      case 'h': opt.usage = 1; break;
       case 'm':
       {
         /* Handle prefixes */
@@ -59,32 +59,32 @@ cmdline_parse(Emulator *emu, int argc, char **argv)
           case 'm': case 'M':
           {
             optarg[length - 1] = '\0';
-            sscanf(optarg, "%zu", &emu->mem_size);
-            emu->mem_size *= 1024 * 1024;
+            sscanf(optarg, "%zu", &opt.mem_size);
+            opt.mem_size *= 1024 * 1024;
             break;
           }
           case 'k': case 'K':
           {
             optarg[length - 1] = '\0';
-            sscanf(optarg, "%zu", &emu->mem_size);
-            emu->mem_size *= 1024;
+            sscanf(optarg, "%zu", &opt.mem_size);
+            opt.mem_size *= 1024;
             break;
           }
           default:
           {
-            sscanf(optarg, "%zu", &emu->mem_size);
+            sscanf(optarg, "%zu", &opt.mem_size);
           }
         }
         break;
       }
       case 'a':
       {
-        sscanf(optarg, "%u", &emu->start_addr);
+        sscanf(optarg, "%u", &opt.start_addr);
         break;
       }
       case 'i':
       {
-        sscanf(optarg, "%u", &emu->gpio_test_offset);
+        sscanf(optarg, "%u", &opt.gpio_test_offset);
         break;
       }
       case 0:
@@ -101,7 +101,7 @@ cmdline_parse(Emulator *emu, int argc, char **argv)
   }
 
   /* Read image source */
-  emu->image = optind >= argc ? NULL : argv[optind];
+  opt.image = optind >= argc ? NULL : argv[optind];
   return 1;
 }
 
@@ -112,23 +112,23 @@ cmdline_parse(Emulator *emu, int argc, char **argv)
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_check(Emulator *emu, int argc, char **argv)
+cmdline_check(EmulatorOptions &opt, int argc, char **argv)
 {
-  if (emu->usage)
+  if (opt.usage)
   {
     cmdline_usage(argc, argv);
     return 0;
   }
 
   /* Image source */
-  if (!emu->image)
+  if (!opt.image)
   {
     fprintf(stderr, "No kernel image specified.\n");
     return 0;
   }
 
   /* Memory size at least 64kb */
-  if (emu->mem_size < 0x10000)
+  if (opt.mem_size < 0x10000)
   {
     fprintf(stderr, "Must specify a minimum of 64kb of memory.\n");
     return 0;
@@ -146,7 +146,14 @@ cmdline_check(Emulator *emu, int argc, char **argv)
 int
 main(int argc, char **argv)
 {
-  Emulator emu;
+  /* Parse command line arguments */
+  EmulatorOptions opt;
+  if (!cmdline_parse(opt, argc, argv) || !cmdline_check(opt, argc, argv))
+  {
+    return EXIT_FAILURE;
+  }
+
+  Emulator emu(opt);
 
   /* In case of an error, code will jump here */
   if (setjmp(emu.err_jmp))
@@ -155,12 +162,6 @@ main(int argc, char **argv)
     {
       fprintf(stderr, "ERROR: %s\n", emu.err_msg);
     }
-    return EXIT_FAILURE;
-  }
-
-  /* Parse command line arguments */
-  if (!cmdline_parse(&emu, argc, argv) || !cmdline_check(&emu, argc, argv))
-  {
     return EXIT_FAILURE;
   }
 
