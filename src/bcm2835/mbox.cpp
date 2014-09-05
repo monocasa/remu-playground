@@ -57,7 +57,7 @@ mbox_read(mbox_t *mbox, uint32_t addr)
     }
   }
 
-  emulator_error(mbox->emu, "Mailbox unimplemented 0x%08x", addr);
+  mbox->emu->error("Mailbox unimplemented 0x%08x", addr);
   return 0;
 }
 
@@ -97,7 +97,7 @@ mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val)
         }
         default:
         {
-          emulator_error(mbox->emu, "Wrong channel 0x%x", channel);
+          mbox->emu->error("Wrong channel 0x%x", channel);
           return;
         }
       }
@@ -105,6 +105,6 @@ mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val)
     }
   }
 
-  emulator_error(mbox->emu, "Mailbox unimplemented 0x%08x", addr);
+  mbox->emu->error("Mailbox unimplemented 0x%08x", addr);
 }
 

@@ -29,7 +29,7 @@ check_cond(const cpu_t* cpu, int cc)
     case CC_AL: return 1; // Always executed
     default:
     {
-      return 0;//emulator_fatal(cpu->emu, "Invalid condition code: 0xF");
+      return 0;//cpu->emu->fatal("Invalid condition code: 0xF");
     }
   }
 }
@@ -78,7 +78,7 @@ cpu_read_register(const cpu_t* cpu, int reg)
         case MODE_ABT: return cpu->r_abt.r[reg - 13];
         case MODE_UND: return cpu->r_und.r[reg - 13];
       }
-      emulator_fatal(cpu->emu, "Invalid mode");
+      cpu->emu->fatal("Invalid mode");
     }
     case PC:
     {
@@ -162,7 +162,7 @@ read_spsr(cpu_t* cpu)
     case MODE_UND: return cpu->spsr.und;
     case MODE_IRQ: return cpu->spsr.irq;
     case MODE_FIQ: return cpu->spsr.fiq;
-    default: emulator_error(cpu->emu, "Invalid mode for reading SPSR");
+    default: cpu->emu->error("Invalid mode for reading SPSR");
   }
 
   return 0;
@@ -183,7 +183,7 @@ write_spsr(cpu_t* cpu, uint32_t value)
     case MODE_UND: cpu->spsr.und = value; break;
     case MODE_IRQ: cpu->spsr.irq = value; break;
     case MODE_FIQ: cpu->spsr.fiq = value; break;
-    default: emulator_error(cpu->emu, "Invalid mode for writing SPSR");
+    default: cpu->emu->error("Invalid mode for writing SPSR");
   }
 }
 
@@ -204,7 +204,7 @@ change_mode(cpu_t* cpu, armMode_t mode)
     }
     default:
     {
-      emulator_fatal(cpu->emu, "Invalid mode");
+      cpu->emu->fatal("Invalid mode");
       return;
     }
   }
@@ -339,7 +339,7 @@ instr_mrs(cpu_t* cpu, op_mrs_t* opcode)
     }
     else
     {
-      emulator_fatal(cpu->emu, "Cannot read from SPSR in user mode");
+      cpu->emu->fatal("Cannot read from SPSR in user mode");
     }
   }
 }
@@ -373,7 +373,7 @@ write_psr(cpu_t* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
     {
       if (cpu->cpsr.b.m == MODE_USR)
       {
-        emulator_fatal(cpu->emu, "Cannot write to SPSR in user mode");
+        cpu->emu->fatal("Cannot write to SPSR in user mode");
       }
       else
       {
@@ -448,7 +448,7 @@ compute_offset_operand2(cpu_t *cpu, uint32_t imm, uint8_t s)
     /* PC must not be specified as the register offset(rm) */
     if (rs == PC)
     {
-      emulator_fatal(cpu->emu, "PC cannot be used as offset");
+      cpu->emu->fatal("PC cannot be used as offset");
     }
 
     shift_amount = cpu_read_register(cpu, rs) & 0x000000FF;
@@ -843,13 +843,13 @@ instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
   /* The register list can't be empty */
   if (opcode->rl == 0)
   {
-    emulator_fatal(cpu->emu, "The register list cannot be empty");
+    cpu->emu->fatal("The register list cannot be empty");
   }
 
   /* The base register should never be PC */
   if (opcode->rn == PC)
   {
-    emulator_fatal(cpu->emu, "Base register cannot be PC");
+    cpu->emu->fatal("Base register cannot be PC");
   }
 
   /* Assert the s bit is only set in privileged user mode */
@@ -857,7 +857,7 @@ instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
   {
     if (cpu->cpsr.b.m == MODE_USR || cpu->cpsr.b.m == MODE_SYS)
     {
-      emulator_fatal(cpu->emu, "Force user mode set in non-priveleged mode");
+      cpu->emu->fatal("Force user mode set in non-priveleged mode");
     }
   }
 
@@ -981,7 +981,7 @@ instr_branch_exchange(cpu_t* cpu, op_branch_exchange_t* opcode)
 {
   if (opcode->Rn & 0x1)
   {
-    emulator_fatal(cpu->emu, "Cannot switch to THUMB instruction set");
+    cpu->emu->fatal("Cannot switch to THUMB instruction set");
   }
 
   /* Write new PC value */
@@ -1060,7 +1060,7 @@ instr_single_data_trans(cpu_t* cpu, op_single_data_trans_t* opcode)
     /* w must not be set if PC is specified as the base register */
     if (opcode->rn == PC)
     {
-      emulator_fatal(cpu->emu, "Writeback to PC not allowed");
+      cpu->emu->fatal("Writeback to PC not allowed");
     }
 
     cpu_write_register(cpu, opcode->rn, rn);
@@ -1080,8 +1080,7 @@ instr_single_data_swap(cpu_t* cpu, op_single_data_swap_t* opcode)
 
   if (opcode->rd == PC || opcode->rn == PC || opcode->rm == PC)
   {
-    emulator_fatal(cpu->emu,
-      "PC cannot be used as an operand (Rd, Rn or Rm) in a SWAP instruction");
+    cpu->emu->fatal( "PC cannot be used as an operand (Rd, Rn or Rm) in a SWAP instruction");
     return;
   }
 
@@ -1158,8 +1157,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
       }
       else
       {
-        emulator_fatal(cpu->emu,
-          "l bit can't be 0, when signed operations have been selected");
+        cpu->emu->fatal("l bit can't be 0, when signed operations have been selected");
       }
       break;
     }
@@ -1178,8 +1176,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
       }
       else
       {
-        emulator_fatal(cpu->emu,
-          "l but can't be 0, when signed operaitons have been selected");
+        cpu->emu->fatal("l but can't be 0, when signed operaitons have been selected");
       }
       break;
     }
@@ -1211,7 +1208,7 @@ instr_hw_sd_transfer(cpu_t* cpu, op_hw_sd_trans_t* op)
   {
     if (op->rm_ln == PC)
     {
-      emulator_fatal(cpu->emu, "PC used as offset");
+      cpu->emu->fatal("PC used as offset");
       return;
     }
 
@@ -1254,7 +1251,7 @@ instr_hw_sd_transfer(cpu_t* cpu, op_hw_sd_trans_t* op)
   {
     if (op->rn == PC)
     {
-      emulator_fatal(cpu->emu, "Cannot write back to PC");
+      cpu->emu->fatal("Cannot write back to PC");
       return;
     }
     cpu_write_register(cpu, op->rn, base);
@@ -1285,7 +1282,7 @@ instr_coproc_data_proc(cpu_t* cpu, op_coproc_data_proc_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      emulator_fatal(cpu->emu, "Double-precision VFP unsupported");
+      cpu->emu->fatal("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1295,7 +1292,7 @@ instr_coproc_data_proc(cpu_t* cpu, op_coproc_data_proc_t* opcode)
     }
     default:
     {
-      emulator_fatal(cpu->emu, "Unimplemented coprocessor CP%u", coproc);
+      cpu->emu->fatal("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }
@@ -1324,7 +1321,7 @@ instr_coproc_data_transfer(cpu_t* cpu, op_coproc_data_transfer_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      emulator_fatal(cpu->emu, "Double-precision VFP unsupported");
+      cpu->emu->fatal("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1334,7 +1331,7 @@ instr_coproc_data_transfer(cpu_t* cpu, op_coproc_data_transfer_t* opcode)
     }
     default:
     {
-      emulator_fatal(cpu->emu, "Unimplemented coprocessor CP%u", coproc);
+      cpu->emu->fatal("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }
@@ -1363,7 +1360,7 @@ instr_coproc_reg_transfer(cpu_t* cpu, op_coproc_reg_transfer_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      emulator_fatal(cpu->emu, "Double-precision VFP unsupported");
+      cpu->emu->fatal("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1373,7 +1370,7 @@ instr_coproc_reg_transfer(cpu_t* cpu, op_coproc_reg_transfer_t* opcode)
     }
     default:
     {
-      emulator_fatal(cpu->emu, "Unimplemented coprocessor CP%u", coproc);
+      cpu->emu->fatal("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }
@@ -1452,7 +1449,7 @@ debug_break(cpu_t *cpu)
       }
       case 'e':
       {
-        emulator_dump(cpu->emu);
+        cpu->emu->dump();
         break;
       }
       case 'v':

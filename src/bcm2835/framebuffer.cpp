@@ -175,7 +175,7 @@ uint32_t fb_get_pixel(framebuffer_t* fb, uint32_t x, uint32_t y)
     }
     default:
     {
-      emulator_error(fb->emu, "Unsupported pixel format");
+      fb->emu->error("Unsupported pixel format");
       break;
     }
   }
@@ -291,7 +291,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   /* Graphic flag must be set*/
   if (!fb->emu->graphics)
   {
-    emulator_error(fb->emu, "Graphic mode must be enabled for framebuffer");
+    fb->emu->error("Graphic mode must be enabled for framebuffer");
     fb->error = 1;
     return;
   }
@@ -299,7 +299,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   /* Check whether address is valid */
   if (addr < 0x40000000)
   {
-    emulator_error(fb->emu, "Invalid framebuffer address");
+    fb->emu->error("Invalid framebuffer address");
     fb->error = 1;
     return;
   }

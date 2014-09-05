@@ -91,13 +91,13 @@ pr_write(peripheral_t* pr, uint32_t addr, uint8_t data)
       else
       {
         /* Dump output to stdout */
-        emulator_info(pr->emu, "%c", data & 0xFF);
+        pr->emu->info("%c", data & 0xFF);
       }
       return;
     }
   }
 
-  emulator_error(pr->emu, "Unsupported peripherial write: %08x", addr);
+  pr->emu->error("Unsupported peripherial write: %08x", addr);
 }
 
 /**
@@ -146,7 +146,7 @@ pr_read(peripheral_t* pr, uint32_t addr)
     }
   }
 
-  emulator_error(pr->emu, "Unsupported peripherial read: %08x", addr);
+  pr->emu->error("Unsupported peripherial read: %08x", addr);
   return 0;
 }
 

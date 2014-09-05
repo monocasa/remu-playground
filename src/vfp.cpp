@@ -260,15 +260,14 @@ vfp_data_proc(vfp_t* vfp, op_coproc_data_proc_t* instr)
         }
         default:
         {
-          emulator_error(vfp->emu,
-            "Undefined VFP extension data proc instruction");
+          vfp->emu->error( "Undefined VFP extension data proc instruction");
         }
       }
       break;
     }
     default:
     {
-      emulator_fatal(vfp->emu, "Undefined VFP data proc instruction");
+      vfp->emu->fatal("Undefined VFP data proc instruction");
     }
   }
 
@@ -408,7 +407,7 @@ vfp_data_transfer(vfp_t* vfp, op_coproc_data_transfer_t* instr)
     }
     default:
     {
-      emulator_fatal(vfp->emu, "Unimplemented VFP data transfer instruction");
+      vfp->emu->fatal("Unimplemented VFP data transfer instruction");
     }
   }
 }
@@ -458,7 +457,7 @@ rt_status_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        emulator_fatal(vfp->emu, "Unrecognised VFP system register");
+        vfp->emu->fatal("Unrecognised VFP system register");
       }
     }
 
@@ -472,7 +471,7 @@ rt_status_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       else
       {
-        emulator_fatal(vfp->emu, "Cannot copy to r15");
+        vfp->emu->fatal("Cannot copy to r15");
       }
     }
     else
@@ -509,7 +508,7 @@ rt_status_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        emulator_fatal(vfp->emu, "Unrecognised VFP system register");
+        vfp->emu->fatal("Unrecognised VFP system register");
       }
     }
   }
@@ -557,7 +556,7 @@ vfp_reg_transfer(vfp_t* vfp, op_coproc_reg_transfer_t* instr)
     }
     default:
     {
-      emulator_fatal(vfp->emu, "Unimplemented VFP reg transfer instruction");
+      vfp->emu->fatal("Unimplemented VFP reg transfer instruction");
     }
   }
 }

@@ -92,7 +92,7 @@ gpio_read_port(gpio_t* gpio, uint32_t address)
     }
   }
 
-  emulator_error(gpio->emu, "GPIO unimplemented 0x%08x", address);
+  gpio->emu->error("GPIO unimplemented 0x%08x", address);
   return 0;
 }
 
@@ -170,7 +170,7 @@ gpio_write_port(gpio_t* gpio, uint32_t address, uint32_t val)
     }
   }
 
-  emulator_error(gpio->emu, "GPIO unimplemented 0x%08x", address);
+  gpio->emu->error("GPIO unimplemented 0x%08x", address);
 }
 
 /**

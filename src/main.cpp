@@ -166,17 +166,17 @@ main(int argc, char **argv)
   }
 
   /* Run the emulator */
-  emulator_init(&emu);
-  emulator_load(&emu, emu.image);
+  emu.init();
+  emu.load();
 
-  while (emulator_is_running(&emu))
+  while (emu.isRunning())
   {
-    emulator_tick(&emu);
+    emu.tick();
   }
 
   if (!emu.quiet)
   {
-    emulator_dump(&emu);
+    emu.dump();
   }
 
   return EXIT_SUCCESS;

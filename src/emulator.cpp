@@ -37,58 +37,51 @@ Emulator::~Emulator()
 
 /**
  * Initialises the emulator
- *
- * @param emu Reference to the emulator structure
  */
-void
-emulator_init(Emulator* emu)
+void Emulator::init()
 {
-  cpu_init(&emu->cpu, emu);
-  vfp_init(&emu->vfp, emu);
-  memory_init(&emu->memory, emu);
-  gpio_init(&emu->gpio, emu);
-  mbox_init(&emu->mbox, emu);
-  fb_init(&emu->fb, emu);
-  pr_init(&emu->pr, emu);
-  nes_init(&emu->nes, emu);
-  emu->terminated = 0;
-  emu->system_timer_base = emulator_get_time() * 1000;
-  emu->last_refresh = 0;
+  cpu_init(&cpu, this);
+  vfp_init(&vfp, this);
+  memory_init(&memory, this);
+  gpio_init(&gpio, this);
+  mbox_init(&mbox, this);
+  fb_init(&fb, this);
+  pr_init(&pr, this);
+  nes_init(&nes, this);
+  terminated = 0;
+  system_timer_base = getTime() * 1000;
+  last_refresh = 0;
 }
 
 /**
  * Loads a binary image into memory
- *
- * @param emu Reference to the emulator structure
  */
-void
-emulator_load(Emulator* emu, const char *fname)
+void Emulator::load()
 {
   FILE *finput;
   size_t file_size;
-  void* memory_start = emu->memory.data + emu->start_addr;
+  void* memory_start = memory.data + start_addr;
 
   /* Throw error if file unopenable. */
-  if (!(finput = fopen(fname, "rb")))
+  if (!(finput = fopen(image, "rb")))
   {
-    emulator_error(emu, "Cannot open file '%s'", fname);
+    error("Cannot open file '%s'", image);
   }
-
 
   fseek(finput, 0L, SEEK_END);
   file_size = ftell(finput);
   fseek(finput, 0L, SEEK_SET);
 
   /* Check for buffer overflow */
-  if(emu->start_addr + file_size > emu->mem_size)
+  if(start_addr + file_size > mem_size)
   {
-    emulator_fatal(emu, "Not enough memory for kernel");
+    fatal("Not enough memory for kernel");
   }
 
   /* Copy instructions into memory and error if incomplete */
   if (fread(memory_start, 1, file_size, finput) != file_size)
   {
-    emulator_error(emu, "Could not read entire file '%s'", fname);
+    error("Could not read entire file '%s'", image);
   }
 
   fclose(finput);
@@ -96,20 +89,16 @@ emulator_load(Emulator* emu, const char *fname)
 
 /**
  * Checks whether the emulator is still active
- *
- * @param emu Reference to the emulator structure
  */
-int
-emulator_is_running(Emulator* emu)
+bool Emulator::isRunning() const
 {
-  return !emu->terminated;
+  return !terminated;
 }
 
 /**
  * Get the current time in milliseconds
  */
-uint64_t
-emulator_get_time()
+uint64_t Emulator::getTime() const
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
@@ -119,65 +108,57 @@ emulator_get_time()
 /**
  * Get the value of the system timer
  */
-uint64_t
-emulator_get_system_timer(Emulator* emu)
+uint64_t Emulator::getSystemTimer() const
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
-  uint64_t us = (tv.tv_sec) * 1000000 + tv.tv_usec;
-  return us - emu->system_timer_base;
+  uint64_t us = (tv.tv_sec) * 1000000ULL + tv.tv_usec;
+  return us - system_timer_base;
 }
 
 /**
  * Executes a single step
- *
- * @param emu Reference to the emulator structure
  */
-void
-emulator_tick(Emulator* emu)
+void Emulator::tick()
 {
-  cpu_tick(&emu->cpu);
+  cpu_tick(&cpu);
 
   /* When graphics are emulated, we execute a screen refresh after 34ms has
    * passed (30 frames per second) */
   uint32_t frame_time = 20;
-  if (emu->graphics)
+  if (graphics)
   {
-    uint64_t now = emulator_get_time();
-    if ((now - emu->last_refresh) > frame_time)
+    uint64_t now = getTime();
+    if ((now - last_refresh) > frame_time)
     {
-      fb_tick(&emu->fb);
-      emu->last_refresh = now;
+      fb_tick(&fb);
+      last_refresh = now;
     }
   }
 }
 
 /**
  * Prints out the state of the emulator
- *
- * @param emu Reference to the emulator structure
  */
-void
-emulator_dump(Emulator* emu)
+void Emulator::dump()
 {
-  cpu_dump(&emu->cpu);
-  memory_dump(&emu->memory);
+  cpu_dump(&cpu);
+  memory_dump(&memory);
 }
 
 /**
  * Prints a useful info message.
  *
- * @param emu Reference to the emulator structure
  * @param fmt Printf-like format string
  */
-void
-emulator_info(Emulator* emu, const char * fmt, ...)
+void Emulator::info(const char * fmt, ...)
 {
-  int size = 100, n;
+  int size = 100;
+  int n;
   char* str = NULL;
   va_list ap;
 
-  if (emu->quiet)
+  if (quiet)
   {
     return;
   }
@@ -197,7 +178,7 @@ emulator_info(Emulator* emu, const char * fmt, ...)
     }
 
     size = n > -1 ? (n + 1) : (size << 1);
-    str = (char*)realloc(emu->err_msg, size);
+    str = (char*)realloc(err_msg, size);
     assert(str);
   }
 
@@ -207,28 +188,26 @@ emulator_info(Emulator* emu, const char * fmt, ...)
 /**
  * Prints an error message and exits if the strict flag is set
  *
- * @param emu Reference to the emulator structure
  * @param fmt Printf-like format string
  */
-void
-emulator_error(Emulator* emu, const char * fmt, ...)
+void Emulator::error(const char * fmt, ...)
 {
   int size = 100, n;
   char* tmp = NULL;
   va_list ap;
 
-  if (emu->quiet)
+  if (quiet)
   {
     return;
   }
 
-  emu->err_msg = (char*)malloc(size);
-  assert(emu->err_msg);
+  err_msg = (char*)malloc(size);
+  assert(err_msg);
 
   while (1)
   {
     va_start(ap, fmt);
-    n = vsnprintf(emu->err_msg, size, fmt, ap);
+    n = vsnprintf(err_msg, size, fmt, ap);
     va_end(ap);
 
     if (-1 < n && n < size)
@@ -237,35 +216,33 @@ emulator_error(Emulator* emu, const char * fmt, ...)
     }
 
     size = n > -1 ? (n + 1) : (size << 1);
-    tmp = (char*)realloc(emu->err_msg, size);
+    tmp = (char*)realloc(err_msg, size);
     assert(tmp);
 
-    emu->err_msg = tmp;
+    err_msg = tmp;
   }
 
-  printf("Error: %s\n", emu->err_msg);
+  printf("Error: %s\n", err_msg);
 }
 
 /**
  * Kills the emulator, printing a message to stdout
  *
- * @param emu Reference to the emulator structure
  * @param fmt Printf-like format string
  */
-void
-emulator_fatal(Emulator* emu, const char * fmt, ...)
+void Emulator::fatal(const char * fmt, ...)
 {
   int size = 100, n;
   char * tmp;
   va_list ap;
 
-  emu->err_msg = (char*)malloc(size);
-  assert(emu->err_msg);
+  err_msg = (char*)malloc(size);
+  assert(err_msg);
 
   while (1)
   {
     va_start(ap, fmt);
-    n = vsnprintf(emu->err_msg, size, fmt, ap);
+    n = vsnprintf(err_msg, size, fmt, ap);
     va_end(ap);
 
     if (-1 < n && n < size)
@@ -274,15 +251,15 @@ emulator_fatal(Emulator* emu, const char * fmt, ...)
     }
 
     size = n > -1 ? (n + 1) : (size << 1);
-    if (!(tmp = (char*)realloc(emu->err_msg, size)))
+    if (!(tmp = (char*)realloc(err_msg, size)))
     {
-      free(emu->err_msg);
+      free(err_msg);
       break;
     }
 
-    emu->err_msg = tmp;
+    err_msg = tmp;
   }
 
-  longjmp(emu->err_jmp, 1);
+  longjmp(err_jmp, 1);
 }
 

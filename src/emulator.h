@@ -35,6 +35,22 @@ public:
 
   virtual ~Emulator();
 
+  void init();
+  void load();
+  bool isRunning() const;
+  uint64_t getSystemTimer() const;
+  void tick();
+
+  void info(const char *fmt, ...);
+  void error(const char *fmt, ...);
+  void fatal(const char *fmt, ...) __attribute__((noreturn));
+
+  void dump();
+
+private:
+  uint64_t getTime() const;
+
+public:
   int           terminated;
 
   /* Kernel image */
@@ -69,17 +85,6 @@ public:
   /* Refresh */
   uint64_t      last_refresh;
 };
-
-void emulator_init(Emulator* );
-int emulator_is_running(Emulator* );
-uint64_t emulator_get_time();
-uint64_t emulator_get_system_timer(Emulator*);
-void emulator_tick(Emulator* );
-void emulator_info(Emulator*, const char *, ...);
-void emulator_error(Emulator*, const char *, ...);
-void emulator_fatal(Emulator*, const char *, ...) __attribute__((noreturn));
-void emulator_dump(Emulator* );
-void emulator_load(Emulator* , const char*);
 
 #endif /* REMU_EMULATOR_H */
 

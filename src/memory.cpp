@@ -78,7 +78,7 @@ memory_read_byte(memory_t* m, uint32_t addr)
     return m->data[addr];
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
@@ -105,7 +105,7 @@ memory_read_word_le(memory_t* m, uint32_t addr)
            (m->data[base + ((off + 1) & 0x01)] <<  8);
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
@@ -142,12 +142,12 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
   /* System Timer */
   if (addr == 0x20003004)
   {
-    uint64_t timer_value = emulator_get_system_timer(m->emu);
+    uint64_t timer_value = m->emu->getSystemTimer();
     return (uint32_t)(timer_value & 0xffffffff);
   }
   else if (addr == 0x20003008)
   {
-    uint64_t timer_value = emulator_get_system_timer(m->emu);
+    uint64_t timer_value = m->emu->getSystemTimer();
     return (uint32_t)((timer_value >> 32) & 0xffffffff);
   }
 
@@ -175,7 +175,7 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
     return 0;
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
@@ -197,7 +197,7 @@ memory_write_byte(memory_t* m, uint32_t addr, uint8_t data)
     return;
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 
 /**
@@ -226,7 +226,7 @@ memory_write_word_le(memory_t* m, uint32_t addr, uint16_t data)
     return;
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 
 /**
@@ -284,6 +284,6 @@ memory_write_dword_le(memory_t* m, uint32_t addr, uint32_t data)
     return;
   }
 
-  emulator_error(m->emu, "Out of bounds memory access at address 0x%08x", addr);
+  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 
