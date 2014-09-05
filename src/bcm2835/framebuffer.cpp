@@ -28,7 +28,7 @@ fb_init(framebuffer_t* fb, emulator_t* emu)
     SDL_SetVideoMode(fb->width, fb->height, fb->depth, SDL_SWSURFACE);
 
   /* Set the window caption */
-  SDL_WM_SetCaption("Raspberry Pi Emulator", NULL);
+  SDL_WM_SetCaption("Remu", "Remu");
 }
 
 /**
@@ -348,7 +348,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
   }
 
   /* Change the window caption */
-  SDL_WM_SetCaption("Raspberry Pi Emulator", NULL);
+  SDL_WM_SetCaption("Remu", "Remu");
 
   /* Change the window size */
   fb->surface = SDL_SetVideoMode(fb->width, fb->height, fb->depth, SDL_SWSURFACE);
