@@ -54,7 +54,6 @@ void emulator_tick(Emulator* );
 void emulator_info(Emulator*, const char *, ...);
 void emulator_error(Emulator*, const char *, ...);
 void emulator_fatal(Emulator*, const char *, ...) __attribute__((noreturn));
-void emulator_destroy(Emulator* );
 void emulator_dump(Emulator* );
 void emulator_load(Emulator* , const char*);
 

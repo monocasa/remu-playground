@@ -25,7 +25,15 @@ Emulator::Emulator()
 }
 
 Emulator::~Emulator()
-{ }
+{
+  fb_destroy(&fb);
+  pr_destroy(&pr);
+  mbox_destroy(&mbox);
+  gpio_destroy(&gpio);
+  cpu_destroy(&cpu);
+  vfp_destroy(&vfp);
+  memory_destroy(&memory);
+}
 
 /**
  * Initialises the emulator
@@ -142,18 +150,6 @@ emulator_tick(Emulator* emu)
       emu->last_refresh = now;
     }
   }
-}
-
-void
-emulator_destroy(Emulator* emu)
-{
-  fb_destroy(&emu->fb);
-  pr_destroy(&emu->pr);
-  mbox_destroy(&emu->mbox);
-  gpio_destroy(&emu->gpio);
-  cpu_destroy(&emu->cpu);
-  vfp_destroy(&emu->vfp);
-  memory_destroy(&emu->memory);
 }
 
 /**

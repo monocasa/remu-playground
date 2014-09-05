@@ -155,8 +155,6 @@ main(int argc, char **argv)
     {
       fprintf(stderr, "ERROR: %s\n", emu.err_msg);
     }
-
-    emulator_destroy(&emu);
     return EXIT_FAILURE;
   }
 
@@ -179,8 +177,6 @@ main(int argc, char **argv)
   {
     emulator_dump(&emu);
   }
-
-  emulator_destroy(&emu);
 
   return EXIT_SUCCESS;
 }
