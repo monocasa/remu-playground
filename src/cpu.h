@@ -66,7 +66,7 @@ typedef enum
 typedef struct
 {
   memory_t    *memory;
-  emulator_t  *emu;
+  Emulator  *emu;
 
   /* User mode registers */
   union
@@ -184,7 +184,7 @@ typedef struct
 
 uint32_t cpu_read_register(const cpu_t* cpu, int reg);
 void cpu_write_register(cpu_t* cpu, int reg, uint32_t value);
-void cpu_init(cpu_t*, emulator_t*);
+void cpu_init(cpu_t*, Emulator*);
 void cpu_tick(cpu_t*);
 void cpu_destroy(cpu_t*);
 void cpu_dump(cpu_t*);

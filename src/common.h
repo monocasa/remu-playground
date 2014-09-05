@@ -25,7 +25,7 @@
 #endif
 
 /* Emulator forward declaration */
-typedef struct _emulator_t emulator_t;
+class Emulator;
 
 /* Modules */
 #include "memory.h"

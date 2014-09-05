@@ -18,7 +18,7 @@ typedef struct
 typedef struct _gpio_t
 {
   gpio_port_t *ports;
-  emulator_t  *emu;
+  Emulator    *emu;
 } gpio_t;
 
 /**
@@ -58,7 +58,7 @@ typedef enum
   GPIO_UDCLK1 = GPIO_BASE + 0x9C
 } gpio_reg_t;
 
-void      gpio_init(gpio_t*, emulator_t*);
+void      gpio_init(gpio_t*, Emulator*);
 void      gpio_destroy(gpio_t*);
 uint32_t  gpio_read_port(gpio_t*, uint32_t);
 void      gpio_write_port(gpio_t*, uint32_t, uint32_t);

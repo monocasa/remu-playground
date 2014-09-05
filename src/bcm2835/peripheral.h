@@ -35,7 +35,7 @@ typedef enum
 typedef struct
 {
   /* Reference to the emulator */
-  emulator_t* emu;
+  Emulator* emu;
 
   /* True if SPI 1 module is enabled */
   int spi1_enable;
@@ -59,7 +59,7 @@ typedef struct
   int uart_dlab;
 } peripheral_t;
 
-void pr_init(peripheral_t*, emulator_t*);
+void pr_init(peripheral_t*, Emulator*);
 void pr_destroy(peripheral_t*);
 void pr_write(peripheral_t*, uint32_t port, uint8_t data);
 uint32_t pr_read(peripheral_t*, uint32_t port);

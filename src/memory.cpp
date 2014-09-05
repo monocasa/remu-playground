@@ -16,7 +16,7 @@ dma_is_port(uint32_t addr)
  * @param size Size of memory in bytes
  */
 void
-memory_init(memory_t* m, emulator_t* emu)
+memory_init(memory_t* m, Emulator* emu)
 {
   m->emu = emu;
   m->data = (uint8_t*)malloc(emu->mem_size);

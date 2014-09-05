@@ -7,10 +7,10 @@
 typedef struct _memory_t
 {
   uint8_t     *data;
-  emulator_t  *emu;
+  Emulator    *emu;
 } memory_t;
 
-void      memory_init(memory_t*, emulator_t*);
+void      memory_init(memory_t*, Emulator*);
 void      memory_dump(memory_t*);
 void      memory_destroy(memory_t*);
 uint8_t   memory_read_byte(memory_t*, uint32_t);

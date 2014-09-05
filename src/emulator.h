@@ -4,8 +4,13 @@
 /**
  * Emulator state
  */
-struct _emulator_t
+class Emulator
 {
+public:
+  Emulator();
+
+  virtual ~Emulator();
+
   int           terminated;
 
   /* Kernel image */
@@ -41,17 +46,17 @@ struct _emulator_t
   uint64_t      last_refresh;
 };
 
-void emulator_init(emulator_t* );
-int emulator_is_running(emulator_t* );
+void emulator_init(Emulator* );
+int emulator_is_running(Emulator* );
 uint64_t emulator_get_time();
-uint64_t emulator_get_system_timer(emulator_t*);
-void emulator_tick(emulator_t* );
-void emulator_info(emulator_t*, const char *, ...);
-void emulator_error(emulator_t*, const char *, ...);
-void emulator_fatal(emulator_t*, const char *, ...) __attribute__((noreturn));
-void emulator_destroy(emulator_t* );
-void emulator_dump(emulator_t* );
-void emulator_load(emulator_t* , const char*);
+uint64_t emulator_get_system_timer(Emulator*);
+void Emulatorick(Emulator* );
+void emulator_info(Emulator*, const char *, ...);
+void emulator_error(Emulator*, const char *, ...);
+void emulator_fatal(Emulator*, const char *, ...) __attribute__((noreturn));
+void emulator_destroy(Emulator* );
+void emulator_dump(Emulator* );
+void emulator_load(Emulator* , const char*);
 
 #endif /* REMU_EMULATOR_H */
 

@@ -1,13 +1,39 @@
 #include "common.h"
 #include <sys/time.h>
 
+Emulator::Emulator()
+  : terminated( 0 )
+  , image( nullptr )
+  , mem_size( 0 )
+  , start_addr( 0 )
+  , graphics( 0 )
+  , usage( 0 )
+  , quiet( 0 )
+  , nes_enabled( 0 )
+  , gpio_test_offset( 0 )
+  , system_timer_base( 0 )
+  , last_refresh( 0 )
+{
+  memset(&fb,     0, sizeof(fb));
+  memset(&memory, 0, sizeof(memory));
+  memset(&cpu,    0, sizeof(cpu));
+  memset(&gpio,   0, sizeof(gpio));
+  memset(&mbox,   0, sizeof(mbox));
+  memset(&pr,     0, sizeof(pr));
+  memset(&vfp,    0, sizeof(vfp));
+  memset(&nes,    0, sizeof(nes));
+}
+
+Emulator::~Emulator()
+{ }
+
 /**
  * Initialises the emulator
  *
  * @param emu Reference to the emulator structure
  */
 void
-emulator_init(emulator_t* emu)
+emulator_init(Emulator* emu)
 {
   cpu_init(&emu->cpu, emu);
   vfp_init(&emu->vfp, emu);
@@ -28,7 +54,7 @@ emulator_init(emulator_t* emu)
  * @param emu Reference to the emulator structure
  */
 void
-emulator_load(emulator_t* emu, const char *fname)
+emulator_load(Emulator* emu, const char *fname)
 {
   FILE *finput;
   size_t file_size;
@@ -66,7 +92,7 @@ emulator_load(emulator_t* emu, const char *fname)
  * @param emu Reference to the emulator structure
  */
 int
-emulator_is_running(emulator_t* emu)
+emulator_is_running(Emulator* emu)
 {
   return !emu->terminated;
 }
@@ -86,7 +112,7 @@ emulator_get_time()
  * Get the value of the system timer
  */
 uint64_t
-emulator_get_system_timer(emulator_t* emu)
+emulator_get_system_timer(Emulator* emu)
 {
   struct timeval tv;
   gettimeofday(&tv, NULL);
@@ -100,7 +126,7 @@ emulator_get_system_timer(emulator_t* emu)
  * @param emu Reference to the emulator structure
  */
 void
-emulator_tick(emulator_t* emu)
+Emulatorick(Emulator* emu)
 {
   cpu_tick(&emu->cpu);
 
@@ -119,7 +145,7 @@ emulator_tick(emulator_t* emu)
 }
 
 void
-emulator_destroy(emulator_t* emu)
+emulator_destroy(Emulator* emu)
 {
   fb_destroy(&emu->fb);
   pr_destroy(&emu->pr);
@@ -136,7 +162,7 @@ emulator_destroy(emulator_t* emu)
  * @param emu Reference to the emulator structure
  */
 void
-emulator_dump(emulator_t* emu)
+emulator_dump(Emulator* emu)
 {
   cpu_dump(&emu->cpu);
   memory_dump(&emu->memory);
@@ -149,7 +175,7 @@ emulator_dump(emulator_t* emu)
  * @param fmt Printf-like format string
  */
 void
-emulator_info(emulator_t* emu, const char * fmt, ...)
+emulator_info(Emulator* emu, const char * fmt, ...)
 {
   int size = 100, n;
   char* str = NULL;
@@ -189,7 +215,7 @@ emulator_info(emulator_t* emu, const char * fmt, ...)
  * @param fmt Printf-like format string
  */
 void
-emulator_error(emulator_t* emu, const char * fmt, ...)
+emulator_error(Emulator* emu, const char * fmt, ...)
 {
   int size = 100, n;
   char* tmp = NULL;
@@ -231,7 +257,7 @@ emulator_error(emulator_t* emu, const char * fmt, ...)
  * @param fmt Printf-like format string
  */
 void
-emulator_fatal(emulator_t* emu, const char * fmt, ...)
+emulator_fatal(Emulator* emu, const char * fmt, ...)
 {
   int size = 100, n;
   char * tmp;

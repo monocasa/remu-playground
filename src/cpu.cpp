@@ -1571,7 +1571,7 @@ debug_break(cpu_t *cpu)
  * @param start_addr
  */
 void
-cpu_init(cpu_t* cpu, emulator_t* emu)
+cpu_init(cpu_t* cpu, Emulator* emu)
 {
   cpu->emu = emu;
   cpu->memory = &emu->memory;

@@ -6,7 +6,7 @@
  * @param emu Reference to the emulator structure
  */
 void
-fb_init(framebuffer_t* fb, emulator_t* emu)
+fb_init(framebuffer_t* fb, Emulator* emu)
 {
   assert(fb);
   assert(emu);

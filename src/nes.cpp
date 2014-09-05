@@ -1,7 +1,7 @@
 #include "common.h"
 
 void
-nes_init(nes_t* nes, emulator_t* emu)
+nes_init(nes_t* nes, Emulator* emu)
 {
   nes->emu = emu;
   nes->last_latch = 0;

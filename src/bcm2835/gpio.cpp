@@ -6,7 +6,7 @@
  * @param emu  Reference to the emulator structure
  */
 void
-gpio_init(gpio_t* gpio, emulator_t* emu)
+gpio_init(gpio_t* gpio, Emulator* emu)
 {
   uint32_t size;
 

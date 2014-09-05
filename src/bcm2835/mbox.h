@@ -23,11 +23,11 @@ typedef enum
  */
 typedef struct _mbox_t
 {
-  emulator_t *emu;
+  Emulator   *emu;
   uint8_t     last_channel;
 } mbox_t;
 
-void     mbox_init(mbox_t *mbox, emulator_t *emu);
+void     mbox_init(mbox_t *mbox, Emulator *emu);
 void     mbox_destroy(mbox_t *mbox);
 uint32_t mbox_read(mbox_t *mbox, uint32_t addr);
 void     mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val);

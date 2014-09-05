@@ -20,7 +20,7 @@ typedef enum
 
 typedef struct
 {
-  emulator_t* emu;
+  Emulator* emu;
 
   uint32_t last_latch;
   uint32_t last_clock;
@@ -31,7 +31,7 @@ typedef struct
   SDLKey binding[NES_BUTTON_COUNT];
 } nes_t;
 
-void nes_init(nes_t*, emulator_t*);
+void nes_init(nes_t*, Emulator*);
 void nes_gpio_write(nes_t*, uint32_t, uint32_t);
 void nes_on_key_down(nes_t*, SDLKey);
 void nes_on_key_up(nes_t*, SDLKey);

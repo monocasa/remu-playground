@@ -28,7 +28,7 @@ typedef union
 typedef struct
 {
   /* Emulator reference */
-  emulator_t*   emu;
+  Emulator*     emu;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -48,7 +48,7 @@ typedef struct
   uint32_t      depth;
 } framebuffer_t;
 
-void fb_init(framebuffer_t*, emulator_t*);
+void fb_init(framebuffer_t*, Emulator*);
 void fb_create_window(framebuffer_t*, uint32_t width, uint32_t height);
 void fb_destroy(framebuffer_t*);
 void fb_tick(framebuffer_t*);

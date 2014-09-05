@@ -6,7 +6,7 @@
  * @param emu   Reference to the emulator structure
  */
 void
-pr_init(peripheral_t* pr, emulator_t* emu)
+pr_init(peripheral_t* pr, Emulator* emu)
 {
   assert(pr);
   assert(emu);

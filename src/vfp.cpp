@@ -6,7 +6,7 @@
  * @param emu Emulator
  */
 void
-vfp_init(vfp_t* vfp, emulator_t* emu)
+vfp_init(vfp_t* vfp, Emulator* emu)
 {
   assert(vfp);
   assert(emu);

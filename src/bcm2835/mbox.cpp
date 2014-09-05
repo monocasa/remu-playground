@@ -4,7 +4,7 @@
  * Initialises the mailbox
  */
 void
-mbox_init(mbox_t *mbox, emulator_t *emu)
+mbox_init(mbox_t *mbox, Emulator *emu)
 {
   mbox->emu = emu;
   mbox->last_channel = 0x0;

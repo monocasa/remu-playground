@@ -3,7 +3,7 @@
 
 typedef struct
 {
-  emulator_t* emu;
+  Emulator* emu;
 
   /* Registers */
   struct
@@ -56,7 +56,7 @@ typedef struct
   } reg;
 } vfp_t;
 
-void vfp_init(vfp_t*, emulator_t*);
+void vfp_init(vfp_t*, Emulator*);
 void vfp_destroy(vfp_t *);
 void vfp_dump(vfp_t *);
 

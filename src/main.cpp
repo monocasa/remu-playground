@@ -23,7 +23,7 @@ cmdline_usage(int argc, char **argv)
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_parse(emulator_t *emu, int argc, char **argv)
+cmdline_parse(Emulator *emu, int argc, char **argv)
 {
   struct option options[] =
   {
@@ -112,7 +112,7 @@ cmdline_parse(emulator_t *emu, int argc, char **argv)
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_check(emulator_t *emu, int argc, char **argv)
+cmdline_check(Emulator *emu, int argc, char **argv)
 {
   if (emu->usage)
   {
@@ -146,8 +146,7 @@ cmdline_check(emulator_t *emu, int argc, char **argv)
 int
 main(int argc, char **argv)
 {
-  emulator_t emu;
-  memset(&emu, 0, sizeof(emulator_t));
+  Emulator emu;
 
   /* In case of an error, code will jump here */
   if (setjmp(emu.err_jmp))
@@ -173,7 +172,7 @@ main(int argc, char **argv)
 
   while (emulator_is_running(&emu))
   {
-    emulator_tick(&emu);
+    Emulatorick(&emu);
   }
 
   if (!emu.quiet)
