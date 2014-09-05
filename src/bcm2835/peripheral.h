@@ -66,3 +66,4 @@ uint32_t pr_read(peripheral_t*, uint32_t port);
 int pr_is_aux_port(uint32_t addr);
 
 #endif /* REMU_PERIPHERAL_H */
+

@@ -1773,3 +1773,4 @@ cpu_dump(cpu_t* cpu)
   reg = cpu->cpsr.r & (~0x1F);
   printf("CPSR: %10d (0x%08x)\n", reg, reg);
 }
+

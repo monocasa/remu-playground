@@ -42,3 +42,4 @@ typedef struct _emulator_t emulator_t;
 #include "emulator.h"
 
 #endif /*REMU_COMMON_H */
+

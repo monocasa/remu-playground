@@ -59,3 +59,4 @@ void fb_write_dword(framebuffer_t*, uint32_t address, uint32_t data);
 int  fb_is_buffer(framebuffer_t*, uint32_t address);
 
 #endif /* REMU_BCM2835_FRAMEBUFFER_H */
+

@@ -65,3 +65,4 @@ void      gpio_write_port(gpio_t*, uint32_t, uint32_t);
 int       gpio_is_port(uint32_t addr);
 
 #endif /* REMU_BCM2835_GPIO_H */
+

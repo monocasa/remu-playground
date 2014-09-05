@@ -160,3 +160,4 @@ pr_is_aux_port(uint32_t addr)
 {
   return addr >= AUX_BASE && addr <= AUX_SPI1_CNTL1_REG;
 }
+

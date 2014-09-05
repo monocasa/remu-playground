@@ -86,3 +86,4 @@ nes_on_key_up(nes_t* nes, SDLKey key)
     }
   }
 }
+

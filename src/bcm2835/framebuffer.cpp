@@ -411,3 +411,4 @@ fb_is_buffer(framebuffer_t *fb, uint32_t address)
 
   return fb->fb_address <= address && address < fb->fb_address + fb->fb_size;
 }
+

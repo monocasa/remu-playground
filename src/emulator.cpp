@@ -263,3 +263,4 @@ emulator_fatal(emulator_t* emu, const char * fmt, ...)
 
   longjmp(emu->err_jmp, 1);
 }
+

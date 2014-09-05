@@ -107,3 +107,4 @@ mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val)
 
   emulator_error(mbox->emu, "Mailbox unimplemented 0x%08x", addr);
 }
+

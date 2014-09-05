@@ -67,3 +67,4 @@ memory_write_dword_be(memory_t* m, uint32_t addr, uint32_t data)
 }
 
 #endif /* REMU_MEMORY_H */
+

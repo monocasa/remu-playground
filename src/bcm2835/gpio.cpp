@@ -205,3 +205,4 @@ gpio_is_port(uint32_t addr)
       return 0;
   }
 }
+
