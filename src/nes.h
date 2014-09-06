@@ -18,8 +18,9 @@ typedef enum
   NES_BUTTON_COUNT
 } nes_button_t;
 
-typedef struct
+class Nes
 {
+public:
   Emulator* emu;
 
   uint32_t last_latch;
@@ -29,12 +30,12 @@ typedef struct
   /* Button States */
   uint32_t state[NES_BUTTON_COUNT];
   SDLKey binding[NES_BUTTON_COUNT];
-} nes_t;
+};
 
-void nes_init(nes_t*, Emulator*);
-void nes_gpio_write(nes_t*, uint32_t, uint32_t);
-void nes_on_key_down(nes_t*, SDLKey);
-void nes_on_key_up(nes_t*, SDLKey);
+void nes_init(Nes*, Emulator*);
+void nes_gpio_write(Nes*, uint32_t, uint32_t);
+void nes_on_key_down(Nes*, SDLKey);
+void nes_on_key_up(Nes*, SDLKey);
 
 #endif /* REMU_NES_H */
 

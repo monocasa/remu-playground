@@ -1,7 +1,7 @@
 #include "common.h"
 
 void
-nes_init(nes_t* nes, Emulator* emu)
+nes_init(Nes* nes, Emulator* emu)
 {
   nes->emu = emu;
   nes->last_latch = 0;
@@ -22,13 +22,13 @@ nes_init(nes_t* nes, Emulator* emu)
 }
 
 static inline void
-nes_write_button(nes_t* nes, uint32_t button)
+nes_write_button(Nes* nes, uint32_t button)
 {
   nes->emu->gpio.ports[NES_GPIO_PORT_DATA].state = nes->state[button] ? 0 : 1;
 }
 
 void
-nes_gpio_write(nes_t* nes, uint32_t port, uint32_t value)
+nes_gpio_write(Nes* nes, uint32_t port, uint32_t value)
 {
   if (port == NES_GPIO_PORT_LATCH)
   {
@@ -62,7 +62,7 @@ nes_gpio_write(nes_t* nes, uint32_t port, uint32_t value)
 }
 
 void
-nes_on_key_down(nes_t* nes, SDLKey key)
+nes_on_key_down(Nes* nes, SDLKey key)
 {
   /* Search for the button bound to this SDLKey */
   for (int i = 0; i < NES_BUTTON_COUNT; ++i)
@@ -75,7 +75,7 @@ nes_on_key_down(nes_t* nes, SDLKey key)
 }
 
 void
-nes_on_key_up(nes_t* nes, SDLKey key)
+nes_on_key_up(Nes* nes, SDLKey key)
 {
   /* Search for the button bound to this SDLKey */
   for (int i = 0; i < NES_BUTTON_COUNT; ++i)
