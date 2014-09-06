@@ -43,7 +43,7 @@ void Peripheral::writePort(uint32_t addr, uint8_t data)
       {
         /* Enables / disables interrupts */
         irq_rx = (data & 0x1) != 0;
-        irq_tx = (data & 0x1) != 0;
+        irq_tx = (data & 0x2) != 0;
       }
       return;
     }
