@@ -152,9 +152,9 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
   }
 
   /* GPIO registers */
-  if (gpio_is_port(addr))
+  if (Gpio::isGpioAddress(addr))
   {
-    return gpio_read_port(m->gpio, addr);
+    return m->gpio->readPort(addr);
   }
 
   /* Mailbox interface */
@@ -251,9 +251,9 @@ memory_write_dword_le(memory_t* m, uint32_t addr, uint32_t data)
   }
 
   /* GPIO registers */
-  if (gpio_is_port(addr))
+  if (Gpio::isGpioAddress(addr))
   {
-    gpio_write_port(m->gpio, addr, data);
+    m->gpio->writePort(addr, data);
     return;
   }
 

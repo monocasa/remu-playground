@@ -213,7 +213,7 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->gpio->ports[fb->emu->getGpioTestOffset() + port].state = 1;
+          fb->gpio->setPortState(fb->emu->getGpioTestOffset() + port, 1);
           break;
         }
         default:
@@ -233,7 +233,7 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->gpio->ports[fb->emu->getGpioTestOffset() + port].state = 0;
+          fb->gpio->setPortState(fb->emu->getGpioTestOffset() + port, 0);
           break;
         }
         default:

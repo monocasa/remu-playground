@@ -43,7 +43,7 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   memory_init(&memory, this);
-  gpio = new Gpio(this);
+  gpio = new Gpio(*this);
   memory_set_gpio(&memory, gpio);
   mbox_init(&mbox, this);
   fb_init(&fb, this, gpio);
