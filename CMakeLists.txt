@@ -13,6 +13,13 @@ SET( CMAKE_CXX_FLAGS         "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -std=gnu+
 SET( CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG} -Og -g" )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3" )
 
+INCLUDE_DIRECTORIES( SYSTEM
+                     "${PROJECT_SOURCE_DIR}/3rdparty/google-test/include" )
+
+ADD_SUBDIRECTORY( 3rdparty/google-test )
+
+ENABLE_TESTING()
+
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src" ${SDL_INCLUDE_DIRS} )
 
 ADD_LIBRARY( remu_core src/emulator.cpp
@@ -30,4 +37,6 @@ TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
 ADD_EXECUTABLE( remu src/main.cpp )
 
 TARGET_LINK_LIBRARIES( remu m remu_core  )
+
+ADD_SUBDIRECTORY( test )
 
