@@ -30,6 +30,7 @@ Emulator::~Emulator()
   pr_destroy(&pr);
   mbox_destroy(&mbox);
   delete gpio;
+  delete nes;
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
   memory_destroy(&memory);
@@ -48,7 +49,8 @@ void Emulator::init()
   mbox_init(&mbox, this);
   fb_init(&fb, this, gpio);
   pr_init(&pr, this);
-  nes_init(&nes, this, gpio);
+  nes = new Nes(*this, *gpio, &fb);
+
   terminated = 0;
   system_timer_base = getTime() * 1000;
   last_refresh = 0;

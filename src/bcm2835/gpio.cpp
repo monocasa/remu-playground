@@ -6,6 +6,7 @@
  */
 Gpio::Gpio(Emulator &emu)
   : emu(emu)
+  , listener(nullptr)
 {
   gpio_port_t default_port = { 0, 0 };
   for(int i = 0; i < GPIO_PORT_COUNT; i++) {
@@ -109,9 +110,9 @@ void Gpio::writePort(uint32_t address, uint32_t val)
           ports[offset + i].state = 1;
 
           /* Catch writes */
-          if (emu.isNesEnabled() && offset == 0)
+          if (listener)
           {
-            nes_gpio_write(&emu.nes, i, 1);
+            listener->onGpioWrite(i, 1);
           }
         }
         val = val >> 1;
@@ -130,9 +131,9 @@ void Gpio::writePort(uint32_t address, uint32_t val)
           ports[offset + i].state = 0;
 
           /* Catch writes */
-          if (emu.isNesEnabled() && offset == 0)
+          if (listener)
           {
-            nes_gpio_write(&emu.nes, i, 0);
+            listener->onGpioWrite(i, 0);
           }
         }
         val = val >> 1;

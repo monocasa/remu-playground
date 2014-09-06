@@ -218,9 +218,9 @@ fb_tick(framebuffer_t* fb)
         }
         default:
         {
-          if (fb->emu->isNesEnabled())
+          if (fb->key_listener)
           {
-            nes_on_key_down(&fb->emu->nes, event.key.keysym.sym);
+            fb->key_listener->onKeyDown(event.key.keysym.sym);
           }
           break;
         }
@@ -238,9 +238,9 @@ fb_tick(framebuffer_t* fb)
         }
         default:
         {
-          if (fb->emu->isNesEnabled())
+          if (fb->key_listener)
           {
-            nes_on_key_up(&fb->emu->nes, event.key.keysym.sym);
+            fb->key_listener->onKeyUp(event.key.keysym.sym);
           }
           break;
         }

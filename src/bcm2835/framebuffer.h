@@ -2,6 +2,7 @@
 #define REMU_BCM2835_FRAMEBUFFER_H
 
 class Gpio;
+class KeyListener;
 
 /**
  * Framebuffer request structure
@@ -27,11 +28,14 @@ typedef union
 /**
  * Framebuffer data
  */
-typedef struct
+typedef struct _framebuffer_t
 {
   /* Emulator reference */
   Emulator     *emu;
   Gpio         *gpio;
+
+  /* KeyListener */
+  KeyListener  *key_listener;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -50,6 +54,12 @@ typedef struct
   uint32_t      height;
   uint32_t      depth;
 } framebuffer_t;
+
+static inline
+void fb_set_key_listener(framebuffer_t *fb, KeyListener *key_listener)
+{
+    fb->key_listener = key_listener;
+}
 
 void fb_init(framebuffer_t*, Emulator*, Gpio*);
 void fb_create_window(framebuffer_t*, uint32_t width, uint32_t height);

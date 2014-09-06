@@ -1,9 +1,51 @@
 #include "common.h"
 
-static inline void
-nes_write_button(Nes* nes, uint32_t button)
+Nes::Nes(Emulator &emu, Gpio &gpio, framebuffer_t *fb)
+  : emu(emu)
+  , gpio(gpio)
+  , last_latch(0)
+  , last_clock(0)
+  , counter(0)
 {
-  nes->gpio->setPortState(NES_GPIO_PORT_DATA, nes->state[button] ? 0 : 1);
+  memset(&state, 0, sizeof(state));
+  memset(&binding, 0, sizeof(binding));
+
+  /* Set up key bindings */
+  binding[NES_A]      = SDLK_SPACE;
+  binding[NES_B]      = SDLK_TAB;
+  binding[NES_START]  = SDLK_RETURN;
+  binding[NES_SELECT] = SDLK_p;
+  binding[NES_LEFT]   = SDLK_a;
+  binding[NES_RIGHT]  = SDLK_d;
+  binding[NES_UP]     = SDLK_w;
+  binding[NES_DOWN]   = SDLK_s;
+
+  gpio.setListener(this);
+  fb_set_key_listener(fb, this);
+}
+
+void Nes::onKeyDown(SDLKey key)
+{
+  /* Search for the button bound to this SDLKey */
+  for (int i = 0; i < NES_BUTTON_COUNT; ++i)
+  {
+    if (binding[i] == key)
+    {
+      state[i] = 1;
+    }
+  }
+}
+
+void Nes::onKeyUp(SDLKey key)
+{
+  /* Search for the button bound to this SDLKey */
+  for (int i = 0; i < NES_BUTTON_COUNT; ++i)
+  {
+    if (binding[i] == key)
+    {
+      state[i] = 0;
+    }
+  }
 }
 
 void Nes::onGpioWrite(uint32_t port, uint32_t value)
@@ -14,7 +56,7 @@ void Nes::onGpioWrite(uint32_t port, uint32_t value)
     if (last_latch == 0 && value == 1)
     {
       counter = 0;
-      nes_write_button(this, counter++);
+      writeButton(counter++);
     }
 
     last_latch = value;
@@ -26,11 +68,11 @@ void Nes::onGpioWrite(uint32_t port, uint32_t value)
     {
       if (counter < NES_BUTTON_COUNT)
       {
-        nes_write_button(this, counter);
+        writeButton(counter);
       }
       else
       {
-        gpio->setPortState(NES_GPIO_PORT_DATA, 1);
+        gpio.setPortState(NES_GPIO_PORT_DATA, 1);
       }
       counter++;
     }
@@ -39,57 +81,8 @@ void Nes::onGpioWrite(uint32_t port, uint32_t value)
   }
 }
 
-void
-nes_init(Nes* nes, Emulator* emu, Gpio *gpio)
+void Nes::writeButton(uint32_t button)
 {
-  nes->emu = emu;
-  nes->gpio = gpio;
-  nes->last_latch = 0;
-  nes->last_clock = 0;
-  nes->counter = 0;
-  memset(&nes->state, 0, sizeof(nes->state));
-  memset(&nes->binding, 0, sizeof(nes->binding));
-
-  /* Set up key bindings */
-  nes->binding[NES_A]      = SDLK_SPACE;
-  nes->binding[NES_B]      = SDLK_TAB;
-  nes->binding[NES_START]  = SDLK_RETURN;
-  nes->binding[NES_SELECT] = SDLK_p;
-  nes->binding[NES_LEFT]   = SDLK_a;
-  nes->binding[NES_RIGHT]  = SDLK_d;
-  nes->binding[NES_UP]     = SDLK_w;
-  nes->binding[NES_DOWN]   = SDLK_s;
-}
-
-void
-nes_gpio_write(Nes* nes, uint32_t port, uint32_t value)
-{
-  nes->onGpioWrite(port, value);
-}
-
-void
-nes_on_key_down(Nes* nes, SDLKey key)
-{
-  /* Search for the button bound to this SDLKey */
-  for (int i = 0; i < NES_BUTTON_COUNT; ++i)
-  {
-    if (nes->binding[i] == key)
-    {
-      nes->state[i] = 1;
-    }
-  }
-}
-
-void
-nes_on_key_up(Nes* nes, SDLKey key)
-{
-  /* Search for the button bound to this SDLKey */
-  for (int i = 0; i < NES_BUTTON_COUNT; ++i)
-  {
-    if (nes->binding[i] == key)
-    {
-      nes->state[i] = 0;
-    }
-  }
+  gpio.setPortState(NES_GPIO_PORT_DATA, state[button] ? 0 : 1);
 }
 

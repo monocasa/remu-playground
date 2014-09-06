@@ -5,6 +5,7 @@
 #include <vector>
 
 class Emulator;
+class GpioListener;
 
 /**
  * GPIO emulation
@@ -17,6 +18,14 @@ public:
 
   uint32_t readPort(uint32_t addr);
   void writePort(uint32_t addr, uint32_t val);
+
+  /**
+   * Sets the GPIO write listener
+   * Gpio does not own this pointer
+   */
+  void setListener(GpioListener *listener) {
+    this->listener = listener;
+  }
 
   /**
    * Checks whether a given address is a GPIO port
@@ -110,6 +119,7 @@ private:
 
   Emulator &emu;
   std::vector<gpio_port_t> ports;
+  GpioListener *listener;
 };
 
 #endif /* REMU_BCM2835_GPIO_H */

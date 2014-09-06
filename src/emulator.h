@@ -85,7 +85,8 @@ public:
   mbox_t        mbox;
   peripheral_t  pr;
   vfp_t         vfp;
-  Nes           nes;
+private:
+  Nes          *nes;
 
 private:
   uint64_t getTime() const;
