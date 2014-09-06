@@ -2,129 +2,102 @@
 
 /**
  * Initialises peripherials
- * @param pr    Peripherials structure
  * @param emu   Reference to the emulator structure
  */
-void
-pr_init(peripheral_t* pr, Emulator* emu)
-{
-  assert(pr);
-  assert(emu);
-
-  pr->emu = emu;
-
-  /* SPI module 1 */
-  pr->spi1_enable = 0;
-
-  /* SPI module 2 */
-  pr->spi2_enable = 0;
-
-  /* Mini UART */
-  pr->uart_enable = 0;
-  pr->uart_bits = 7;
-  pr->uart_dlab = 0;
-}
-
-/**
- * Cleans up memory used by peripherials
- * @param pr    Peripherials structure
- */
-void
-pr_destroy(peripheral_t* UNUSED(pr))
-{
-}
+Peripheral::Peripheral(Emulator &emu)
+  : emu(emu)
+  , spi1_enable(false)
+  , spi2_enable(false)
+  , irq_tx(false)
+  , irq_rx(false)
+  , uart_enable(false)
+  , uart_bits(7)
+  , uart_dlab(0)
+{ }
 
 /**
  * Handles a write to a peripherial register
- * @param pr    Peripherials structure
  * @param addr  Port number
  * @param data  Data received
  */
-void
-pr_write(peripheral_t* pr, uint32_t addr, uint8_t data)
+void Peripheral::writePort(uint32_t addr, uint8_t data)
 {
-  assert(pr);
-
   switch (addr)
   {
     case AUX_ENABLES:
     {
       /* Enables / disables peripherials */
-      pr->uart_enable = data & 0x1 ? 1 : 0;
-      pr->spi1_enable = data & 0x2 ? 1 : 0;
-      pr->spi2_enable = data & 0x4 ? 1 : 0;
+      uart_enable = (data & 0x1) != 0;
+      spi1_enable = (data & 0x2) != 0;
+      spi2_enable = (data & 0x4) != 0;
       return;
     }
     case AUX_MU_IER_REG:
     {
-      if (pr->uart_dlab)
+      if (uart_dlab)
       {
         /* MSB of baud rate register */
-        pr->uart_baud_rate = (pr->uart_baud_rate & 0xFF) | ((data >> 8) & 0xFF);
+        uart_baud_rate = (uart_baud_rate & 0xFF) | ((data >> 8) & 0xFF);
       }
       else
       {
         /* Enables / disables interrupts */
-        pr->irq_rx = data & 0x1 ? 1 : 0;
-        pr->irq_tx = data & 0x1 ? 1 : 0;
+        irq_rx = (data & 0x1) != 0;
+        irq_tx = (data & 0x1) != 0;
       }
       return;
     }
     case AUX_MU_LCR_REG:
     {
       /* TODO: implement other bits */
-      pr->uart_bits = data & 0x1 ? 8 : 7;
+      uart_bits = data & 0x1 ? 8 : 7;
       return;
     }
     case AUX_MU_BAUD_REG:
     {
-      pr->uart_baud_rate_counter = data & 0xFF;
+      uart_baud_rate_counter = data & 0xFF;
       return;
     }
     case AUX_MU_IO_REG:
     {
-      if (pr->uart_dlab)
+      if (uart_dlab)
       {
         /* LSB of baud rate register */
-        pr->uart_baud_rate = (pr->uart_baud_rate & 0xFF00) | (data & 0xFF);
+        uart_baud_rate = (uart_baud_rate & 0xFF00) | (data & 0xFF);
       }
       else
       {
         /* Dump output to stdout */
-        pr->emu->info("%c", data & 0xFF);
+        emu.info("%c", data & 0xFF);
       }
       return;
     }
   }
 
-  pr->emu->error("Unsupported peripherial write: %08x", addr);
+  emu.error("Unsupported peripherial write: %08x", addr);
 }
 
 /**
  * Handles a read from a peripherial port
- * @param pr   Peripherial structure
  * @param addr Port address
  * @return     Read value
  */
-uint32_t
-pr_read(peripheral_t* pr, uint32_t addr)
+uint32_t Peripheral::readPort(uint32_t addr)
 {
-  assert(pr);
-
   switch (addr)
   {
     case AUX_ENABLES:
     {
       /* Returns a bitmask of enabled peripherials */
-      return (pr->uart_enable ? 0x1 : 0x0) |
-             (pr->spi1_enable ? 0x2 : 0x0) |
-             (pr->spi2_enable ? 0x4 : 0x0);
+      return (uart_enable ? 0x1 : 0x0) |
+             (spi1_enable ? 0x2 : 0x0) |
+             (spi2_enable ? 0x4 : 0x0);
     }
     case AUX_MU_IER_REG:
     {
       /* Returns a bitmask of interrupt status */
-      return (pr->irq_rx ? 0x1 : 0x0) |
-             (pr->irq_tx ? 0x2 : 0x0);
+      return (irq_rx ? 0x1 : 0x0) |
+             (irq_tx ? 0x2 : 0x0);
     }
     case AUX_MU_LSR_REG:
     {
@@ -133,10 +106,10 @@ pr_read(peripheral_t* pr, uint32_t addr)
     }
     case AUX_MU_IO_REG:
     {
-      if (pr->uart_dlab)
+      if (uart_dlab)
       {
         /* LSB of baud rate register */
-        return pr->uart_baud_rate & 0xFF;
+        return uart_baud_rate & 0xFF;
       }
       else
       {
@@ -146,18 +119,7 @@ pr_read(peripheral_t* pr, uint32_t addr)
     }
   }
 
-  pr->emu->error("Unsupported peripherial read: %08x", addr);
+  emu.error("Unsupported peripherial read: %08x", addr);
   return 0;
-}
-
-/**
- * Checks whether a port is a peripherial or not
- * @param addr  Port to be tested
- * @return      1 if port is peripherial
- */
-int
-pr_is_aux_port(uint32_t addr)
-{
-  return addr >= AUX_BASE && addr <= AUX_SPI1_CNTL1_REG;
 }
 

@@ -19,17 +19,15 @@ Emulator::Emulator(const EmulatorOptions &opt)
   memset(&memory, 0, sizeof(memory));
   memset(&cpu,    0, sizeof(cpu));
   memset(&mbox,   0, sizeof(mbox));
-  memset(&pr,     0, sizeof(pr));
   memset(&vfp,    0, sizeof(vfp));
-  memset(&nes,    0, sizeof(nes));
 }
 
 Emulator::~Emulator()
 {
   fb_destroy(&fb);
-  pr_destroy(&pr);
   mbox_destroy(&mbox);
   delete gpio;
+  delete pr;
   delete nes;
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
@@ -48,7 +46,7 @@ void Emulator::init()
   memory_set_gpio(&memory, gpio);
   mbox_init(&mbox, this);
   fb_init(&fb, this, gpio);
-  pr_init(&pr, this);
+  pr = new Peripheral(*this);
 
   if( nes_enabled ) {
     nes = new Nes(*this, *gpio, &fb);

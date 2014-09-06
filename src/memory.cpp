@@ -164,9 +164,9 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
   }
 
   /* Peripherals */
-  if (pr_is_aux_port(addr))
+  if (Peripheral::isPeripheralAddress(addr))
   {
-    return pr_read(&m->emu->pr, addr);
+    return m->emu->pr->readPort(addr);
   }
 
   /* DMA - just ignore it */
@@ -272,9 +272,9 @@ memory_write_dword_le(memory_t* m, uint32_t addr, uint32_t data)
   }
 
   /* Peripherals */
-  if (pr_is_aux_port(addr))
+  if (Peripheral::isPeripheralAddress(addr))
   {
-    pr_write(&m->emu->pr, addr, data);
+    m->emu->pr->writePort(addr, data);
     return;
   }
 

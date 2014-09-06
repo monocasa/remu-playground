@@ -83,7 +83,7 @@ private:
   Gpio         *gpio;
 public:
   mbox_t        mbox;
-  peripheral_t  pr;
+  Peripheral   *pr;
   vfp_t         vfp;
 private:
   Nes          *nes;
