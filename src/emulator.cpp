@@ -12,7 +12,7 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , quiet( opt.quiet )
   , nes_enabled( opt.nes_enabled )
   , gpio_test_offset( opt.gpio_test_offset )
-  , system_timer_base( 0 )
+  , system_timer_base( getTime() * 1000 )
   , last_refresh( 0 )
 {
   memset(&fb,     0, sizeof(fb));
@@ -49,11 +49,10 @@ void Emulator::init()
   mbox_init(&mbox, this);
   fb_init(&fb, this, gpio);
   pr_init(&pr, this);
-  nes = new Nes(*this, *gpio, &fb);
 
-  terminated = 0;
-  system_timer_base = getTime() * 1000;
-  last_refresh = 0;
+  if( nes_enabled ) {
+    nes = new Nes(*this, *gpio, &fb);
+  }
 }
 
 /**
