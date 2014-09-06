@@ -1,6 +1,8 @@
 #ifndef REMU_NES_H
 #define REMU_NES_H
 
+#include "gpiolistener.h"
+
 #define NES_GPIO_PORT_LATCH 11
 #define NES_GPIO_PORT_CLOCK 10
 #define NES_GPIO_PORT_DATA 4
@@ -18,9 +20,11 @@ typedef enum
   NES_BUTTON_COUNT
 } nes_button_t;
 
-class Nes
+class Nes : public GpioListener
 {
 public:
+  void onGpioWrite(uint32_t port, uint32_t value) override final;
+
   Emulator* emu;
 
   uint32_t last_latch;

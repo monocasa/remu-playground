@@ -1,5 +1,44 @@
 #include "common.h"
 
+static inline void
+nes_write_button(Nes* nes, uint32_t button)
+{
+  nes->emu->gpio.ports[NES_GPIO_PORT_DATA].state = nes->state[button] ? 0 : 1;
+}
+
+void Nes::onGpioWrite(uint32_t port, uint32_t value)
+{
+  if (port == NES_GPIO_PORT_LATCH)
+  {
+    /* On the rising edge of the latch, reset counter */
+    if (last_latch == 0 && value == 1)
+    {
+      counter = 0;
+      nes_write_button(this, counter++);
+    }
+
+    last_latch = value;
+  }
+  else if (port == NES_GPIO_PORT_CLOCK)
+  {
+    /* On the rising edge of the clock, write the next button */
+    if (value == 1 && last_clock == 0)
+    {
+      if (counter < NES_BUTTON_COUNT)
+      {
+        nes_write_button(this, counter);
+      }
+      else
+      {
+        emu->gpio.ports[NES_GPIO_PORT_DATA].state = 1;
+      }
+      counter++;
+    }
+
+    last_clock = value;
+  }
+}
+
 void
 nes_init(Nes* nes, Emulator* emu)
 {
@@ -21,44 +60,10 @@ nes_init(Nes* nes, Emulator* emu)
   nes->binding[NES_DOWN]   = SDLK_s;
 }
 
-static inline void
-nes_write_button(Nes* nes, uint32_t button)
-{
-  nes->emu->gpio.ports[NES_GPIO_PORT_DATA].state = nes->state[button] ? 0 : 1;
-}
-
 void
 nes_gpio_write(Nes* nes, uint32_t port, uint32_t value)
 {
-  if (port == NES_GPIO_PORT_LATCH)
-  {
-    /* On the rising edge of the latch, reset counter */
-    if (nes->last_latch == 0 && value == 1)
-    {
-      nes->counter = 0;
-      nes_write_button(nes, nes->counter++);
-    }
-
-    nes->last_latch = value;
-  }
-  else if (port == NES_GPIO_PORT_CLOCK)
-  {
-    /* On the rising edge of the clock, write the next button */
-    if (value == 1 && nes->last_clock == 0)
-    {
-      if (nes->counter < NES_BUTTON_COUNT)
-      {
-        nes_write_button(nes, nes->counter);
-      }
-      else
-      {
-        nes->emu->gpio.ports[NES_GPIO_PORT_DATA].state = 1;
-      }
-      nes->counter++;
-    }
-
-    nes->last_clock = value;
-  }
+  nes->onGpioWrite(port, value);
 }
 
 void
