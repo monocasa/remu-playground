@@ -3,6 +3,8 @@
 
 #define GPIO_PORT_COUNT     54
 
+class Emulator;
+
 /**
  * Struct describing a single gpio port
  */
@@ -15,11 +17,15 @@ typedef struct
 /**
  * GPIO emulation
  */
-typedef struct _gpio_t
+class Gpio
 {
-  gpio_port_t *ports;
+public:
+  Gpio(Emulator *emulator);
+  virtual ~Gpio();
+
   Emulator    *emu;
-} gpio_t;
+  gpio_port_t *ports;
+};
 
 /**
  * GPIO registers
@@ -58,10 +64,8 @@ typedef enum
   GPIO_UDCLK1 = GPIO_BASE + 0x9C
 } gpio_reg_t;
 
-void      gpio_init(gpio_t*, Emulator*);
-void      gpio_destroy(gpio_t*);
-uint32_t  gpio_read_port(gpio_t*, uint32_t);
-void      gpio_write_port(gpio_t*, uint32_t, uint32_t);
+uint32_t  gpio_read_port(Gpio*, uint32_t);
+void      gpio_write_port(Gpio*, uint32_t, uint32_t);
 int       gpio_is_port(uint32_t addr);
 
 #endif /* REMU_BCM2835_GPIO_H */

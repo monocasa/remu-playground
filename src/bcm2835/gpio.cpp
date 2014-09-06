@@ -2,40 +2,21 @@
 
 /**
  * Initialises memory for the gpio registers
- * @param gpio Reference to the gpio structure
  * @param emu  Reference to the emulator structure
  */
-void
-gpio_init(gpio_t* gpio, Emulator* emu)
+Gpio::Gpio(Emulator* emu)
+  : emu(emu)
+  , ports(new gpio_port_t[GPIO_PORT_COUNT])
 {
-  uint32_t size;
-
-  gpio->emu = emu;
-
-  /* Allocate space for 54 GPIO ports */
-  size = sizeof(gpio_port_t) * GPIO_PORT_COUNT;
-  gpio->ports = (gpio_port_t*)malloc(size);
-  assert(gpio->ports);
-  memset(gpio->ports, 0, size);
+  memset(ports, 0, sizeof(gpio_port_t) * GPIO_PORT_COUNT);
 }
 
 /**
  * Frees the gpio ports memory
- * @param gpio Reference to the gpio structure
  */
-void
-gpio_destroy(gpio_t* gpio)
+Gpio::~Gpio()
 {
-  if (!gpio)
-  {
-    return;
-  }
-
-  if (gpio->ports)
-  {
-    free(gpio->ports);
-    gpio->ports = NULL;
-  }
+  delete ports;
 }
 
 /**
@@ -44,7 +25,7 @@ gpio_destroy(gpio_t* gpio)
  * @param address GPIO register address
  */
 uint32_t
-gpio_read_port(gpio_t* gpio, uint32_t address)
+gpio_read_port(Gpio* gpio, uint32_t address)
 {
   uint32_t reg = 0, offset = 0;
   uint8_t base;
@@ -103,7 +84,7 @@ gpio_read_port(gpio_t* gpio, uint32_t address)
  * @param val  Value to be written
  */
 void
-gpio_write_port(gpio_t* gpio, uint32_t address, uint32_t val)
+gpio_write_port(Gpio* gpio, uint32_t address, uint32_t val)
 {
   uint32_t offset = 0;
   size_t i;

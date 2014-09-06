@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
+class Gpio;
+
 /**
  * Framebuffer request structure
  */
@@ -28,7 +30,8 @@ typedef union
 typedef struct
 {
   /* Emulator reference */
-  Emulator*     emu;
+  Emulator     *emu;
+  Gpio         *gpio;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -48,7 +51,7 @@ typedef struct
   uint32_t      depth;
 } framebuffer_t;
 
-void fb_init(framebuffer_t*, Emulator*);
+void fb_init(framebuffer_t*, Emulator*, Gpio*);
 void fb_create_window(framebuffer_t*, uint32_t width, uint32_t height);
 void fb_destroy(framebuffer_t*);
 void fb_tick(framebuffer_t*);

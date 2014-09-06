@@ -18,7 +18,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
   memset(&fb,     0, sizeof(fb));
   memset(&memory, 0, sizeof(memory));
   memset(&cpu,    0, sizeof(cpu));
-  memset(&gpio,   0, sizeof(gpio));
   memset(&mbox,   0, sizeof(mbox));
   memset(&pr,     0, sizeof(pr));
   memset(&vfp,    0, sizeof(vfp));
@@ -30,7 +29,7 @@ Emulator::~Emulator()
   fb_destroy(&fb);
   pr_destroy(&pr);
   mbox_destroy(&mbox);
-  gpio_destroy(&gpio);
+  delete gpio;
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
   memory_destroy(&memory);
@@ -44,11 +43,12 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   memory_init(&memory, this);
-  gpio_init(&gpio, this);
+  gpio = new Gpio(this);
+  memory_set_gpio(&memory, gpio);
   mbox_init(&mbox, this);
-  fb_init(&fb, this);
+  fb_init(&fb, this, gpio);
   pr_init(&pr, this);
-  nes_init(&nes, this);
+  nes_init(&nes, this, gpio);
   terminated = 0;
   system_timer_base = getTime() * 1000;
   last_refresh = 0;

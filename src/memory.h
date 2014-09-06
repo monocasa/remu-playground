@@ -1,6 +1,8 @@
 #ifndef REMU_MEMORY_H
 #define REMU_MEMORY_H
 
+class Gpio;
+
 /**
  * Memory system
  */
@@ -8,6 +10,7 @@ typedef struct _memory_t
 {
   uint8_t     *data;
   Emulator    *emu;
+  Gpio        *gpio;
 } memory_t;
 
 void      memory_init(memory_t*, Emulator*);
@@ -19,6 +22,13 @@ uint32_t  memory_read_dword_le(memory_t*, uint32_t);
 void      memory_write_byte(memory_t*, uint32_t, uint8_t);
 void      memory_write_word_le(memory_t*, uint32_t, uint16_t);
 void      memory_write_dword_le(memory_t*, uint32_t, uint32_t);
+
+/* R E F A C T O R I N G   S T U B S */
+static inline
+void memory_set_gpio(memory_t* m, Gpio *gpio)
+{
+	m->gpio = gpio;
+}
 
 /**
  * Reads a word from memory (big endian)

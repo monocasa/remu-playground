@@ -3,7 +3,7 @@
 static inline void
 nes_write_button(Nes* nes, uint32_t button)
 {
-  nes->emu->gpio.ports[NES_GPIO_PORT_DATA].state = nes->state[button] ? 0 : 1;
+  nes->gpio->ports[NES_GPIO_PORT_DATA].state = nes->state[button] ? 0 : 1;
 }
 
 void Nes::onGpioWrite(uint32_t port, uint32_t value)
@@ -30,7 +30,7 @@ void Nes::onGpioWrite(uint32_t port, uint32_t value)
       }
       else
       {
-        emu->gpio.ports[NES_GPIO_PORT_DATA].state = 1;
+        gpio->ports[NES_GPIO_PORT_DATA].state = 1;
       }
       counter++;
     }
@@ -40,9 +40,10 @@ void Nes::onGpioWrite(uint32_t port, uint32_t value)
 }
 
 void
-nes_init(Nes* nes, Emulator* emu)
+nes_init(Nes* nes, Emulator* emu, Gpio *gpio)
 {
   nes->emu = emu;
+  nes->gpio = gpio;
   nes->last_latch = 0;
   nes->last_clock = 0;
   nes->counter = 0;

@@ -3,6 +3,8 @@
 
 #include "gpiolistener.h"
 
+class Gpio;
+
 #define NES_GPIO_PORT_LATCH 11
 #define NES_GPIO_PORT_CLOCK 10
 #define NES_GPIO_PORT_DATA 4
@@ -25,7 +27,8 @@ class Nes : public GpioListener
 public:
   void onGpioWrite(uint32_t port, uint32_t value) override final;
 
-  Emulator* emu;
+  Emulator *emu;
+  Gpio     *gpio;
 
   uint32_t last_latch;
   uint32_t last_clock;
@@ -36,7 +39,7 @@ public:
   SDLKey binding[NES_BUTTON_COUNT];
 };
 
-void nes_init(Nes*, Emulator*);
+void nes_init(Nes*, Emulator*, Gpio*);
 void nes_gpio_write(Nes*, uint32_t, uint32_t);
 void nes_on_key_down(Nes*, SDLKey);
 void nes_on_key_up(Nes*, SDLKey);

@@ -79,7 +79,9 @@ public:
   framebuffer_t fb;
   memory_t      memory;
   cpu_t         cpu;
-  gpio_t        gpio;
+private:
+  Gpio         *gpio;
+public:
   mbox_t        mbox;
   peripheral_t  pr;
   vfp_t         vfp;

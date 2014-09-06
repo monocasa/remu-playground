@@ -6,12 +6,14 @@
  * @param emu Reference to the emulator structure
  */
 void
-fb_init(framebuffer_t* fb, Emulator* emu)
+fb_init(framebuffer_t* fb, Emulator* emu, Gpio *gpio)
 {
   assert(fb);
   assert(emu);
+  assert(gpio);
 
   fb->emu = emu;
+  fb->gpio = gpio;
 
   /* If not in graphic mode, do not create a window */
   if (!fb->emu->isGraphicsEnabled())
@@ -211,7 +213,7 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->emu->gpio.ports[fb->emu->getGpioTestOffset() + port].state = 1;
+          fb->gpio->ports[fb->emu->getGpioTestOffset() + port].state = 1;
           break;
         }
         default:
@@ -231,7 +233,7 @@ fb_tick(framebuffer_t* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->emu->gpio.ports[fb->emu->getGpioTestOffset() + port].state = 0;
+          fb->gpio->ports[fb->emu->getGpioTestOffset() + port].state = 0;
           break;
         }
         default:
