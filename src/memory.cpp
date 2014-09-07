@@ -111,7 +111,7 @@ uint16_t Memory::readWordLe(uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 1 < emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 1 < mem_size, 1))
   {
     base = addr & ~0x01;
     off = addr & 0x01;
@@ -141,7 +141,7 @@ uint32_t Memory::readDwordLe(uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM Read */
-  if (__builtin_expect(addr + 3 < emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 3 < mem_size, 1))
   {
     base = addr & ~0x03;
     off = addr & 0x03;

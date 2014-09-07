@@ -3,6 +3,7 @@
 
 Emulator::Emulator(const EmulatorOptions &opt)
   : err_msg( nullptr )
+  , fb(opt.mem_size)
   , memory(this, opt.mem_size)
   , mbox(this)
   , terminated( false )

@@ -50,10 +50,6 @@ public:
 
   void dump();
 
-  size_t getMemSize() const {
-    return mem_size;
-  }
-
   void terminate() {
     terminated = true;
   }

@@ -1,8 +1,9 @@
 #include "common.h"
 
-Framebuffer::Framebuffer()
+Framebuffer::Framebuffer(size_t mem_size)
   : emu(nullptr)
   , gpio(nullptr)
+  , mem_size(mem_size)
   , key_listener(nullptr)
   , framebuffer(nullptr)
   , fb_bpp(0)
@@ -355,7 +356,7 @@ fb_request(Framebuffer *fb, uint32_t addr)
   req.fb.pitch = fb->fb_pitch + (4 - (fb->fb_pitch % 4)) % 4;
   req.fb.size = fb->fb_size = fb->fb_pitch * req.fb.virt_height;
   fb->framebuffer = static_cast<uint8_t*>( malloc(fb->fb_size) );
-  req.fb.addr = fb->fb_address = fb->emu->getMemSize();
+  req.fb.addr = fb->fb_address = fb->mem_size;
   fb->width = req.fb.virt_width;
   fb->height = req.fb.virt_height;
 

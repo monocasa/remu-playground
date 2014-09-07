@@ -31,13 +31,14 @@ typedef union
 class Framebuffer
 {
 public:
-  Framebuffer();
+  Framebuffer(size_t mem_size);
   virtual ~Framebuffer() = default;
 
   /* Emulator reference */
   Emulator     *emu;
   Memory       *mem;
   Gpio         *gpio;
+  const size_t  mem_size;
 
   /* KeyListener */
   KeyListener  *key_listener;
