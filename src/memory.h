@@ -12,10 +12,6 @@ public:
   Memory(Emulator *emu, size_t mem_size);
   virtual ~Memory();
 
-  Emulator    *emu;
-  const size_t mem_size;
-  uint8_t     *data;
-
   void dump();
 
   uint8_t readByte(uint32_t address);
@@ -34,7 +30,14 @@ public:
     iomap.removeRegion(region);
   }
 
+  uint8_t* getDramArrayBase() {
+    return data;
+  }
+
 private:
+  Emulator    *emu;
+  const size_t mem_size;
+  uint8_t     *data;
   IoMap        iomap;
 };
 

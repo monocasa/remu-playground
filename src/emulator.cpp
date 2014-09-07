@@ -54,7 +54,7 @@ void Emulator::load()
 {
   FILE *finput;
   size_t file_size;
-  void* memory_start = memory.data + start_addr;
+  void* memory_start = memory.getDramArrayBase() + start_addr;
 
   /* Throw error if file unopenable. */
   if (!(finput = fopen(image, "rb")))
