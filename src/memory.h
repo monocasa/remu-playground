@@ -3,8 +3,6 @@
 
 #include "ioregion.h"
 
-class Gpio;
-
 /**
  * Memory system
  */
@@ -17,7 +15,6 @@ public:
   Emulator    *emu;
   const size_t mem_size;
   uint8_t     *data;
-  Gpio        *gpio;
 
   void dump();
 
@@ -28,11 +25,6 @@ public:
   void writeByte(uint32_t address, uint8_t val);
   void writeWordLe(uint32_t address, uint16_t val);
   void writeDwordLe(uint32_t address, uint32_t val);
-
-  /* R E F A C T O R I N G   S T U B */
-  void setGpio(Gpio *gpio) {
-    this->gpio = gpio;
-  }
 
   void addRegion(IoRegion *region) {
     iomap.addRegion(region);

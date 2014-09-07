@@ -39,7 +39,6 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   gpio = new Gpio(*this, memory);
-  memory.setGpio(gpio);
   fb_init(&fb, this, &memory, gpio);
   pr = new Peripheral(*this);
 

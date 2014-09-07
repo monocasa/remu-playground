@@ -38,7 +38,6 @@ Memory::Memory(Emulator *emu, size_t mem_size)
   : emu(emu)
   , mem_size(mem_size)
   , data(new uint8_t[mem_size])
-  , gpio(nullptr)
 {
   std::fill(data, data + mem_size, 0);
 }
@@ -165,10 +164,10 @@ uint32_t Memory::readDwordLe(uint32_t addr)
     return (uint32_t)((timer_value >> 32) & 0xffffffff);
   }
 
-  /* GPIO registers */
-  if (Gpio::isGpioAddress(addr))
-  {
-    return gpio->readIo(addr, sizeof(uint32_t));
+  /* Grab relevant IoRegion and call it if registered */
+  IoRegion *ioregion = iomap.getRegionForAddr(addr);
+  if (ioregion) {
+    return ioregion->readIo(addr, sizeof(uint32_t));
   }
 
   /* Mailbox interface */
@@ -270,10 +269,10 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
     return;
   }
 
-  /* GPIO registers */
-  if (Gpio::isGpioAddress(addr))
-  {
-    gpio->writeIo(addr, value, sizeof(uint32_t));
+  /* Grab relevant IoRegion and call it if registered */
+  IoRegion *ioregion = iomap.getRegionForAddr(addr);
+  if (ioregion) {
+    ioregion->writeIo(addr, value, sizeof(uint32_t));
     return;
   }
 
