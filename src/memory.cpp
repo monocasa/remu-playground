@@ -10,6 +10,24 @@ dma_is_port(uint32_t addr)
 }
 
 /**
+ * Checks whether a port is a clock control port
+ */
+static inline int
+clock_is_port(uint32_t addr)
+{
+  return 0x20101000 <= addr && addr < 0x20101FF4;
+}
+
+/**
+ * Checks whether a port is a pwm control port
+ */
+static inline int
+pwm_is_port(uint32_t addr)
+{
+  return 0x2020C000 <= addr && addr < 0x2020CFF4;
+}
+
+/**
  * Initialises the memory module
  * @param m    Reference to the memory structure
  * @param emu  Reference to the emulator structure
@@ -175,6 +193,18 @@ memory_read_dword_le(Memory* m, uint32_t addr)
     return 0;
   }
 
+  /* CLOCK - just ignore it */
+  if (clock_is_port(addr))
+  {
+    return 0;
+  }
+
+  /* PWM - just ignore it */
+  if (pwm_is_port(addr))
+  {
+    return 0;
+  }
+
   m->emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
@@ -280,6 +310,18 @@ memory_write_dword_le(Memory* m, uint32_t addr, uint32_t data)
 
   /* DMA - just ignore it */
   if (dma_is_port(addr))
+  {
+    return;
+  }
+
+  /* CLOCK - just ignore it */
+  if (clock_is_port(addr))
+  {
+    return;
+  }
+
+  /* PWM - just ignore it */
+  if (pwm_is_port(addr))
   {
     return;
   }
