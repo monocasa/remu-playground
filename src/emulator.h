@@ -85,7 +85,7 @@ public:
 private:
   Gpio         *gpio;
 public:
-  mbox_t        mbox;
+  Mbox          mbox;
   Peripheral   *pr;
   vfp_t         vfp;
 private:

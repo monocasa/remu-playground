@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_MBOX_H
 #define REMU_BCM2835_MBOX_H
 
+class Emulator;
+
 /**
  * List of mailbox register addresses
  */
@@ -21,16 +23,18 @@ typedef enum
  * are serviced immediately, so the status bits are always set
  * to ready
  */
-typedef struct _mbox_t
+class Mbox
 {
+public:
+  Mbox(Emulator *emu);
+  virtual ~Mbox() = default;
+
   Emulator   *emu;
   uint8_t     last_channel;
-} mbox_t;
+};
 
-void     mbox_init(mbox_t *mbox, Emulator *emu);
-void     mbox_destroy(mbox_t *mbox);
-uint32_t mbox_read(mbox_t *mbox, uint32_t addr);
-void     mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val);
+uint32_t mbox_read(Mbox *mbox, uint32_t addr);
+void     mbox_write(Mbox *mbox, uint32_t addr, uint32_t val);
 
 /**
  * Checks whether a given address is a mailbox port.

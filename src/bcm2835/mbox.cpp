@@ -3,20 +3,10 @@
 /**
  * Initialises the mailbox
  */
-void
-mbox_init(mbox_t *mbox, Emulator *emu)
-{
-  mbox->emu = emu;
-  mbox->last_channel = 0x0;
-}
-
-/**
- * Cleans up memory used by the mailbox
- */
-void
-mbox_destroy(mbox_t *UNUSED(mbox))
-{
-}
+Mbox::Mbox(Emulator *emu)
+  : emu(emu)
+  , last_channel(0x0)
+{ }
 
 /**
  * Reads data from a mailbox port
@@ -24,7 +14,7 @@ mbox_destroy(mbox_t *UNUSED(mbox))
  * @param addr Port address
  */
 uint32_t
-mbox_read(mbox_t *mbox, uint32_t addr)
+mbox_read(Mbox *mbox, uint32_t addr)
 {
   addr &= ~0x3;
   assert(mbox_is_port(addr));
@@ -68,7 +58,7 @@ mbox_read(mbox_t *mbox, uint32_t addr)
  * @param val  Value to be written
  */
 void
-mbox_write(mbox_t *mbox, uint32_t addr, uint32_t val)
+mbox_write(Mbox *mbox, uint32_t addr, uint32_t val)
 {
   uint8_t channel;
   uint32_t data;
