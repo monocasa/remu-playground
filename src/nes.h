@@ -6,12 +6,13 @@
 
 typedef struct _framebuffer_t framebuffer_t;
 class Gpio;
+class Ui;
 
 class Nes : public KeyListener,
             public GpioListener
 {
 public:
-  Nes(Emulator& emu, Gpio &gpio, framebuffer_t *fb);
+  Nes(Ui& ui, Gpio &gpio, framebuffer_t *fb);
   virtual ~Nes() = default;
 
   void onKeyUp(SDLKey key) override final;
@@ -37,8 +38,8 @@ private:
 
   void writeButton(uint32_t button);
 
-  Emulator &emu;
-  Gpio     &gpio;
+  Ui   &ui;
+  Gpio &gpio;
 
   uint32_t last_latch;
   uint32_t last_clock;

@@ -1,7 +1,7 @@
 #include "common.h"
 
-Nes::Nes(Emulator &emu, Gpio &gpio, framebuffer_t *fb)
-  : emu(emu)
+Nes::Nes(Ui &ui, Gpio &gpio, framebuffer_t *fb)
+  : ui(ui)
   , gpio(gpio)
   , last_latch(0)
   , last_clock(0)

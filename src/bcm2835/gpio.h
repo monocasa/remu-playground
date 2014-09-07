@@ -13,7 +13,7 @@ class GpioListener;
 class Gpio
 {
 public:
-  Gpio(Emulator &emulator);
+  Gpio(Ui &ui);
   ~Gpio() = default;
 
   uint32_t readPort(uint32_t addr);
@@ -117,7 +117,7 @@ private:
     GPIO_UDCLK1 = GPIO_BASE + 0x9C
   };
 
-  Emulator &emu;
+  Ui &ui;
   std::vector<gpio_port_t> ports;
   GpioListener *listener;
 };

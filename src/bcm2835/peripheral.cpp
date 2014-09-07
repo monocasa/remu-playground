@@ -4,8 +4,8 @@
  * Initialises peripherials
  * @param emu   Reference to the emulator structure
  */
-Peripheral::Peripheral(Emulator &emu)
-  : emu(emu)
+Peripheral::Peripheral(Ui &ui)
+  : ui(ui)
   , spi1_enable(false)
   , spi2_enable(false)
   , irq_tx(false)
@@ -68,13 +68,13 @@ void Peripheral::writePort(uint32_t addr, uint8_t data)
       else
       {
         /* Dump output to stdout */
-        emu.info("%c", data & 0xFF);
+        ui.info("%c", data & 0xFF);
       }
       return;
     }
   }
 
-  emu.error("Unsupported peripherial write: %08x", addr);
+  ui.error("Unsupported peripherial write: %08x", addr);
 }
 
 /**
@@ -119,7 +119,7 @@ uint32_t Peripheral::readPort(uint32_t addr)
     }
   }
 
-  emu.error("Unsupported peripherial read: %08x", addr);
+  ui.error("Unsupported peripherial read: %08x", addr);
   return 0;
 }
 

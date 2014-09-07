@@ -4,8 +4,8 @@
  * Initialises memory for the gpio registers
  * @param emu  Reference to the emulator structure
  */
-Gpio::Gpio(Emulator &emu)
-  : emu(emu)
+Gpio::Gpio(Ui &ui)
+  : ui(ui)
   , listener(nullptr)
 {
   gpio_port_t default_port = { 0, 0 };
@@ -66,7 +66,7 @@ uint32_t Gpio::readPort(uint32_t address)
     }
   }
 
-  emu.error("GPIO unimplemented 0x%08x", address);
+  ui.error("GPIO unimplemented 0x%08x", address);
   return 0;
 }
 
@@ -142,6 +142,6 @@ void Gpio::writePort(uint32_t address, uint32_t val)
     }
   }
 
-  emu.error("GPIO unimplemented 0x%08x", address);
+  ui.error("GPIO unimplemented 0x%08x", address);
 }
 

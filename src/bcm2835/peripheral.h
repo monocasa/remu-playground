@@ -7,7 +7,7 @@
 class Peripheral
 {
 public:
-  Peripheral(Emulator &emu);
+  Peripheral(Ui &ui);
   virtual ~Peripheral() = default;
 
   void writePort(uint32_t port, uint8_t data);
@@ -50,7 +50,7 @@ private:
     AUX_SPI1_CNTL1_REG = AUX_BASE + 0xC4
   };
 
-  Emulator &emu;
+  Ui &ui;
 
   /* True if SPI 1 module is enabled */
   bool spi1_enable;

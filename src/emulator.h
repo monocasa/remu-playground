@@ -1,6 +1,8 @@
 #ifndef REMU_EMULATOR_H
 #define REMU_EMULATOR_H
 
+#include "ui.h"
+
 struct EmulatorOptions
 {
   EmulatorOptions()
@@ -28,7 +30,7 @@ struct EmulatorOptions
 /**
  * Emulator state
  */
-class Emulator
+class Emulator : public Ui
 {
 public:
   Emulator(const EmulatorOptions &opt);
@@ -41,8 +43,9 @@ public:
   uint64_t getSystemTimer() const;
   void tick();
 
-  void info(const char *fmt, ...);
-  void error(const char *fmt, ...);
+  void info(const char *fmt, ...) override final;
+  void error(const char *fmt, ...) override final;
+
   void fatal(const char *fmt, ...) __attribute__((noreturn));
 
   void dump();
