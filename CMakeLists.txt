@@ -22,15 +22,15 @@ ENABLE_TESTING()
 
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src" ${SDL_INCLUDE_DIRS} )
 
-ADD_LIBRARY( remu_core src/emulator.cpp
-                       src/memory.cpp
-                       src/vfp.cpp
-                       src/cpu.cpp
-                       src/nes.cpp
+ADD_LIBRARY( remu_core src/bcm2835/framebuffer.cpp
                        src/bcm2835/gpio.cpp
                        src/bcm2835/mbox.cpp
-                       src/bcm2835/framebuffer.cpp
-                       src/bcm2835/peripheral.cpp )
+                       src/bcm2835/peripheral.cpp
+                       src/cpu.cpp
+                       src/emulator.cpp
+                       src/memory.cpp
+                       src/nes.cpp
+                       src/vfp.cpp )
 
 TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
 
