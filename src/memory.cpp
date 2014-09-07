@@ -40,7 +40,7 @@ Memory::Memory(Emulator *emu, size_t mem_size)
   , data(new uint8_t[mem_size])
   , gpio(nullptr)
 {
-  std::fill(data, data+emu->getMemSize(), 0);
+  std::fill(data, data + mem_size, 0);
 }
 
 /**
