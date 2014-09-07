@@ -1,5 +1,7 @@
 #include "common.h"
 
+#include <algorithm>
+
 /**
  * Checks whether a port is a dma control port
  */
@@ -29,17 +31,24 @@ pwm_is_port(uint32_t addr)
 
 /**
  * Initialises the memory module
- * @param m    Reference to the memory structure
- * @param emu  Reference to the emulator structure
- * @param size Size of memory in bytes
+ * @param emu      Reference to the emulator structure
+ * @param mem_size Size of dram in bytes
  */
-void
-memory_init(Memory* m, Emulator* emu)
+Memory::Memory(Emulator *emu, size_t mem_size)
+  : emu(emu)
+  , mem_size(mem_size)
+  , data(new uint8_t[mem_size])
+  , gpio(nullptr)
 {
-  m->emu = emu;
-  m->data = (uint8_t*)malloc(emu->getMemSize());
-  memset(m->data, 0, emu->getMemSize());
-  assert(m->data);
+  std::fill(data, data+emu->getMemSize(), 0);
+}
+
+/**
+ * Clean up Memory
+ */
+Memory::~Memory()
+{
+  delete data;
 }
 
 /**
@@ -72,11 +81,6 @@ memory_destroy(Memory* m)
   if (!m)
   {
     return;
-  }
-
-  if (m->data)
-  {
-    free(m->data);
   }
 }
 

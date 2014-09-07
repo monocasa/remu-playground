@@ -9,20 +9,16 @@ class Gpio;
 class Memory
 {
 public:
-  Memory()
-    : data(nullptr)
-    , emu(nullptr)
-    , gpio(nullptr)
-  { }
+  Memory(Emulator *emu, size_t mem_size);
+  virtual ~Memory();
 
-  uint8_t     *data;
   Emulator    *emu;
+  const size_t mem_size;
+  uint8_t     *data;
   Gpio        *gpio;
 };
 
-void      memory_init(Memory*, Emulator*);
 void      memory_dump(Memory*);
-void      memory_destroy(Memory*);
 uint8_t   memory_read_byte(Memory*, uint32_t);
 uint16_t  memory_read_word_le(Memory*, uint32_t);
 uint32_t  memory_read_dword_le(Memory*, uint32_t);

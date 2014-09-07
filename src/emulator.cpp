@@ -3,6 +3,7 @@
 
 Emulator::Emulator(const EmulatorOptions &opt)
   : err_msg( nullptr )
+  , memory(this, opt.mem_size)
   , mbox(this)
   , terminated( false )
   , image( opt.image )
@@ -28,7 +29,6 @@ Emulator::~Emulator()
   delete nes;
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
-  memory_destroy(&memory);
 }
 
 /**
@@ -38,7 +38,6 @@ void Emulator::init()
 {
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
-  memory_init(&memory, this);
   gpio = new Gpio(*this);
   memory_set_gpio(&memory, gpio);
   fb_init(&fb, this, gpio);
