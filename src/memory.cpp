@@ -53,17 +53,15 @@ Memory::~Memory()
 
 /**
  * Prints out the non-zero bytes from memory
- * @param memory Reference to the memory structure
  */
-void
-memory_dump(Memory* m)
+void Memory::dump()
 {
   size_t i = 0;
   printf("Non-zero memory:\n");
 
-  for (i = 0; i < m->emu->getMemSize() && i < 65535; i += 4)
+  for (i = 0; i < mem_size && i < 65535; i += 4)
   {
-    uint32_t data = memory_read_dword_le(m, i);
+    uint32_t data = readDwordLe(i);
     if (data != 0)
     {
       printf("0x%08zx: 0x%08x\n", i, data);
@@ -86,31 +84,27 @@ memory_destroy(Memory* m)
 
 /**
  * Reads a byte from memory
- * @param memory Reference to the memory structure
  * @param addr Memory location
  */
-uint8_t
-memory_read_byte(Memory* m, uint32_t addr)
+uint8_t Memory::readByte(uint32_t addr)
 {
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr < mem_size, 1))
   {
-    return m->data[addr];
+    return data[addr];
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
 /**
  * Reads a word from memory (little endian)
  * @param memory Reference to the memory structure
- * @param address Memory location
  */
-uint16_t
-memory_read_word_le(Memory* m, uint32_t addr)
+uint16_t Memory::readWordLe(uint32_t addr)
 {
   uint32_t base;
   uint8_t off;
@@ -118,26 +112,24 @@ memory_read_word_le(Memory* m, uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 1 < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 1 < emu->getMemSize(), 1))
   {
     base = addr & ~0x01;
     off = addr & 0x01;
 
-    return (m->data[base + ((off + 0) & 0x01)] <<  0) |
-           (m->data[base + ((off + 1) & 0x01)] <<  8);
+    return (data[base + ((off + 0) & 0x01)] <<  0) |
+           (data[base + ((off + 1) & 0x01)] <<  8);
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
 /**
  * Reads a double word from memory (little endian)
- * @param memory Reference to the memory structure
  * @param address Memory location
  */
-uint32_t
-memory_read_dword_le(Memory* m, uint32_t addr)
+uint32_t Memory::readDwordLe(uint32_t addr)
 {
   uint32_t base;
   uint8_t off;
@@ -150,45 +142,45 @@ memory_read_dword_le(Memory* m, uint32_t addr)
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM Read */
-  if (__builtin_expect(addr + 3 < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 3 < emu->getMemSize(), 1))
   {
     base = addr & ~0x03;
     off = addr & 0x03;
 
-    return (m->data[base + ((off + 0) & 0x03)] <<  0) |
-           (m->data[base + ((off + 1) & 0x03)] <<  8) |
-           (m->data[base + ((off + 2) & 0x03)] << 16) |
-           (m->data[base + ((off + 3) & 0x03)] << 24);
+    return (data[base + ((off + 0) & 0x03)] <<  0) |
+           (data[base + ((off + 1) & 0x03)] <<  8) |
+           (data[base + ((off + 2) & 0x03)] << 16) |
+           (data[base + ((off + 3) & 0x03)] << 24);
   }
 
   /* System Timer */
   if (addr == 0x20003004)
   {
-    uint64_t timer_value = m->emu->getSystemTimer();
+    uint64_t timer_value = emu->getSystemTimer();
     return (uint32_t)(timer_value & 0xffffffff);
   }
   else if (addr == 0x20003008)
   {
-    uint64_t timer_value = m->emu->getSystemTimer();
+    uint64_t timer_value = emu->getSystemTimer();
     return (uint32_t)((timer_value >> 32) & 0xffffffff);
   }
 
   /* GPIO registers */
   if (Gpio::isGpioAddress(addr))
   {
-    return m->gpio->readIo(addr, sizeof(uint32_t));
+    return gpio->readIo(addr, sizeof(uint32_t));
   }
 
   /* Mailbox interface */
   if (mbox_is_port(addr))
   {
-    return mbox_read(&m->emu->mbox, addr);
+    return mbox_read(&emu->mbox, addr);
   }
 
   /* Peripherals */
   if (Peripheral::isPeripheralAddress(addr))
   {
-    return m->emu->pr->readPort(addr);
+    return emu->pr->readPort(addr);
   }
 
   /* DMA - just ignore it */
@@ -209,106 +201,100 @@ memory_read_dword_le(Memory* m, uint32_t addr)
     return 0;
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
 
 /**
  * Writes a single byte to memory
- * @param m    Reference to the memory structure
- * @param addr Memory location
- * @param data Data to be written
+ * @param addr  Memory location
+ * @param value Data to be written
  */
-void
-memory_write_byte(Memory* m, uint32_t addr, uint8_t data)
+void Memory::writeByte(uint32_t addr, uint8_t value)
 {
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr < mem_size, 1))
   {
-    m->data[addr] = data;
+    data[addr] = value;
     return;
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 
 /**
  * Writes a word to memory
- * @param m    Reference to the memory structure
  * @param addr Memory location
  * @param data Data to be written
  */
-void
-memory_write_word_le(Memory* m, uint32_t addr, uint16_t data)
+void Memory::writeWordLe(uint32_t addr, uint16_t value)
 {
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 1 < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 1 < mem_size, 1))
   {
-    m->data[addr + 0] = (data >> 0) & 0xFF;
-    m->data[addr + 1] = (data >> 8) & 0xFF;
+    data[addr + 0] = (value >> 0) & 0xFF;
+    data[addr + 1] = (value >> 8) & 0xFF;
     return;
   }
 
   /* Framebuffer */
-  if (fb_is_buffer(&m->emu->fb, addr))
+  if (fb_is_buffer(&emu->fb, addr))
   {
-    fb_write_word(&m->emu->fb, addr, data);
+    fb_write_word(&emu->fb, addr, value);
     return;
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 
 /**
  * Writes a double word to memory
- * @param m    Reference to the memory structure
- * @param addr Memory location
- * @param data Data to be written
+ * @param addr  Memory location
+ * @param value Data to be written
  */
-void
-memory_write_dword_le(Memory* m, uint32_t addr, uint32_t data)
+void Memory::writeDwordLe(uint32_t addr, uint32_t value)
 {
   addr = addr & 0x3FFFFFFF;
 
   /* SDRAM */
-  if (__builtin_expect(addr + 3 < m->emu->getMemSize(), 1))
+  if (__builtin_expect(addr + 3 < mem_size, 1))
   {
-    m->data[addr + 0] = (data >>  0) & 0xFF;
-    m->data[addr + 1] = (data >>  8) & 0xFF;
-    m->data[addr + 2] = (data >> 16) & 0xFF;
-    m->data[addr + 3] = (data >> 24) & 0xFF;
+    data[addr + 0] = (value >>  0) & 0xFF;
+    data[addr + 1] = (value >>  8) & 0xFF;
+    data[addr + 2] = (value >> 16) & 0xFF;
+    data[addr + 3] = (value >> 24) & 0xFF;
     return;
   }
 
   /* GPIO registers */
   if (Gpio::isGpioAddress(addr))
   {
-    m->gpio->writeIo(addr, data, sizeof(uint32_t));
+    gpio->writeIo(addr, value, sizeof(uint32_t));
     return;
   }
 
   /* Mailbox interface */
   if (mbox_is_port(addr))
   {
-    mbox_write(&m->emu->mbox, addr, data);
+    mbox_write(&emu->mbox, addr, value);
     return;
   }
 
   /* Framebuffer */
-  if (fb_is_buffer(&m->emu->fb, addr))
+  if (fb_is_buffer(&emu->fb, addr))
   {
-    fb_write_dword(&m->emu->fb, addr, data);
+    fb_write_dword(&emu->fb, addr, value);
     return;
   }
 
   /* Peripherals */
   if (Peripheral::isPeripheralAddress(addr))
   {
-    m->emu->pr->writePort(addr, data);
+    emu->pr->writePort(addr, value);
     return;
   }
 
@@ -330,6 +316,6 @@ memory_write_dword_le(Memory* m, uint32_t addr, uint32_t data)
     return;
   }
 
-  m->emu->error("Out of bounds memory access at address 0x%08x", addr);
+  emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
 

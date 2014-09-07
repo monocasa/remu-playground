@@ -895,11 +895,11 @@ instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
     {
       if (opcode->s)
       {
-        cpu->r_usr.r[reg] = memory_read_dword_le(cpu->memory, address);
+        cpu->r_usr.r[reg] = cpu->memory->readDwordLe(address);
       }
       else
       {
-        cpu_write_register(cpu, reg, memory_read_dword_le(cpu->memory, address));
+        cpu_write_register(cpu, reg, cpu->memory->readDwordLe(address));
       }
     }
     else
@@ -907,11 +907,11 @@ instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
       /* If S bit set, transfer user bank */
       if (opcode->s)
       {
-        memory_write_dword_le(cpu->memory, address, cpu->r_usr.r[reg]);
+        cpu->memory->writeDwordLe(address, cpu->r_usr.r[reg]);
       }
       else
       {
-        memory_write_dword_le(cpu->memory, address, cpu_read_register(cpu, reg));
+        cpu->memory->writeDwordLe(address, cpu_read_register(cpu, reg));
       }
     }
 
@@ -1033,12 +1033,12 @@ instr_single_data_trans(cpu_t* cpu, op_single_data_trans_t* opcode)
     if (opcode->b)
     {
       cpu_write_register(
-        cpu, opcode->rd, (uint32_t)memory_read_byte(cpu->memory, addr));
+        cpu, opcode->rd, (uint32_t)cpu->memory->readByte(addr));
     }
     else
     {
       cpu_write_register(
-        cpu, opcode->rd, memory_read_dword_le(cpu->memory, addr));
+        cpu, opcode->rd, cpu->memory->readDwordLe(addr));
      }
   }
   else
@@ -1046,11 +1046,11 @@ instr_single_data_trans(cpu_t* cpu, op_single_data_trans_t* opcode)
     /* if b is set store byte, word otherwise */
     if (opcode->b)
     {
-      memory_write_byte(cpu->memory, addr, cpu_read_register(cpu, opcode->rd));
+      cpu->memory->writeByte(addr, cpu_read_register(cpu, opcode->rd));
     }
     else
     {
-      memory_write_dword_le(cpu->memory, addr, cpu_read_register(cpu, opcode->rd));
+      cpu->memory->writeDwordLe(addr, cpu_read_register(cpu, opcode->rd));
     }
   }
 
@@ -1089,16 +1089,14 @@ instr_single_data_swap(cpu_t* cpu, op_single_data_swap_t* opcode)
   /* if b bit is set swap byte quantity, word otherwise */
   if (opcode->b)
   {
-    uint8_t tmp = memory_read_byte(cpu->memory, swap_address);
-    memory_write_byte(
-      cpu->memory, swap_address, cpu_read_register(cpu, opcode->rm));
+    uint8_t tmp = cpu->memory->readByte(swap_address);
+    cpu->memory->writeByte(swap_address, cpu_read_register(cpu, opcode->rm));
     cpu_write_register(cpu, opcode->rd, tmp);
   }
   else
   {
-    uint32_t tmp = memory_read_dword_le(cpu->memory, swap_address);
-    memory_write_dword_le(
-      cpu->memory, swap_address, cpu_read_register(cpu, opcode->rm));
+    uint32_t tmp = cpu->memory->readDwordLe(swap_address);
+    cpu->memory->writeDwordLe(swap_address, cpu_read_register(cpu, opcode->rm));
     cpu_write_register(cpu, opcode->rd, tmp);
   }
 }
@@ -1126,7 +1124,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
       if (op->l)
       {
         cpu_write_register(
-          cpu, op->rd, memory_read_word_le(cpu->memory, address));
+          cpu, op->rd, cpu->memory->readWordLe(address));
       }
       else
       {
@@ -1137,8 +1135,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
           address += 12;
         }
 
-        memory_write_word_le(
-          cpu->memory, address, (uint16_t)cpu_read_register(cpu, op->rd));
+        cpu->memory->writeWordLe(address, (uint16_t)cpu_read_register(cpu, op->rd));
       }
       break;
     }
@@ -1146,7 +1143,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
     {
       if (op->l)
       {
-        int32_t val = 0x000000FF & memory_read_byte(cpu->memory, address);
+        int32_t val = 0x000000FF & cpu->memory->readByte(address);
 
         /* sign extend byte to 32 bits */
         if (val & (1 << 7))
@@ -1165,7 +1162,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
     {
       if (op->l)
       {
-        int32_t val = 0x0000FFFF & memory_read_word_le(cpu->memory, address);
+        int32_t val = 0x0000FFFF & cpu->memory->readWordLe(address);
 
         /* sign extend halfword to 32 bits */
         if (val & (1 << 15))
@@ -1472,7 +1469,7 @@ debug_break(cpu_t *cpu)
           for (uint32_t i = 0; i < n; i += 4)
           {
             uint32_t offset = -i;
-            uint32_t data = memory_read_dword_le(cpu->memory, addr + offset);
+            uint32_t data = cpu->memory->readDwordLe(addr + offset);
             printf("SP-%-2d \t0x%08x : 0x%08x : '%c%c%c%c'\n", -offset,
               addr + offset, data, (int)((data >> 24) & 0xff),
               (int)((data >> 16) & 0xff), (int)((data >> 8) & 0xff),
@@ -1492,7 +1489,7 @@ debug_break(cpu_t *cpu)
           {
             /* Reverse offset so smaller addresses are printed lower */
             uint32_t offset = n - i - 4;
-            uint32_t data = memory_read_dword_le(cpu->memory, addr + offset);
+            uint32_t data = cpu->memory->readDwordLe(addr + offset);
             printf("SP+%-2d \t0x%08x : 0x%08x : '%c%c%c%c'\n", offset,
               addr + offset, data, (int)((data >> 24) & 0xff),
               (int)((data >> 16) & 0xff), (int)((data >> 8) & 0xff),
@@ -1516,7 +1513,7 @@ debug_break(cpu_t *cpu)
           for (uint32_t i = 0; i < n; i += 4)
           {
             uint32_t offset = -i;
-            uint32_t data = memory_read_dword_le(cpu->memory, addr + offset);
+            uint32_t data = cpu->memory->readDwordLe(addr + offset);
             printf("r%i-%-2i \t0x%08x : 0x%08x : '%c%c%c%c'\n", r, -offset,
               addr + offset, data, (int)((data >> 24) & 0xff),
               (int)((data >> 16) & 0xff), (int)((data >> 8) & 0xff),
@@ -1536,7 +1533,7 @@ debug_break(cpu_t *cpu)
           {
             /* Reverse offset so smaller addresses are printed lower */
             uint32_t offset = n - i - 4;
-            uint32_t data = memory_read_dword_le(cpu->memory, addr + offset);
+            uint32_t data = cpu->memory->readDwordLe(addr + offset);
             printf("r%i+%-2i \t0x%08x : 0x%08x : '%c%c%c%c'\n", r, offset,
               addr + offset, data, (int)((data >> 24) & 0xff),
               (int)((data >> 16) & 0xff), (int)((data >> 8) & 0xff),
@@ -1603,7 +1600,7 @@ cpu_tick(cpu_t* cpu)
 
   /* Fetch a single instruction */
   pc = cpu->r_usr.reg.pc;
-  instr = memory_read_dword_le(cpu->memory, pc);
+  instr = cpu->memory->readDwordLe(pc);
   cpu->r_usr.reg.pc = pc + 4;
 
   /* Terminate on NOP */

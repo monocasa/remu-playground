@@ -39,7 +39,7 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   gpio = new Gpio(*this, memory);
-  memory_set_gpio(&memory, gpio);
+  memory.setGpio(gpio);
   fb_init(&fb, this, &memory, gpio);
   pr = new Peripheral(*this);
 
@@ -138,7 +138,7 @@ void Emulator::tick()
 void Emulator::dump()
 {
   cpu_dump(&cpu);
-  memory_dump(&memory);
+  memory.dump();
 }
 
 /**

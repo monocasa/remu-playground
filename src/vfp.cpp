@@ -293,11 +293,11 @@ dt_single_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
   /* If l == 1 then load otherwise store */
   if (l)
   {
-    vfp->reg.s[Fd] = memory_read_dword_le(&vfp->emu->memory, base);
+    vfp->reg.s[Fd] = vfp->emu->memory.readDwordLe(base);
   }
   else
   {
-    memory_write_dword_le(&vfp->emu->memory, base, vfp->reg.s[Fd]);
+    vfp->emu->memory.writeDwordLe(base, vfp->reg.s[Fd]);
   }
 }
 
@@ -333,7 +333,7 @@ dt_multiple_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
     for (i = 0; i < offset; ++i)
     {
       vfp->reg.s[Fd + i] =
-        memory_read_dword_le(&vfp->emu->memory, base + (i << 2));
+        vfp->emu->memory.readDwordLe(base + (i << 2));
     }
   }
   else
@@ -341,8 +341,7 @@ dt_multiple_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
     /* Write registers from Fd to Fd + offset to memory */
     for (i = 0; i < offset; ++i)
     {
-      memory_write_dword_le(
-        &vfp->emu->memory, base + (i << 2), vfp->reg.s[Fd + i]);
+      vfp->emu->memory.writeDwordLe(base + (i << 2), vfp->reg.s[Fd + i]);
     }
   }
 
