@@ -79,7 +79,7 @@ public:
   char*         err_msg;
 
   /* Modules */
-  framebuffer_t fb;
+  Framebuffer   fb;
   Memory        memory;
   cpu_t         cpu;
 private:

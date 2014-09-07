@@ -1,12 +1,32 @@
 #include "common.h"
 
+Framebuffer::Framebuffer()
+  : emu(nullptr)
+  , gpio(nullptr)
+  , key_listener(nullptr)
+  , framebuffer(nullptr)
+  , fb_bpp(0)
+  , fb_pitch(0)
+  , fb_size(0)
+  , fb_address(0)
+  , fb_palette()
+  , error(0)
+  , surface(nullptr)
+  , width(0)
+  , height(0)
+  , depth(0)
+{ }
+
+Framebuffer::~Framebuffer()
+{ }
+
 /**
  * Initialises the framebuffer interface
  * @param fb  Reference to the framebuffer structure
  * @param emu Reference to the emulator structure
  */
 void
-fb_init(framebuffer_t* fb, Emulator* emu, Gpio *gpio)
+fb_init(Framebuffer* fb, Emulator* emu, Gpio *gpio)
 {
   assert(fb);
   assert(emu);
@@ -38,7 +58,7 @@ fb_init(framebuffer_t* fb, Emulator* emu, Gpio *gpio)
  * @param fb  Reference to the framebuffer structure
  */
 void
-fb_destroy(framebuffer_t* fb)
+fb_destroy(Framebuffer* fb)
 {
   if (!fb || !fb->emu->isGraphicsEnabled())
   {
@@ -114,7 +134,7 @@ put_pixel(SDL_Surface *surface, int x, int y, uint32_t pixel)
  * @param x X position
  * @param y Y position
  */
-uint32_t fb_get_pixel(framebuffer_t* fb, uint32_t x, uint32_t y)
+uint32_t fb_get_pixel(Framebuffer* fb, uint32_t x, uint32_t y)
 {
   assert(fb);
 
@@ -191,7 +211,7 @@ uint32_t fb_get_pixel(framebuffer_t* fb, uint32_t x, uint32_t y)
  * @param fb Reference to the framebuffer structure
  */
 void
-fb_tick(framebuffer_t* fb)
+fb_tick(Framebuffer* fb)
 {
   assert(fb);
   assert(fb->emu->isGraphicsEnabled());
@@ -280,7 +300,7 @@ fb_tick(framebuffer_t* fb)
  * @param addr Address received from the mailbox
  */
 void
-fb_request(framebuffer_t *fb, uint32_t addr)
+fb_request(Framebuffer *fb, uint32_t addr)
 {
   size_t i;
   framebuffer_req_t req;
@@ -357,7 +377,7 @@ fb_request(framebuffer_t *fb, uint32_t addr)
 }
 
 void
-fb_write_word(framebuffer_t* fb, uint32_t address, uint16_t data)
+fb_write_word(Framebuffer* fb, uint32_t address, uint16_t data)
 {
   uint32_t addr;
 
@@ -378,7 +398,7 @@ fb_write_word(framebuffer_t* fb, uint32_t address, uint16_t data)
  * @param data    Data to be written to the buffer
  */
 void
-fb_write_dword(framebuffer_t* fb, uint32_t address, uint32_t data)
+fb_write_dword(Framebuffer* fb, uint32_t address, uint32_t data)
 {
   uint32_t addr;
 
@@ -401,7 +421,7 @@ fb_write_dword(framebuffer_t* fb, uint32_t address, uint32_t data)
  * @return        True if address is in range
  */
 int
-fb_is_buffer(framebuffer_t *fb, uint32_t address)
+fb_is_buffer(Framebuffer *fb, uint32_t address)
 {
   assert(fb);
 

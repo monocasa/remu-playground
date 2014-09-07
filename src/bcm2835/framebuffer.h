@@ -28,8 +28,12 @@ typedef union
 /**
  * Framebuffer data
  */
-typedef struct _framebuffer_t
+class Framebuffer
 {
+public:
+  Framebuffer();
+  virtual ~Framebuffer();
+
   /* Emulator reference */
   Emulator     *emu;
   Gpio         *gpio;
@@ -53,23 +57,23 @@ typedef struct _framebuffer_t
   uint32_t      width;
   uint32_t      height;
   uint32_t      depth;
-} framebuffer_t;
+};
 
 static inline
-void fb_set_key_listener(framebuffer_t *fb, KeyListener *key_listener)
+void fb_set_key_listener(Framebuffer *fb, KeyListener *key_listener)
 {
     fb->key_listener = key_listener;
 }
 
-void fb_init(framebuffer_t*, Emulator*, Gpio*);
-void fb_create_window(framebuffer_t*, uint32_t width, uint32_t height);
-void fb_destroy(framebuffer_t*);
-void fb_tick(framebuffer_t*);
-void fb_dump(framebuffer_t*);
-void fb_request(framebuffer_t*, uint32_t address);
-void fb_write_word(framebuffer_t*, uint32_t address, uint16_t data);
-void fb_write_dword(framebuffer_t*, uint32_t address, uint32_t data);
-int  fb_is_buffer(framebuffer_t*, uint32_t address);
+void fb_init(Framebuffer*, Emulator*, Gpio*);
+void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
+void fb_destroy(Framebuffer*);
+void fb_tick(Framebuffer*);
+void fb_dump(Framebuffer*);
+void fb_request(Framebuffer*, uint32_t address);
+void fb_write_word(Framebuffer*, uint32_t address, uint16_t data);
+void fb_write_dword(Framebuffer*, uint32_t address, uint32_t data);
+int  fb_is_buffer(Framebuffer*, uint32_t address);
 
 #endif /* REMU_BCM2835_FRAMEBUFFER_H */
 

@@ -4,7 +4,7 @@
 #include "keylistener.h"
 #include "gpiolistener.h"
 
-typedef struct _framebuffer_t framebuffer_t;
+class Framebuffer;
 class Gpio;
 class Ui;
 
@@ -12,7 +12,7 @@ class Nes : public KeyListener,
             public GpioListener
 {
 public:
-  Nes(Ui& ui, Gpio &gpio, framebuffer_t *fb);
+  Nes(Ui& ui, Gpio &gpio, Framebuffer *fb);
   virtual ~Nes() = default;
 
   void onKeyUp(SDLKey key) override final;

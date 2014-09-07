@@ -1,6 +1,6 @@
 #include "common.h"
 
-Nes::Nes(Ui &ui, Gpio &gpio, framebuffer_t *fb)
+Nes::Nes(Ui &ui, Gpio &gpio, Framebuffer *fb)
   : ui(ui)
   , gpio(gpio)
   , last_latch(0)
