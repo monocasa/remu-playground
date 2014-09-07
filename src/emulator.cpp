@@ -38,9 +38,9 @@ void Emulator::init()
 {
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
-  gpio = new Gpio(*this);
+  gpio = new Gpio(*this, memory);
   memory_set_gpio(&memory, gpio);
-  fb_init(&fb, this, gpio);
+  fb_init(&fb, this, &memory, gpio);
   pr = new Peripheral(*this);
 
   if( nes_enabled ) {

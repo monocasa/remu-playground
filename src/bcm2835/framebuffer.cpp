@@ -17,22 +17,21 @@ Framebuffer::Framebuffer()
   , depth(0)
 { }
 
-Framebuffer::~Framebuffer()
-{ }
-
 /**
  * Initialises the framebuffer interface
  * @param fb  Reference to the framebuffer structure
  * @param emu Reference to the emulator structure
  */
 void
-fb_init(Framebuffer* fb, Emulator* emu, Gpio *gpio)
+fb_init(Framebuffer* fb, Emulator* emu, Memory *mem, Gpio *gpio)
 {
   assert(fb);
   assert(emu);
+  assert(mem);
   assert(gpio);
 
   fb->emu = emu;
+  fb->mem = mem;
   fb->gpio = gpio;
 
   /* If not in graphic mode, do not create a window */
@@ -330,7 +329,7 @@ fb_request(Framebuffer *fb, uint32_t addr)
   addr -= 0x40000000;
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    req.data[i] = memory_read_dword_le(&fb->emu->memory, addr + (i << 2));
+    req.data[i] = memory_read_dword_le(fb->mem, addr + (i << 2));
   }
 
   /* Free old framebuffer */
@@ -346,7 +345,7 @@ fb_request(Framebuffer *fb, uint32_t addr)
   {
     for (i = 0; i < 256; ++i)
     {
-      fb->fb_palette[i] = memory_read_word_le(&fb->emu->memory, addr + sizeof(req) + i * 2);
+      fb->fb_palette[i] = memory_read_word_le(fb->mem, addr + sizeof(req) + i * 2);
     }
   }
 
@@ -366,7 +365,7 @@ fb_request(Framebuffer *fb, uint32_t addr)
   /* Write back structure into memory */
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    memory_write_dword_le(&fb->emu->memory, addr + (i << 2), req.data[i]);
+    memory_write_dword_le(fb->mem, addr + (i << 2), req.data[i]);
   }
 
   /* Change the window caption */

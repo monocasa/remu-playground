@@ -4,25 +4,38 @@
  * Initialises memory for the gpio registers
  * @param emu  Reference to the emulator structure
  */
-Gpio::Gpio(Ui &ui)
-  : ui(ui)
+Gpio::Gpio(Ui &ui, Memory &mem)
+  : IoRegion(GPIO_BASE, GPIO_REG_BANK_SIZE)
+  , ui(ui)
+  , mem(mem)
   , listener(nullptr)
 {
   gpio_port_t default_port = { 0, 0 };
   for(int i = 0; i < GPIO_PORT_COUNT; i++) {
     ports.push_back(default_port); 
   }
+
+  mem.addRegion(this);
+}
+
+Gpio::~Gpio()
+{
+  mem.removeRegion(this);
 }
 
 /**
  * Handles reading from the gpio registers
  * @param address GPIO register address
+ * @param size    Access size in bytes
  */
-uint32_t Gpio::readPort(uint32_t address)
+uint64_t Gpio::readIo(uint64_t address, unsigned int size) 
 {
   uint32_t reg = 0, offset = 0;
   uint8_t base;
   size_t i;
+
+  /* Ignore size for now */
+  (void)size;
 
   /* Align the address */
   address &= ~0x3;
@@ -73,12 +86,16 @@ uint32_t Gpio::readPort(uint32_t address)
 /**
  * Handles writing to the gpio registers
  * @param address GPIO register address
- * @param val  Value to be written
+ * @param val     Value to be written
+ * @param size    Access size in bytes
  */
-void Gpio::writePort(uint32_t address, uint32_t val)
+void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
 {
   uint32_t offset = 0;
   size_t i;
+
+  /* Ignore size for now */
+  (void)size;
 
   /* Align the address */
   address &= ~0x3;

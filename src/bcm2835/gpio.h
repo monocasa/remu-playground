@@ -5,19 +5,20 @@
 #include <vector>
 
 class Emulator;
+class Memory;
 class GpioListener;
 
 /**
  * GPIO emulation
  */
-class Gpio
+class Gpio : public IoRegion
 {
 public:
-  Gpio(Ui &ui);
-  ~Gpio() = default;
+  Gpio(Ui &ui, Memory &mem);
+  virtual ~Gpio();
 
-  uint32_t readPort(uint32_t addr);
-  void writePort(uint32_t addr, uint32_t val);
+  uint64_t readIo(uint64_t offset, unsigned int size) override final;
+  void writeIo(uint64_t offset, uint64_t val, unsigned int size) override final;
 
   /**
    * Sets the GPIO write listener
@@ -66,10 +67,14 @@ public:
   }
 
 private:
-  /**
-   * Number of GPIO ports on a bcm2835
-   */
+  /** Number of GPIO ports on a bcm2835 */
   static const int GPIO_PORT_COUNT = 54;
+
+  /** The GPIO register bank is 4k in size */
+  static const size_t GPIO_REG_BANK_SIZE = 0x1000;
+
+  /** Base GPIO block address as seen by Arm on bcm2835 */
+  static const uint32_t GPIO_BASE = 0x20200000;
 
   /**
    * Struct describing a single gpio port
@@ -85,7 +90,6 @@ private:
    */
   enum
   {
-    GPIO_BASE   = 0x20200000,
     GPIO_FSEL0  = GPIO_BASE + 0x00,
     GPIO_FSEL1  = GPIO_BASE + 0x04,
     GPIO_FSEL2  = GPIO_BASE + 0x08,
@@ -114,10 +118,11 @@ private:
     GPIO_AFEN1  = GPIO_BASE + 0x8C,
     GPIO_PUD    = GPIO_BASE + 0x94,
     GPIO_UDCLK0 = GPIO_BASE + 0x98,
-    GPIO_UDCLK1 = GPIO_BASE + 0x9C
+    GPIO_UDCLK1 = GPIO_BASE + 0x9C,
   };
 
-  Ui &ui;
+  Ui     &ui;
+  Memory &mem;
   std::vector<gpio_port_t> ports;
   GpioListener *listener;
 };

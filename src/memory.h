@@ -1,6 +1,8 @@
 #ifndef REMU_MEMORY_H
 #define REMU_MEMORY_H
 
+#include "ioregion.h"
+
 class Gpio;
 
 /**
@@ -16,6 +18,17 @@ public:
   const size_t mem_size;
   uint8_t     *data;
   Gpio        *gpio;
+
+  void addRegion(IoRegion *region) {
+    iomap.addRegion(region);
+  }
+
+  void removeRegion(IoRegion *region) {
+    iomap.removeRegion(region);
+  }
+
+private:
+  IoMap        iomap;
 };
 
 void      memory_dump(Memory*);

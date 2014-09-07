@@ -32,10 +32,11 @@ class Framebuffer
 {
 public:
   Framebuffer();
-  virtual ~Framebuffer();
+  virtual ~Framebuffer() = default;
 
   /* Emulator reference */
   Emulator     *emu;
+  Memory       *mem;
   Gpio         *gpio;
 
   /* KeyListener */
@@ -65,7 +66,7 @@ void fb_set_key_listener(Framebuffer *fb, KeyListener *key_listener)
     fb->key_listener = key_listener;
 }
 
-void fb_init(Framebuffer*, Emulator*, Gpio*);
+void fb_init(Framebuffer*, Emulator*, Memory*, Gpio*);
 void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
 void fb_destroy(Framebuffer*);
 void fb_tick(Framebuffer*);

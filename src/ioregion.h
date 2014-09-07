@@ -7,6 +7,16 @@
 class IoRegion
 {
 public:
+  IoRegion()
+    : base(0)
+    , length(0)
+  { }
+
+  IoRegion(uint32_t base, uint32_t length)
+    : base(base)
+    , length(length)
+  { }
+
   virtual uint64_t readIo(uint64_t offset, unsigned int size) = 0;
   virtual void writeIo(uint64_t offset, uint64_t val, unsigned int size) = 0;
 
