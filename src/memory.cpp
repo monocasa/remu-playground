@@ -36,7 +36,7 @@ memory_dump(Memory* m)
 
   for (i = 0; i < m->emu->getMemSize() && i < 65535; i += 4)
   {
-    uint32_t data = memory_read_dword_be(m, i);
+    uint32_t data = memory_read_dword_le(m, i);
     if (data != 0)
     {
       printf("0x%08zx: 0x%08x\n", i, data);
