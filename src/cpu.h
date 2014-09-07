@@ -65,8 +65,8 @@ typedef enum
  */
 typedef struct
 {
-  memory_t    *memory;
   Emulator  *emu;
+  Memory    *memory;
 
   /* User mode registers */
   union

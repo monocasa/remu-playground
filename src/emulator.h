@@ -77,7 +77,7 @@ public:
 
   /* Modules */
   framebuffer_t fb;
-  memory_t      memory;
+  Memory        memory;
   cpu_t         cpu;
 private:
   Gpio         *gpio;

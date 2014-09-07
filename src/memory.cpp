@@ -16,7 +16,7 @@ dma_is_port(uint32_t addr)
  * @param size Size of memory in bytes
  */
 void
-memory_init(memory_t* m, Emulator* emu)
+memory_init(Memory* m, Emulator* emu)
 {
   m->emu = emu;
   m->data = (uint8_t*)malloc(emu->getMemSize());
@@ -29,7 +29,7 @@ memory_init(memory_t* m, Emulator* emu)
  * @param memory Reference to the memory structure
  */
 void
-memory_dump(memory_t* m)
+memory_dump(Memory* m)
 {
   size_t i = 0;
   printf("Non-zero memory:\n");
@@ -49,7 +49,7 @@ memory_dump(memory_t* m)
  * @param memory Reference to the memory structure
  */
 void
-memory_destroy(memory_t* m)
+memory_destroy(Memory* m)
 {
   if (!m)
   {
@@ -68,7 +68,7 @@ memory_destroy(memory_t* m)
  * @param addr Memory location
  */
 uint8_t
-memory_read_byte(memory_t* m, uint32_t addr)
+memory_read_byte(Memory* m, uint32_t addr)
 {
   addr = addr & 0x3FFFFFFF;
 
@@ -88,7 +88,7 @@ memory_read_byte(memory_t* m, uint32_t addr)
  * @param address Memory location
  */
 uint16_t
-memory_read_word_le(memory_t* m, uint32_t addr)
+memory_read_word_le(Memory* m, uint32_t addr)
 {
   uint32_t base;
   uint8_t off;
@@ -115,7 +115,7 @@ memory_read_word_le(memory_t* m, uint32_t addr)
  * @param address Memory location
  */
 uint32_t
-memory_read_dword_le(memory_t* m, uint32_t addr)
+memory_read_dword_le(Memory* m, uint32_t addr)
 {
   uint32_t base;
   uint8_t off;
@@ -186,7 +186,7 @@ memory_read_dword_le(memory_t* m, uint32_t addr)
  * @param data Data to be written
  */
 void
-memory_write_byte(memory_t* m, uint32_t addr, uint8_t data)
+memory_write_byte(Memory* m, uint32_t addr, uint8_t data)
 {
   addr = addr & 0x3FFFFFFF;
 
@@ -207,7 +207,7 @@ memory_write_byte(memory_t* m, uint32_t addr, uint8_t data)
  * @param data Data to be written
  */
 void
-memory_write_word_le(memory_t* m, uint32_t addr, uint16_t data)
+memory_write_word_le(Memory* m, uint32_t addr, uint16_t data)
 {
   addr = addr & 0x3FFFFFFF;
 
@@ -236,7 +236,7 @@ memory_write_word_le(memory_t* m, uint32_t addr, uint16_t data)
  * @param data Data to be written
  */
 void
-memory_write_dword_le(memory_t* m, uint32_t addr, uint32_t data)
+memory_write_dword_le(Memory* m, uint32_t addr, uint32_t data)
 {
   addr = addr & 0x3FFFFFFF;
 

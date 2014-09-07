@@ -16,7 +16,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , last_refresh( 0 )
 {
   memset(&fb,     0, sizeof(fb));
-  memset(&memory, 0, sizeof(memory));
   memset(&cpu,    0, sizeof(cpu));
   memset(&mbox,   0, sizeof(mbox));
   memset(&vfp,    0, sizeof(vfp));
