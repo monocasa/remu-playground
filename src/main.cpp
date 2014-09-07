@@ -1,4 +1,5 @@
 #include "common.h"
+#include "bcm2835/rpiemulator.h"
 
 /**
  * Prints the command line options
@@ -153,7 +154,7 @@ main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  Emulator emu(opt);
+  RPiEmulator emu(opt);
 
   /* In case of an error, code will jump here */
   if (setjmp(emu.err_jmp))
