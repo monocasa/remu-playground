@@ -27,10 +27,10 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  fb_destroy(&fb);
-  delete gpio;
-  delete pr;
   delete nes;
+  delete pr;
+  delete gpio;
+  fb_destroy(&fb);
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
 }
