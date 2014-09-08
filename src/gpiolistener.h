@@ -1,6 +1,8 @@
 #ifndef REMU_GPIOLISTENER_H
 #define REMU_GPIOLISTENER_H
 
+#include <cstdint>
+
 namespace remu {
 
 class GpioListener

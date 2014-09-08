@@ -26,6 +26,7 @@ ADD_LIBRARY( remu_core src/bcm2835/framebuffer.cpp
                        src/bcm2835/gpio.cpp
                        src/bcm2835/mbox.cpp
                        src/bcm2835/peripheral.cpp
+                       src/bitbang/button.cpp
                        src/cpu.cpp
                        src/emulator.cpp
                        src/memory.cpp
