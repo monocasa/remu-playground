@@ -7,15 +7,14 @@
 
 namespace remu {
 
-class Framebuffer;
-class Gpio;
+class GpioBlock;
 class Ui;
 
 class Nes : public KeyListener,
             public GpioListener
 {
 public:
-  Nes(Ui& ui, Gpio &gpio, KeyDispatcher &kd);
+  Nes(Ui& ui, GpioBlock &gpio, KeyDispatcher &kd);
   virtual ~Nes() = default;
 
   void onKeyUp(SDLKey key) override final;
@@ -41,8 +40,8 @@ private:
 
   void writeButton(uint32_t button);
 
-  Ui   &ui;
-  Gpio &gpio;
+  Ui        &ui;
+  GpioBlock &gpio;
 
   uint32_t last_latch;
   uint32_t last_clock;

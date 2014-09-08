@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_GPIO_H
 #define REMU_BCM2835_GPIO_H
 
+#include "gpioblock.h"
+
 #include <cstdint>
 #include <vector>
 
@@ -14,6 +16,7 @@ class GpioListener;
  * GPIO emulation
  */
 class Gpio : public IoRegion
+           , public GpioBlock
 {
 public:
   Gpio(Ui &ui, Memory &mem);
@@ -21,14 +24,6 @@ public:
 
   uint64_t readIo(uint64_t offset, unsigned int size) override final;
   void writeIo(uint64_t offset, uint64_t val, unsigned int size) override final;
-
-  /**
-   * Sets the GPIO write listener
-   * Gpio does not own this pointer
-   */
-  void setListener(GpioListener *listener) {
-    this->listener = listener;
-  }
 
   /**
    * Checks whether a given address is a GPIO port
@@ -64,7 +59,7 @@ public:
   /**
    * Sets the bits of a particular gpio port
    */
-  void setPortState(int port, uint8_t state) {
+  void setPortState(int port, uint8_t state) override final {
     ports[port].state = state;
   }
 
@@ -126,7 +121,6 @@ private:
   Ui     &ui;
   Memory &mem;
   std::vector<gpio_port_t> ports;
-  GpioListener *listener;
 };
 
 } /*namespace remu*/

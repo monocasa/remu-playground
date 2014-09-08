@@ -2,7 +2,7 @@
 
 namespace remu {
 
-Nes::Nes(Ui &ui, Gpio &gpio, KeyDispatcher &kd)
+Nes::Nes(Ui &ui, GpioBlock &gpio, KeyDispatcher &kd)
   : ui(ui)
   , gpio(gpio)
   , last_latch(0)
@@ -22,7 +22,7 @@ Nes::Nes(Ui &ui, Gpio &gpio, KeyDispatcher &kd)
   binding[NES_UP]     = SDLK_w;
   binding[NES_DOWN]   = SDLK_s;
 
-  gpio.setListener(this);
+  gpio.addGpioListener(this);
   kd.addKeyListener(this);
 }
 

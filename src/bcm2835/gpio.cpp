@@ -10,7 +10,6 @@ Gpio::Gpio(Ui &ui, Memory &mem)
   : IoRegion(GPIO_BASE, GPIO_REG_BANK_SIZE)
   , ui(ui)
   , mem(mem)
-  , listener(nullptr)
 {
   gpio_port_t default_port = { 0, 0 };
   for(int i = 0; i < GPIO_PORT_COUNT; i++) {
@@ -128,11 +127,7 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
           /* Set GPIO port state */
           ports[offset + i].state = 1;
 
-          /* Catch writes */
-          if (listener)
-          {
-            listener->onGpioWrite(i, 1);
-          }
+          dispatchGpioWrite(i, 1);
         }
         val = val >> 1;
       }
@@ -149,11 +144,7 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
           /* Set GPIO port state */
           ports[offset + i].state = 0;
 
-          /* Catch writes */
-          if (listener)
-          {
-            listener->onGpioWrite(i, 0);
-          }
+          dispatchGpioWrite(i, 0);
         }
         val = val >> 1;
       }
