@@ -45,7 +45,6 @@ public:
   /* Emulator reference */
   Emulator     *emu;
   Memory       *mem;
-  Gpio         *gpio;
   const size_t  mem_size;
 
   /* Framebuffer */
@@ -66,7 +65,7 @@ public:
   uint32_t      depth;
 };
 
-void fb_init(Framebuffer*, Emulator*, Memory*, Gpio*);
+void fb_init(Framebuffer*, Emulator*, Memory*);
 void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
 void fb_destroy(Framebuffer*);
 void fb_dump(Framebuffer*);

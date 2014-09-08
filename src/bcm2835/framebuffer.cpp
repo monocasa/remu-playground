@@ -4,7 +4,6 @@ namespace remu {
 
 Framebuffer::Framebuffer(size_t mem_size)
   : emu(nullptr)
-  , gpio(nullptr)
   , mem_size(mem_size)
   , framebuffer(nullptr)
   , fb_bpp(0)
@@ -25,16 +24,14 @@ Framebuffer::Framebuffer(size_t mem_size)
  * @param emu Reference to the emulator structure
  */
 void
-fb_init(Framebuffer* fb, Emulator* emu, Memory *mem, Gpio *gpio)
+fb_init(Framebuffer* fb, Emulator* emu, Memory *mem)
 {
   assert(fb);
   assert(emu);
   assert(mem);
-  assert(gpio);
 
   fb->emu = emu;
   fb->mem = mem;
-  fb->gpio = gpio;
 
   /* If not in graphic mode, do not create a window */
   if (!fb->emu->isGraphicsEnabled())
@@ -225,37 +222,11 @@ void Framebuffer::tick()
     /* Route keyboard presses to the NES module if enabled */
     if (event.type == SDL_KEYDOWN)
     {
-      switch (event.key.keysym.sym)
-      {
-        case SDLK_1 ... SDLK_9:
-        {
-          int port = (int)event.key.keysym.sym - SDLK_1;
-          gpio->setPortState(emu->getGpioTestOffset() + port, 1);
-          break;
-        }
-        default:
-        {
-          dispatchKeyDown(event.key.keysym.sym);
-          break;
-        }
-      }
+      dispatchKeyDown(event.key.keysym.sym);
     }
     else if (event.type == SDL_KEYUP)
     {
-      switch (event.key.keysym.sym)
-      {
-        case SDLK_1 ... SDLK_9:
-        {
-          int port = (int)event.key.keysym.sym - SDLK_1;
-          gpio->setPortState(emu->getGpioTestOffset() + port, 0);
-          break;
-        }
-        default:
-        {
-          dispatchKeyUp(event.key.keysym.sym);
-          break;
-        }
-      }
+      dispatchKeyUp(event.key.keysym.sym);
     }
   }
 

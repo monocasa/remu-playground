@@ -7,6 +7,7 @@ Emulator::Emulator(const EmulatorOptions &opt)
   : err_msg( nullptr )
   , fb(opt.mem_size)
   , memory(this, opt.mem_size)
+  , gpio(new Gpio(*this, memory))
   , mbox(this)
   , terminated( false )
   , image( opt.image )
@@ -41,8 +42,7 @@ void Emulator::init()
 {
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
-  gpio = new Gpio(*this, memory);
-  fb_init(&fb, this, &memory, gpio);
+  fb_init(&fb, this, &memory);
   pr = new Peripheral(*this);
 
   if( nes_enabled ) {
