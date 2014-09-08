@@ -6,7 +6,6 @@ Framebuffer::Framebuffer(size_t mem_size)
   : emu(nullptr)
   , gpio(nullptr)
   , mem_size(mem_size)
-  , key_listener(nullptr)
   , framebuffer(nullptr)
   , fb_bpp(0)
   , fb_pitch(0)
@@ -240,9 +239,8 @@ fb_tick(Framebuffer* fb)
         }
         default:
         {
-          if (fb->key_listener)
-          {
-            fb->key_listener->onKeyDown(event.key.keysym.sym);
+          for (auto listener : fb->key_listeners) {
+            listener->onKeyDown(event.key.keysym.sym);
           }
           break;
         }
@@ -260,9 +258,8 @@ fb_tick(Framebuffer* fb)
         }
         default:
         {
-          if (fb->key_listener)
-          {
-            fb->key_listener->onKeyUp(event.key.keysym.sym);
+          for (auto listener : fb->key_listeners) {
+            listener->onKeyUp(event.key.keysym.sym);
           }
           break;
         }

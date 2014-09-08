@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
+#include <vector>
+
 namespace remu {
 
 class Gpio;
@@ -42,8 +44,8 @@ public:
   Gpio         *gpio;
   const size_t  mem_size;
 
-  /* KeyListener */
-  KeyListener  *key_listener;
+  /* KeyListeners */
+  std::vector<KeyListener*>  key_listeners;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -64,9 +66,9 @@ public:
 };
 
 static inline
-void fb_set_key_listener(Framebuffer *fb, KeyListener *key_listener)
+void fb_add_key_listener(Framebuffer *fb, KeyListener *key_listener)
 {
-    fb->key_listener = key_listener;
+    fb->key_listeners.push_back(key_listener);
 }
 
 void fb_init(Framebuffer*, Emulator*, Memory*, Gpio*);

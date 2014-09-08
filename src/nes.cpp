@@ -23,7 +23,7 @@ Nes::Nes(Ui &ui, Gpio &gpio, Framebuffer *fb)
   binding[NES_DOWN]   = SDLK_s;
 
   gpio.setListener(this);
-  fb_set_key_listener(fb, this);
+  fb_add_key_listener(fb, this);
 }
 
 void Nes::onKeyDown(SDLKey key)
