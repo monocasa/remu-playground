@@ -80,7 +80,7 @@ public:
   Framebuffer   fb;
   Memory        memory;
   cpu_t         cpu;
-private:
+protected:
   Gpio         *gpio;
 public:
   Mbox          mbox;
