@@ -79,13 +79,13 @@ public:
   /* Modules */
   Framebuffer   fb;
   Memory        memory;
-  cpu_t         cpu;
+  Cpu           cpu;
 protected:
   Gpio         *gpio;
 public:
   Mbox          mbox;
   Peripheral   *pr;
-  vfp_t         vfp;
+  Vfp           vfp;
 private:
   Nes          *nes;
 

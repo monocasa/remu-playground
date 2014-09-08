@@ -3,8 +3,9 @@
 
 namespace remu {
 
-typedef struct
+class Vfp
 {
+public:
   Emulator* emu;
 
   /* Registers */
@@ -56,15 +57,15 @@ typedef struct
       } b;
     } fpexc;
   } reg;
-} vfp_t;
+};
 
-void vfp_init(vfp_t*, Emulator*);
-void vfp_destroy(vfp_t *);
-void vfp_dump(vfp_t *);
+void vfp_init(Vfp*, Emulator*);
+void vfp_destroy(Vfp *);
+void vfp_dump(Vfp *);
 
-void vfp_data_proc(vfp_t*, op_coproc_data_proc_t* instr);
-void vfp_data_transfer(vfp_t*, op_coproc_data_transfer_t* instr);
-void vfp_reg_transfer(vfp_t*, op_coproc_reg_transfer_t* instr);
+void vfp_data_proc(Vfp*, op_coproc_data_proc_t* instr);
+void vfp_data_transfer(Vfp*, op_coproc_data_transfer_t* instr);
+void vfp_reg_transfer(Vfp*, op_coproc_reg_transfer_t* instr);
 
 } /*namespace remu*/
 

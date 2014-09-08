@@ -8,7 +8,7 @@ namespace remu {
  * @param emu Emulator
  */
 void
-vfp_init(vfp_t* vfp, Emulator* emu)
+vfp_init(Vfp* vfp, Emulator* emu)
 {
   assert(vfp);
   assert(emu);
@@ -29,7 +29,7 @@ vfp_init(vfp_t* vfp, Emulator* emu)
  * @param vfp VFP context
  */
 void
-vfp_destroy(vfp_t* UNUSED(vfp))
+vfp_destroy(Vfp* UNUSED(vfp))
 {
   /* Nothing was allocated on the heap so nothing to free */
 }
@@ -38,7 +38,7 @@ vfp_destroy(vfp_t* UNUSED(vfp))
  * Prints the state of the VFP coprocessor
  */
 void
-vfp_dump(vfp_t *vfp)
+vfp_dump(Vfp *vfp)
 {
   int i;
   union
@@ -62,7 +62,7 @@ vfp_dump(vfp_t *vfp)
  * @param mode Set to 0 if no exceptions on quiet NaN's, 1 otherwise
  */
 void
-dp_fcmps(vfp_t* vfp, float a, float b, uint32_t UNUSED(mode))
+dp_fcmps(Vfp* vfp, float a, float b, uint32_t UNUSED(mode))
 {
   /* Determine if a and b are unordered (NaNs) */
   if ((a != a) || (b != b))
@@ -93,7 +93,7 @@ dp_fcmps(vfp_t* vfp, float a, float b, uint32_t UNUSED(mode))
  * @param instr Instruction
  */
 void
-vfp_data_proc(vfp_t* vfp, op_coproc_data_proc_t* instr)
+vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
 {
   uint32_t opcode, Fd, Fn, Fm;
 
@@ -287,7 +287,7 @@ vfp_data_proc(vfp_t* vfp, op_coproc_data_proc_t* instr)
  * @param l        Load/store
  */
 static inline void
-dt_single_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
+dt_single_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
                          uint32_t l)
 {
   uint32_t base = cpu_read_register(&vfp->emu->cpu, Rn) + (offset << 2);
@@ -313,7 +313,7 @@ dt_single_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
  * @param mode     0 - unindexed, 1 - increment, 2 - decrement
  */
 static inline void
-dt_multiple_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
+dt_multiple_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
                           uint32_t l, uint32_t mode)
 {
   uint32_t i;
@@ -360,7 +360,7 @@ dt_multiple_data_transfer(vfp_t* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
  * @param instr Instruction
  */
 void
-vfp_data_transfer(vfp_t* vfp, op_coproc_data_transfer_t* instr)
+vfp_data_transfer(Vfp* vfp, op_coproc_data_transfer_t* instr)
 {
   uint32_t opcode, Fd, Rn;
 
@@ -417,7 +417,7 @@ vfp_data_transfer(vfp_t* vfp, op_coproc_data_transfer_t* instr)
  * Register Transfer sub-instructions
  */
 static inline void
-rt_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
+rt_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
 {
   if (l)
   {
@@ -430,7 +430,7 @@ rt_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
 }
 
 static inline void
-rt_status_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
+rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
 {
   uint32_t value = 0;
   if (l)
@@ -521,7 +521,7 @@ rt_status_reg_transfer(vfp_t* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
  * @param instr Instruction
  */
 void
-vfp_reg_transfer(vfp_t* vfp, op_coproc_reg_transfer_t* instr)
+vfp_reg_transfer(Vfp* vfp, op_coproc_reg_transfer_t* instr)
 {
   uint32_t opcode, Rd, Fn;
 

@@ -10,7 +10,7 @@ namespace remu {
  * @return    1 if condition matches
  */
 int
-check_cond(const cpu_t* cpu, int cc)
+check_cond(const Cpu* cpu, int cc)
 {
   switch (cc)
   {
@@ -43,7 +43,7 @@ check_cond(const cpu_t* cpu, int cc)
  * @return Value of the register
  */
 uint32_t
-cpu_read_register(const cpu_t* cpu, int reg)
+cpu_read_register(const Cpu* cpu, int reg)
 {
   assert(cpu != NULL);
   assert(reg <= 0xF);
@@ -99,7 +99,7 @@ cpu_read_register(const cpu_t* cpu, int reg)
  * @param value Value to be written
  */
 void
-cpu_write_register(cpu_t* cpu, int reg, uint32_t value)
+cpu_write_register(Cpu* cpu, int reg, uint32_t value)
 {
   assert(cpu != NULL);
   assert(reg <= 0xF);
@@ -155,7 +155,7 @@ cpu_write_register(cpu_t* cpu, int reg, uint32_t value)
  * @param cpu Reference to the CPU structure.
  */
 static inline uint32_t
-read_spsr(cpu_t* cpu)
+read_spsr(Cpu* cpu)
 {
   switch(cpu->cpsr.b.m)
   {
@@ -176,7 +176,7 @@ read_spsr(cpu_t* cpu)
  * @param value Value to write
  */
 static inline void
-write_spsr(cpu_t* cpu, uint32_t value)
+write_spsr(Cpu* cpu, uint32_t value)
 {
   switch (cpu->cpsr.b.m)
   {
@@ -195,7 +195,7 @@ write_spsr(cpu_t* cpu, uint32_t value)
  * @param mode Mode to be entered
  */
 inline static void
-change_mode(cpu_t* cpu, armMode_t mode)
+change_mode(Cpu* cpu, armMode_t mode)
 {
   switch (mode)
   {
@@ -237,7 +237,7 @@ tu64(int64_t s)
 }
 
 static inline void
-instr_multiply_long(cpu_t* cpu, op_multiply_long_t* opcode)
+instr_multiply_long(Cpu* cpu, op_multiply_long_t* opcode)
 {
   union
   {
@@ -290,7 +290,7 @@ instr_multiply_long(cpu_t* cpu, op_multiply_long_t* opcode)
 }
 
 static inline void
-instr_multiply(cpu_t* cpu, op_multiply_t* opcode)
+instr_multiply(Cpu* cpu, op_multiply_t* opcode)
 {
   int32_t res;
   int32_t op1, op2, opA;
@@ -326,7 +326,7 @@ instr_multiply(cpu_t* cpu, op_multiply_t* opcode)
  * @param opcode Instruction layout
  */
 static void
-instr_mrs(cpu_t* cpu, op_mrs_t* opcode)
+instr_mrs(Cpu* cpu, op_mrs_t* opcode)
 {
   // Choose the correct destination register
   if (opcode->Ps == 0)
@@ -354,7 +354,7 @@ instr_mrs(cpu_t* cpu, op_mrs_t* opcode)
  * @param flags Set to true if writing flags only, false otherwise
  */
 static inline void
-write_psr(cpu_t* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
+write_psr(Cpu* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
 {
   // If CPU is in user mode, always write flags
   if (flags || cpu->cpsr.b.m == MODE_USR)
@@ -404,7 +404,7 @@ write_psr(cpu_t* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
  * @param opcode Instruction layout
  */
 static void
-instr_msr_psr(cpu_t* cpu, op_msr_psr_t* opcode)
+instr_msr_psr(Cpu* cpu, op_msr_psr_t* opcode)
 {
   write_psr(cpu, opcode->Pd, cpu_read_register(cpu, opcode->Rm), 0);
 }
@@ -431,7 +431,7 @@ rotate_right(int32_t value, uint8_t shift)
  * @return operand2/offset
  */
 static inline int32_t
-compute_offset_operand2(cpu_t *cpu, uint32_t imm, uint8_t s)
+compute_offset_operand2(Cpu *cpu, uint32_t imm, uint8_t s)
 {
   assert(cpu);
 
@@ -569,7 +569,7 @@ compute_offset_operand2(cpu_t *cpu, uint32_t imm, uint8_t s)
  * @param opcode Instruction opcode
  */
 static void
-instr_msr_psrf(cpu_t* cpu, op_msr_psrf_t* opcode)
+instr_msr_psrf(Cpu* cpu, op_msr_psrf_t* opcode)
 {
   if (opcode->i == 0)
   {
@@ -592,7 +592,7 @@ instr_msr_psrf(cpu_t* cpu, op_msr_psrf_t* opcode)
  * @param opcode Decoded opcode
  */
 static inline void
-instr_single_data_processing(cpu_t* cpu, op_data_proc_t* opcode)
+instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
 {
   int32_t op1, op2, res;
   int64_t res64;
@@ -840,7 +840,7 @@ instr_single_data_processing(cpu_t* cpu, op_data_proc_t* opcode)
  * @param opcode Opcode decoder
  */
 static inline void
-instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
+instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
 {
   /* The register list can't be empty */
   if (opcode->rl == 0)
@@ -947,7 +947,7 @@ instr_block_data_transfer(cpu_t* cpu, op_block_data_trans_t* opcode)
  * @param opcode Opcode for the branch instruction
  */
 static inline void
-instr_branch(cpu_t* cpu, op_branch_t* opcode)
+instr_branch(Cpu* cpu, op_branch_t* opcode)
 {
   uint32_t offset, pc, lr;
 
@@ -979,7 +979,7 @@ instr_branch(cpu_t* cpu, op_branch_t* opcode)
  * @param opcode Opcode for the BX instruction
  */
 static inline void
-instr_branch_exchange(cpu_t* cpu, op_branch_exchange_t* opcode)
+instr_branch_exchange(Cpu* cpu, op_branch_exchange_t* opcode)
 {
   if (opcode->Rn & 0x1)
   {
@@ -997,7 +997,7 @@ instr_branch_exchange(cpu_t* cpu, op_branch_exchange_t* opcode)
  * @param opcode - Reference to the opcode structure
  */
 static inline void
-instr_single_data_trans(cpu_t* cpu, op_single_data_trans_t* opcode)
+instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
 {
   assert(cpu);
   assert(opcode);
@@ -1075,7 +1075,7 @@ instr_single_data_trans(cpu_t* cpu, op_single_data_trans_t* opcode)
  * @param opcode - Reference to the opcode structure
  */
 static inline void
-instr_single_data_swap(cpu_t* cpu, op_single_data_swap_t* opcode)
+instr_single_data_swap(Cpu* cpu, op_single_data_swap_t* opcode)
 {
   assert(cpu);
   assert(opcode);
@@ -1110,7 +1110,7 @@ instr_single_data_swap(cpu_t* cpu, op_single_data_swap_t* opcode)
  * @param     Address address to store to/load from
  */
 static inline void
-hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
+hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
 {
   /* bits s and h determine the operation */
   switch (op->sh)
@@ -1188,7 +1188,7 @@ hw_sd_transfer_fun_sel(cpu_t* cpu, op_hw_sd_trans_t* op, uint32_t address)
  * @param op Reference to the opcode structure
  */
 static inline void
-instr_hw_sd_transfer(cpu_t* cpu, op_hw_sd_trans_t* op)
+instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
 {
   assert(cpu);
   assert(op);
@@ -1263,7 +1263,7 @@ instr_hw_sd_transfer(cpu_t* cpu, op_hw_sd_trans_t* op)
  * @param opcode Reference to the instruction structure
  */
 static inline void
-instr_coproc_data_proc(cpu_t* cpu, op_coproc_data_proc_t* opcode)
+instr_coproc_data_proc(Cpu* cpu, op_coproc_data_proc_t* opcode)
 {
   assert(cpu);
   assert(opcode);
@@ -1302,7 +1302,7 @@ instr_coproc_data_proc(cpu_t* cpu, op_coproc_data_proc_t* opcode)
  * @param opcode Reference to the instruction structure
  */
 static inline void
-instr_coproc_data_transfer(cpu_t* cpu, op_coproc_data_transfer_t* opcode)
+instr_coproc_data_transfer(Cpu* cpu, op_coproc_data_transfer_t* opcode)
 {
   assert(cpu);
   assert(opcode);
@@ -1341,7 +1341,7 @@ instr_coproc_data_transfer(cpu_t* cpu, op_coproc_data_transfer_t* opcode)
  * @param opcode Reference to the instruction structure
  */
 static inline void
-instr_coproc_reg_transfer(cpu_t* cpu, op_coproc_reg_transfer_t* opcode)
+instr_coproc_reg_transfer(Cpu* cpu, op_coproc_reg_transfer_t* opcode)
 {
   assert(cpu);
   assert(opcode);
@@ -1380,7 +1380,7 @@ instr_coproc_reg_transfer(cpu_t* cpu, op_coproc_reg_transfer_t* opcode)
  * @param opcode Reference to the isntruction structure
  */
 static inline void
-instr_swi(cpu_t* cpu, op_swi_t* UNUSED(opcode))
+instr_swi(Cpu* cpu, op_swi_t* UNUSED(opcode))
 {
   assert(cpu);
 
@@ -1402,7 +1402,7 @@ instr_swi(cpu_t* cpu, op_swi_t* UNUSED(opcode))
  * @param cpu Reference to the cpu structure
  */
 static inline void
-instr_undefined(cpu_t* cpu)
+instr_undefined(Cpu* cpu)
 {
   /* Enter the undefined mode */
   change_mode(cpu, MODE_UND);
@@ -1418,7 +1418,7 @@ instr_undefined(cpu_t* cpu)
 }
 
 static inline void
-debug_break(cpu_t *cpu)
+debug_break(Cpu *cpu)
 {
   char c;
 
@@ -1567,7 +1567,7 @@ debug_break(cpu_t *cpu)
  * @param start_addr
  */
 void
-cpu_init(cpu_t* cpu, Emulator* emu)
+cpu_init(Cpu* cpu, Emulator* emu)
 {
   cpu->emu = emu;
   cpu->memory = &emu->memory;
@@ -1595,7 +1595,7 @@ cpu_init(cpu_t* cpu, Emulator* emu)
  * @param cpu   Reference to the CPU structure
  */
 void
-cpu_tick(cpu_t* cpu)
+cpu_tick(Cpu* cpu)
 {
   uint32_t instr = 0;
   uint32_t pc;
@@ -1742,7 +1742,7 @@ cpu_tick(cpu_t* cpu)
  * @param cpu Reference to the CPU structure
  */
 void
-cpu_destroy(cpu_t *UNUSED(cpu))
+cpu_destroy(Cpu *UNUSED(cpu))
 {
 }
 
@@ -1751,7 +1751,7 @@ cpu_destroy(cpu_t *UNUSED(cpu))
  * @param cpu Reference to the CPU structure
  */
 void
-cpu_dump(cpu_t* cpu)
+cpu_dump(Cpu* cpu)
 {
   uint32_t reg;
   int i;
