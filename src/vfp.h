@@ -1,6 +1,8 @@
 #ifndef REMU_VFP_H
 #define REMU_VFP_H
 
+namespace remu {
+
 typedef struct
 {
   Emulator* emu;
@@ -63,6 +65,8 @@ void vfp_dump(vfp_t *);
 void vfp_data_proc(vfp_t*, op_coproc_data_proc_t* instr);
 void vfp_data_transfer(vfp_t*, op_coproc_data_transfer_t* instr);
 void vfp_reg_transfer(vfp_t*, op_coproc_reg_transfer_t* instr);
+
+} /*namespace remu*/
 
 #endif /* REMU_VFP_H */
 

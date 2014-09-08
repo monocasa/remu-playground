@@ -24,8 +24,10 @@
 #  define UNUSED_FUNCTION(x) UNUSED_ ## x
 #endif
 
+namespace remu {
 /* Emulator forward declaration */
 class Emulator;
+} /*namespace remu*/
 
 /* Modules */
 #include "memory.h"

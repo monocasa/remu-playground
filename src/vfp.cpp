@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 /**
  * Initialises the vector floating point coprocessor
  * @param vfp VFP context
@@ -559,4 +561,6 @@ vfp_reg_transfer(vfp_t* vfp, op_coproc_reg_transfer_t* instr)
     }
   }
 }
+
+} /*namespace remu*/
 

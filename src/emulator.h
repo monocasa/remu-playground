@@ -3,6 +3,8 @@
 
 #include "ui.h"
 
+namespace remu {
+
 struct EmulatorOptions
 {
   EmulatorOptions()
@@ -110,6 +112,8 @@ private:
   /* Refresh */
   uint64_t      last_refresh;
 };
+
+} /*namespace remu*/
 
 #endif /* REMU_EMULATOR_H */
 

@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 /**
  * Initialises the mailbox
  */
@@ -97,4 +99,6 @@ mbox_write(Mbox *mbox, uint32_t addr, uint32_t val)
 
   mbox->emu->error("Mailbox unimplemented 0x%08x", addr);
 }
+
+} /*namespace remu*/
 

@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 /**
  * Initialises peripherials
  * @param emu   Reference to the emulator structure
@@ -122,4 +124,6 @@ uint32_t Peripheral::readPort(uint32_t addr)
   ui.error("Unsupported peripherial read: %08x", addr);
   return 0;
 }
+
+} /*namespace remu*/
 

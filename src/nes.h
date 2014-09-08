@@ -4,6 +4,8 @@
 #include "keylistener.h"
 #include "gpiolistener.h"
 
+namespace remu {
+
 class Framebuffer;
 class Gpio;
 class Ui;
@@ -49,6 +51,8 @@ private:
   uint32_t state[NES_BUTTON_COUNT];
   SDLKey binding[NES_BUTTON_COUNT];
 };
+
+} /*namespace remu*/
 
 #endif /* REMU_NES_H */
 

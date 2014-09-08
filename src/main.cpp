@@ -18,13 +18,13 @@ cmdline_usage(int argc, char **argv)
 
 /**
  * Parses command line arguments using getopt
- * @param emu  Reference to the emulator
+ * @param opt  Reference to the options struct
  * @param argc Number of command line arguments
  * @param argv Argument values
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_parse(EmulatorOptions &opt, int argc, char **argv)
+cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
 {
   struct option options[] =
   {
@@ -108,12 +108,13 @@ cmdline_parse(EmulatorOptions &opt, int argc, char **argv)
 
 /**
  * Checks the validity of the arguments
+ * @param opt  Reference to the options struct
  * @param argc Number of command line arguments
  * @param argv Argument values
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_check(EmulatorOptions &opt, int argc, char **argv)
+cmdline_check(remu::EmulatorOptions &opt, int argc, char **argv)
 {
   if (opt.usage)
   {
@@ -148,13 +149,13 @@ int
 main(int argc, char **argv)
 {
   /* Parse command line arguments */
-  EmulatorOptions opt;
+  remu::EmulatorOptions opt;
   if (!cmdline_parse(opt, argc, argv) || !cmdline_check(opt, argc, argv))
   {
     return EXIT_FAILURE;
   }
 
-  RPiEmulator emu(opt);
+  remu::RPiEmulator emu(opt);
 
   /* In case of an error, code will jump here */
   if (setjmp(emu.err_jmp))

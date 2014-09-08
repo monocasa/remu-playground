@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 Nes::Nes(Ui &ui, Gpio &gpio, Framebuffer *fb)
   : ui(ui)
   , gpio(gpio)
@@ -85,4 +87,6 @@ void Nes::writeButton(uint32_t button)
 {
   gpio.setPortState(NES_GPIO_PORT_DATA, state[button] ? 0 : 1);
 }
+
+} /*namespace remu*/
 

@@ -1,6 +1,8 @@
 #ifndef REMU_CPU_H
 #define REMU_CPU_H
 
+namespace remu {
+
 /**
  * ARM condition codes
  */
@@ -188,6 +190,8 @@ void cpu_init(cpu_t*, Emulator*);
 void cpu_tick(cpu_t*);
 void cpu_destroy(cpu_t*);
 void cpu_dump(cpu_t*);
+
+} /*namespace remu*/
 
 #endif /* REMU_CPU_H */
 

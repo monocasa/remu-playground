@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_MBOX_H
 #define REMU_BCM2835_MBOX_H
 
+namespace remu {
+
 class Emulator;
 
 /**
@@ -47,6 +49,8 @@ mbox_is_port(uint32_t addr)
   addr &= ~0x3;
   return MBOX_BASE <= addr && addr <= MBOX_WRITE;
 }
+
+} /*namespace remu*/
 
 #endif /*REMU_BCM2835_MBOX_H*/
 

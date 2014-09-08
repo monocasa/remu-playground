@@ -3,6 +3,8 @@
 
 #include "ioregion.h"
 
+namespace remu {
+
 /**
  * Memory system
  */
@@ -40,6 +42,8 @@ private:
   uint8_t     *data;
   IoMap        iomap;
 };
+
+} /*namesapce remu */
 
 #endif /* REMU_MEMORY_H */
 

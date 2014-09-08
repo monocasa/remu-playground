@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_PERIPHERAL_H
 #define REMU_BCM2835_PERIPHERAL_H
 
+namespace remu {
+
 /**
  * Peripherials state
  */
@@ -73,6 +75,8 @@ private:
   /* UART DLAB */
   int uart_dlab;
 };
+
+} /*namespace remu*/
 
 #endif /* REMU_BCM2835_PERIPHERAL_H */
 

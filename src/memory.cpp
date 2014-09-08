@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+namespace remu {
+
 /**
  * Checks whether a port is a dma control port
  */
@@ -317,4 +319,6 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
 
   emu->error("Out of bounds memory access at address 0x%08x", addr);
 }
+
+} /*namespace remu*/
 

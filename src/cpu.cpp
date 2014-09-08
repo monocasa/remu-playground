@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 /**
  * Checks the condition and returns 1 if the instruction should be executed
  *
@@ -1767,4 +1769,6 @@ cpu_dump(cpu_t* cpu)
   reg = cpu->cpsr.r & (~0x1F);
   printf("CPSR: %10d (0x%08x)\n", reg, reg);
 }
+
+} /*namespace remu*/
 

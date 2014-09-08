@@ -1,6 +1,8 @@
 #include "common.h"
 #include <sys/time.h>
 
+namespace remu {
+
 Emulator::Emulator(const EmulatorOptions &opt)
   : err_msg( nullptr )
   , fb(opt.mem_size)
@@ -257,4 +259,6 @@ void Emulator::fatal(const char * fmt, ...)
 
   longjmp(err_jmp, 1);
 }
+
+} /*namespace remu */
 

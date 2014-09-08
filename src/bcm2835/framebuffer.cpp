@@ -1,5 +1,7 @@
 #include "common.h"
 
+namespace remu {
+
 Framebuffer::Framebuffer(size_t mem_size)
   : emu(nullptr)
   , gpio(nullptr)
@@ -433,4 +435,6 @@ fb_is_buffer(Framebuffer *fb, uint32_t address)
 
   return fb->fb_address <= address && address < fb->fb_address + fb->fb_size;
 }
+
+} /*namespace remu*/
 

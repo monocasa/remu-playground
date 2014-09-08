@@ -1,6 +1,8 @@
 #ifndef REMU_OPCODE_H
 #define REMU_OPCODE_H
 
+namespace remu {
+
 /**
  * Multiply long encoding
  */
@@ -225,6 +227,8 @@ typedef struct
   uint32_t comment: 24;
   uint32_t        : 8;
 } op_swi_t;
+
+} /*namespace remu*/
 
 #endif /* REMU_OPCODE_H */
 

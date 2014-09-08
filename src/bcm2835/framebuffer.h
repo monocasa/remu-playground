@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
+namespace remu {
+
 class Gpio;
 class KeyListener;
 
@@ -76,6 +78,8 @@ void fb_request(Framebuffer*, uint32_t address);
 void fb_write_word(Framebuffer*, uint32_t address, uint16_t data);
 void fb_write_dword(Framebuffer*, uint32_t address, uint32_t data);
 int  fb_is_buffer(Framebuffer*, uint32_t address);
+
+} /*namespace remu*/
 
 #endif /* REMU_BCM2835_FRAMEBUFFER_H */
 

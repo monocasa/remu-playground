@@ -3,6 +3,8 @@
 
 #include "emulator.h"
 
+namespace remu {
+
 class RPiEmulator : public Emulator
 {
 public:
@@ -10,6 +12,8 @@ public:
     : Emulator(opt)
   { }
 };
+
+} /*namespace remu*/
 
 #endif /*REMU_BCM2835_RPIEMULATOR_H*/
 

@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-class TestIoRegion : public IoRegion
+class TestIoRegion : public remu::IoRegion
 {
 public:
   TestIoRegion(uint32_t base, uint32_t length)
@@ -28,7 +28,7 @@ TEST(IoMap, Init)
 {
   TestIoRegion region1(0x100, 0x20);
   TestIoRegion region2(0x10, 0x40);
-  IoMap iomap;
+  remu::IoMap iomap;
 
   iomap.addRegion(&region1);
   iomap.addRegion(&region2);

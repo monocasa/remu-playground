@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <vector>
 
+namespace remu {
+
 class Emulator;
 class Memory;
 class GpioListener;
@@ -126,6 +128,8 @@ private:
   std::vector<gpio_port_t> ports;
   GpioListener *listener;
 };
+
+} /*namespace remu*/
 
 #endif /* REMU_BCM2835_GPIO_H */
 

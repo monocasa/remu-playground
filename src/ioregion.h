@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <list>
 
+namespace remu {
+
 class IoRegion
 {
 public:
@@ -48,6 +50,8 @@ public:
 private:
   std::list<IoRegion*> regions;
 };
+
+} /*namespace remu*/
 
 #endif /*REMU_IOTREE_H*/
 
