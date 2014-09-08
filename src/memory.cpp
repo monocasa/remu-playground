@@ -242,10 +242,10 @@ void Memory::writeWordLe(uint32_t addr, uint16_t value)
     return;
   }
 
-  /* Framebuffer */
-  if (fb_is_buffer(&emu->fb, addr))
-  {
-    fb_write_word(&emu->fb, addr, value);
+  /* Grab relevant IoRegion and call it if registered */
+  IoRegion *ioregion = iomap.getRegionForAddr(addr);
+  if (ioregion) {
+    ioregion->writeIo(addr, value, sizeof(uint16_t));
     return;
   }
 
@@ -282,13 +282,6 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
   if (mbox_is_port(addr))
   {
     mbox_write(&emu->mbox, addr, value);
-    return;
-  }
-
-  /* Framebuffer */
-  if (fb_is_buffer(&emu->fb, addr))
-  {
-    fb_write_dword(&emu->fb, addr, value);
     return;
   }
 

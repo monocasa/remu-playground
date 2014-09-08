@@ -35,6 +35,7 @@ typedef union
  * Framebuffer data
  */
 class Framebuffer : public KeyDispatcher
+                  , public IoRegion
 {
 public:
   Framebuffer(size_t mem_size);
@@ -45,7 +46,12 @@ public:
   /* Emulator reference */
   Emulator     *emu;
   Memory       *mem;
+  Gpio         *gpio;
   const size_t  mem_size;
+
+  /* IoRegion overrides */
+  uint64_t readIo(uint64_t addr, unsigned int size) override final;
+  void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -70,9 +76,6 @@ void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
 void fb_destroy(Framebuffer*);
 void fb_dump(Framebuffer*);
 void fb_request(Framebuffer*, uint32_t address);
-void fb_write_word(Framebuffer*, uint32_t address, uint16_t data);
-void fb_write_dword(Framebuffer*, uint32_t address, uint32_t data);
-int  fb_is_buffer(Framebuffer*, uint32_t address);
 
 } /*namespace remu*/
 

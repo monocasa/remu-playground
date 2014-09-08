@@ -1,4 +1,5 @@
 #include "common.h"
+#include "emulationexception.h"
 
 namespace remu {
 
@@ -33,11 +34,7 @@ fb_init(Framebuffer* fb, Emulator* emu, Memory *mem)
   fb->emu = emu;
   fb->mem = mem;
 
-  /* If not in graphic mode, do not create a window */
-  if (!fb->emu->isGraphicsEnabled())
-  {
-    return;
-  }
+  mem->addRegion(fb);
 
   /* Create the window */
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -322,6 +319,9 @@ fb_request(Framebuffer *fb, uint32_t addr)
   fb->width = req.fb.virt_width;
   fb->height = req.fb.virt_height;
 
+  fb->base = fb->fb_address;
+  fb->length = fb->fb_size;
+
   assert(fb->framebuffer);
   memset(fb->framebuffer, 0, fb->fb_size);
 
@@ -338,62 +338,34 @@ fb_request(Framebuffer *fb, uint32_t addr)
   fb->surface = SDL_SetVideoMode(fb->width, fb->height, fb->depth, SDL_SWSURFACE);
 }
 
-void
-fb_write_word(Framebuffer* fb, uint32_t address, uint16_t data)
+uint64_t Framebuffer::readIo(uint64_t addr, unsigned int size)
 {
-  uint32_t addr;
-
-  assert(fb);
-  assert(fb->emu->isGraphicsEnabled());
-  assert(fb->framebuffer);
-
-  addr = address - fb->fb_address;
-  fb->framebuffer[addr + 0] = (data >> 0) & 0xFF;
-  fb->framebuffer[addr + 1] = (data >> 8) & 0xFF;
+  throw EmulationException("Read unimplemented for framebuffer @ %08llx:%xB", addr, size);
 }
 
-/**
- * Handles a write to framebuffer data
- *
- * @param fb      Framebuffer structure
- * @param address Address of the pixel
- * @param data    Data to be written to the buffer
- */
-void
-fb_write_dword(Framebuffer* fb, uint32_t address, uint32_t data)
+void Framebuffer::writeIo(uint64_t address, uint64_t val, unsigned int size)
 {
-  uint32_t addr;
+  switch(size) {
+    case sizeof(uint16_t): {
+      const uint32_t addr = address - fb_address;
+      framebuffer[addr + 0] = (val >> 0) & 0xFF;
+      framebuffer[addr + 1] = (val >> 8) & 0xFF;
+      return;
+    }
 
-  assert(fb);
-  assert(fb->emu->isGraphicsEnabled());
-  assert(fb->framebuffer);
+    case sizeof(uint32_t): {
+      const uint32_t addr = address - fb_address;
+      framebuffer[addr + 0] = (val >> 0) & 0xFF;
+      framebuffer[addr + 1] = (val >> 8) & 0xFF;
+      framebuffer[addr + 2] = (val >> 16) & 0xFF;
+      framebuffer[addr + 3] = (val >> 24) & 0xFF;
+      return;
+    }
 
-  addr = address - fb->fb_address;
-  fb->framebuffer[addr + 0] = (data >> 0) & 0xFF;
-  fb->framebuffer[addr + 1] = (data >> 8) & 0xFF;
-  fb->framebuffer[addr + 2] = (data >> 16) & 0xFF;
-  fb->framebuffer[addr + 3] = (data >> 24) & 0xFF;
-}
-
-/**
- * Checks whether an address is in the memory range of the framebuffer
- *
- * @param fb      Framebuffer structure
- * @param address Query address
- * @return        True if address is in range
- */
-int
-fb_is_buffer(Framebuffer *fb, uint32_t address)
-{
-  assert(fb);
-
-  /* Graphic mode must be enabled */
-  if (!fb->emu->isGraphicsEnabled())
-  {
-    return 0;
+    default: {
+      throw EmulationException("Read unimplemented for framebuffer @ %08lx:%xB", address, size);
+    }
   }
-
-  return fb->fb_address <= address && address < fb->fb_address + fb->fb_size;
 }
 
 } /*namespace remu*/
