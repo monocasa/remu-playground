@@ -11,6 +11,7 @@ namespace remu {
 class Emulator;
 class Memory;
 class GpioListener;
+class Ui;
 
 /**
  * GPIO emulation

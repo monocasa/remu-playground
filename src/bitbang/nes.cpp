@@ -1,6 +1,8 @@
-#include "common.h"
+#include "bitbang/nes.h"
+#include "gpioblock.h"
+#include "keydispatcher.h"
 
-namespace remu {
+namespace remu { namespace bitbang {
 
 Nes::Nes(Ui &ui, GpioBlock &gpio, KeyDispatcher &kd)
   : ui(ui)
@@ -88,5 +90,5 @@ void Nes::writeButton(uint32_t button)
   gpio.setPortState(NES_GPIO_PORT_DATA, state[button] ? 0 : 1);
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bitbang*/
 

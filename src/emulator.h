@@ -5,6 +5,10 @@
 
 namespace remu {
 
+namespace bitbang {
+class Nes;
+} /*namespace bitbang*/
+
 struct EmulatorOptions
 {
   EmulatorOptions()
@@ -81,7 +85,7 @@ public:
   Peripheral   *pr;
   Vfp           vfp;
 private:
-  Nes          *nes;
+  bitbang::Nes *nes;
 
 private:
   uint64_t getTime() const;

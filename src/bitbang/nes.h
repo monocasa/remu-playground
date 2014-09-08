@@ -1,14 +1,16 @@
 #ifndef REMU_NES_H
 #define REMU_NES_H
 
-#include "keydispatcher.h"
 #include "keylistener.h"
 #include "gpiolistener.h"
 
 namespace remu {
-
 class GpioBlock;
+class KeyDispatcher;
 class Ui;
+} /*namespace remu*/
+
+namespace remu { namespace bitbang {
 
 class Nes : public KeyListener,
             public GpioListener
@@ -52,7 +54,7 @@ private:
   SDLKey binding[NES_BUTTON_COUNT];
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bitbang*/
 
 #endif /* REMU_NES_H */
 

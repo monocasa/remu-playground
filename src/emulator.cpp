@@ -1,3 +1,4 @@
+#include "bitbang/nes.h"
 #include "common.h"
 #include "emulationexception.h"
 #include <sys/time.h>
@@ -46,7 +47,7 @@ void Emulator::init()
   pr = new Peripheral(*this);
 
   if( nes_enabled ) {
-    nes = new Nes(*this, *gpio, fb);
+    nes = new bitbang::Nes(*this, *gpio, fb);
   }
 }
 

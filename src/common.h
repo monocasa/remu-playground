@@ -34,7 +34,6 @@ class Emulator;
 #include "opcode.h"
 #include "vfp.h"
 #include "cpu.h"
-#include "nes.h"
 #include "bcm2835/gpio.h"
 #include "bcm2835/mbox.h"
 #include "bcm2835/framebuffer.h"
