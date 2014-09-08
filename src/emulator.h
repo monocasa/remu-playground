@@ -84,8 +84,6 @@ public:
   Mbox          mbox;
   Peripheral   *pr;
   Vfp           vfp;
-private:
-  bitbang::Nes *nes;
 
 private:
   uint64_t getTime() const;

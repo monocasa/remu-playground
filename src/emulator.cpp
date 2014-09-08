@@ -28,7 +28,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  delete nes;
   delete pr;
   delete gpio;
   fb_destroy(&fb);
@@ -45,10 +44,6 @@ void Emulator::init()
   vfp_init(&vfp, this);
   fb_init(&fb, this, &memory);
   pr = new Peripheral(*this);
-
-  if( nes_enabled ) {
-    nes = new bitbang::Nes(*this, *gpio, fb);
-  }
 }
 
 /**

@@ -2,6 +2,7 @@
 #define REMU_BCM2835_RPIEMULATOR_H
 
 #include "bitbang/button.h"
+#include "bitbang/nes.h"
 #include "emulator.h"
 
 namespace remu {
@@ -21,12 +22,23 @@ public:
                 bitbang::Button(*gpio, fb, opt.gpio_test_offset + 7, SDLK_KP7),
                 bitbang::Button(*gpio, fb, opt.gpio_test_offset + 8, SDLK_KP8),
                 bitbang::Button(*gpio, fb, opt.gpio_test_offset + 9, SDLK_KP9) }
-  { }
+    , nes(nullptr)
+  {
+    if(opt.nes_enabled) {
+      nes = new bitbang::Nes(*this, *gpio, fb);
+    }
+  }
+
+  virtual ~RPiEmulator()
+  {
+    delete nes;
+  }
 
 private:
   static const int NUM_BUTTONS = 10;
 
   bitbang::Button buttons[NUM_BUTTONS];
+  bitbang::Nes   *nes;
 };
 
 } /*namespace remu*/
