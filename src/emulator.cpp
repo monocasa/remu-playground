@@ -128,7 +128,7 @@ void Emulator::tick()
     uint64_t now = getTime();
     if ((now - last_refresh) > frame_time)
     {
-      fb_tick(&fb);
+      fb.tick();
       last_refresh = now;
     }
   }

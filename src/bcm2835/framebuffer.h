@@ -38,6 +38,8 @@ public:
   Framebuffer(size_t mem_size);
   virtual ~Framebuffer() = default;
 
+  void tick();
+
   /* Emulator reference */
   Emulator     *emu;
   Memory       *mem;
@@ -74,7 +76,6 @@ void fb_add_key_listener(Framebuffer *fb, KeyListener *key_listener)
 void fb_init(Framebuffer*, Emulator*, Memory*, Gpio*);
 void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
 void fb_destroy(Framebuffer*);
-void fb_tick(Framebuffer*);
 void fb_dump(Framebuffer*);
 void fb_request(Framebuffer*, uint32_t address);
 void fb_write_word(Framebuffer*, uint32_t address, uint16_t data);

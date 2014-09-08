@@ -208,14 +208,10 @@ uint32_t fb_get_pixel(Framebuffer* fb, uint32_t x, uint32_t y)
 
 /**
  * Updates the display, displaying the framebuffer and handling events
- *
- * @param fb Reference to the framebuffer structure
  */
-void
-fb_tick(Framebuffer* fb)
+void Framebuffer::tick()
 {
-  assert(fb);
-  assert(fb->emu->isGraphicsEnabled());
+  assert(emu->isGraphicsEnabled());
 
   /* Handle all SDL events */
   SDL_Event event;
@@ -223,7 +219,7 @@ fb_tick(Framebuffer* fb)
   {
     if (event.type == SDL_QUIT)
     {
-      fb->emu->terminate();
+      emu->terminate();
     }
 
     /* Route keyboard presses to the NES module if enabled */
@@ -234,12 +230,12 @@ fb_tick(Framebuffer* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->gpio->setPortState(fb->emu->getGpioTestOffset() + port, 1);
+          gpio->setPortState(emu->getGpioTestOffset() + port, 1);
           break;
         }
         default:
         {
-          for (auto listener : fb->key_listeners) {
+          for (auto listener : key_listeners) {
             listener->onKeyDown(event.key.keysym.sym);
           }
           break;
@@ -253,12 +249,12 @@ fb_tick(Framebuffer* fb)
         case SDLK_1 ... SDLK_9:
         {
           int port = (int)event.key.keysym.sym - SDLK_1;
-          fb->gpio->setPortState(fb->emu->getGpioTestOffset() + port, 0);
+          gpio->setPortState(emu->getGpioTestOffset() + port, 0);
           break;
         }
         default:
         {
-          for (auto listener : fb->key_listeners) {
+          for (auto listener : key_listeners) {
             listener->onKeyUp(event.key.keysym.sym);
           }
           break;
@@ -268,28 +264,28 @@ fb_tick(Framebuffer* fb)
   }
 
   /* Lock the surface */
-  if (SDL_MUSTLOCK(fb->surface))
+  if (SDL_MUSTLOCK(surface))
   {
-    SDL_LockSurface(fb->surface);
+    SDL_LockSurface(surface);
   }
 
   /* Copy the pixels to SDL */
-  for (uint32_t y = 0; y < fb->height; ++y)
+  for (uint32_t y = 0; y < height; ++y)
   {
-    for (uint32_t x = 0; x < fb->width; ++x)
+    for (uint32_t x = 0; x < width; ++x)
     {
-      put_pixel(fb->surface, x, y, fb_get_pixel(fb, x, y));
+      put_pixel(surface, x, y, fb_get_pixel(this, x, y));
     }
   }
 
   /* Unlock the surface */
-  if (SDL_MUSTLOCK(fb->surface))
+  if (SDL_MUSTLOCK(surface))
   {
-    SDL_UnlockSurface(fb->surface);
+    SDL_UnlockSurface(surface);
   }
 
   /* Display to screen */
-  SDL_Flip(fb->surface);
+  SDL_Flip(surface);
 }
 
 /**
