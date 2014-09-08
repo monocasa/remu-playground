@@ -1,5 +1,5 @@
 #ifndef REMU_KEYDISPATCHER_H
-#define REMU_KEYDISAPTCHER_H
+#define REMU_KEYDISPATCHER_H
 
 #include <SDL/SDL.h>
 

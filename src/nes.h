@@ -1,6 +1,7 @@
 #ifndef REMU_NES_H
 #define REMU_NES_H
 
+#include "keydispatcher.h"
 #include "keylistener.h"
 #include "gpiolistener.h"
 
@@ -14,7 +15,7 @@ class Nes : public KeyListener,
             public GpioListener
 {
 public:
-  Nes(Ui& ui, Gpio &gpio, Framebuffer *fb);
+  Nes(Ui& ui, Gpio &gpio, KeyDispatcher &kd);
   virtual ~Nes() = default;
 
   void onKeyUp(SDLKey key) override final;

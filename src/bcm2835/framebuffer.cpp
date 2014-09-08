@@ -235,9 +235,7 @@ void Framebuffer::tick()
         }
         default:
         {
-          for (auto listener : key_listeners) {
-            listener->onKeyDown(event.key.keysym.sym);
-          }
+          dispatchKeyDown(event.key.keysym.sym);
           break;
         }
       }
@@ -254,9 +252,7 @@ void Framebuffer::tick()
         }
         default:
         {
-          for (auto listener : key_listeners) {
-            listener->onKeyUp(event.key.keysym.sym);
-          }
+          dispatchKeyUp(event.key.keysym.sym);
           break;
         }
       }

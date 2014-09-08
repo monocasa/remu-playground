@@ -2,7 +2,7 @@
 
 namespace remu {
 
-Nes::Nes(Ui &ui, Gpio &gpio, Framebuffer *fb)
+Nes::Nes(Ui &ui, Gpio &gpio, KeyDispatcher &kd)
   : ui(ui)
   , gpio(gpio)
   , last_latch(0)
@@ -23,7 +23,7 @@ Nes::Nes(Ui &ui, Gpio &gpio, Framebuffer *fb)
   binding[NES_DOWN]   = SDLK_s;
 
   gpio.setListener(this);
-  fb_add_key_listener(fb, this);
+  kd.addKeyListener(this);
 }
 
 void Nes::onKeyDown(SDLKey key)

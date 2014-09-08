@@ -1,6 +1,8 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
+#include "keydispatcher.h"
+
 #include <vector>
 
 namespace remu {
@@ -32,7 +34,7 @@ typedef union
 /**
  * Framebuffer data
  */
-class Framebuffer
+class Framebuffer : public KeyDispatcher
 {
 public:
   Framebuffer(size_t mem_size);
@@ -45,9 +47,6 @@ public:
   Memory       *mem;
   Gpio         *gpio;
   const size_t  mem_size;
-
-  /* KeyListeners */
-  std::vector<KeyListener*>  key_listeners;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -66,12 +65,6 @@ public:
   uint32_t      height;
   uint32_t      depth;
 };
-
-static inline
-void fb_add_key_listener(Framebuffer *fb, KeyListener *key_listener)
-{
-    fb->key_listeners.push_back(key_listener);
-}
 
 void fb_init(Framebuffer*, Emulator*, Memory*, Gpio*);
 void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
