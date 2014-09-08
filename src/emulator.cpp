@@ -1,11 +1,11 @@
 #include "common.h"
+#include "emulationexception.h"
 #include <sys/time.h>
 
 namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
-  : err_msg( nullptr )
-  , fb(opt.mem_size)
+  : fb(opt.mem_size)
   , memory(this, opt.mem_size)
   , gpio(new Gpio(*this, memory))
   , mbox(this)
@@ -72,7 +72,7 @@ void Emulator::load()
   /* Check for buffer overflow */
   if(start_addr + file_size > mem_size)
   {
-    fatal("Not enough memory for kernel");
+    throw EmulationException("Not enough memory for kernel");
   }
 
   /* Copy instructions into memory and error if incomplete */
@@ -150,36 +150,12 @@ void Emulator::dump()
  */
 void Emulator::info(const char * fmt, ...)
 {
-  int size = 100;
-  int n;
-  char* str = NULL;
-  va_list ap;
-
-  if (quiet)
-  {
-    return;
-  }
-
-  str = (char*)malloc(size);
-  assert(str);
-
-  while (1)
-  {
-    va_start(ap, fmt);
-    n = vsnprintf(str, size, fmt, ap);
-    va_end(ap);
-
-    if (-1 < n && n < size)
-    {
-      break;
-    }
-
-    size = n > -1 ? (n + 1) : (size << 1);
-    str = (char*)realloc(err_msg, size);
-    assert(str);
-  }
-
-  printf("Info: %s\n", str);
+  fprintf(stderr, "Info: ");
+  va_list va;
+  va_start(va, fmt);
+  vfprintf(stderr, fmt, va);
+  fprintf(stderr, "\n");
+  va_end(va);
 }
 
 /**
@@ -189,75 +165,12 @@ void Emulator::info(const char * fmt, ...)
  */
 void Emulator::error(const char * fmt, ...)
 {
-  int size = 100, n;
-  char* tmp = NULL;
-  va_list ap;
-
-  if (quiet)
-  {
-    return;
-  }
-
-  err_msg = (char*)malloc(size);
-  assert(err_msg);
-
-  while (1)
-  {
-    va_start(ap, fmt);
-    n = vsnprintf(err_msg, size, fmt, ap);
-    va_end(ap);
-
-    if (-1 < n && n < size)
-    {
-      break;
-    }
-
-    size = n > -1 ? (n + 1) : (size << 1);
-    tmp = (char*)realloc(err_msg, size);
-    assert(tmp);
-
-    err_msg = tmp;
-  }
-
-  printf("Error: %s\n", err_msg);
-}
-
-/**
- * Kills the emulator, printing a message to stdout
- *
- * @param fmt Printf-like format string
- */
-void Emulator::fatal(const char * fmt, ...)
-{
-  int size = 100, n;
-  char * tmp;
-  va_list ap;
-
-  err_msg = (char*)malloc(size);
-  assert(err_msg);
-
-  while (1)
-  {
-    va_start(ap, fmt);
-    n = vsnprintf(err_msg, size, fmt, ap);
-    va_end(ap);
-
-    if (-1 < n && n < size)
-    {
-      break;
-    }
-
-    size = n > -1 ? (n + 1) : (size << 1);
-    if (!(tmp = (char*)realloc(err_msg, size)))
-    {
-      free(err_msg);
-      break;
-    }
-
-    err_msg = tmp;
-  }
-
-  longjmp(err_jmp, 1);
+  fprintf(stderr, "Error: ");
+  va_list va;
+  va_start(va, fmt);
+  vfprintf(stderr, fmt, va);
+  fprintf(stderr, "\n");
+  va_end(va);
 }
 
 } /*namespace remu */

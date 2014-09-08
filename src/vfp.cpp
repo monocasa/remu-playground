@@ -1,4 +1,5 @@
 #include "common.h"
+#include "emulationexception.h"
 
 namespace remu {
 
@@ -269,7 +270,7 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
     }
     default:
     {
-      vfp->emu->fatal("Undefined VFP data proc instruction");
+      throw EmulationException("Undefined VFP data proc instruction");
     }
   }
 
@@ -408,7 +409,7 @@ vfp_data_transfer(Vfp* vfp, op_coproc_data_transfer_t* instr)
     }
     default:
     {
-      vfp->emu->fatal("Unimplemented VFP data transfer instruction");
+      throw EmulationException("Unimplemented VFP data transfer instruction");
     }
   }
 }
@@ -458,7 +459,7 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        vfp->emu->fatal("Unrecognised VFP system register");
+        throw EmulationException("Unrecognised VFP system register");
       }
     }
 
@@ -472,7 +473,7 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       else
       {
-        vfp->emu->fatal("Cannot copy to r15");
+        throw EmulationException("Cannot copy to r15");
       }
     }
     else
@@ -509,7 +510,7 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        vfp->emu->fatal("Unrecognised VFP system register");
+        throw EmulationException("Unrecognised VFP system register");
       }
     }
   }
@@ -557,7 +558,7 @@ vfp_reg_transfer(Vfp* vfp, op_coproc_reg_transfer_t* instr)
     }
     default:
     {
-      vfp->emu->fatal("Unimplemented VFP reg transfer instruction");
+      throw EmulationException("Unimplemented VFP reg transfer instruction");
     }
   }
 }

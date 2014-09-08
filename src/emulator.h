@@ -48,8 +48,6 @@ public:
   void info(const char *fmt, ...) override final;
   void error(const char *fmt, ...) override final;
 
-  void fatal(const char *fmt, ...) __attribute__((noreturn));
-
   void dump();
 
   void terminate() {
@@ -71,10 +69,6 @@ public:
   int getGpioTestOffset() const {
     return gpio_test_offset;
   }
-
-  /* Error handling */
-  jmp_buf       err_jmp;
-  char*         err_msg;
 
   /* Modules */
   Framebuffer   fb;

@@ -155,30 +155,21 @@ main(int argc, char **argv)
     return EXIT_FAILURE;
   }
 
-  remu::RPiEmulator emu(opt);
+  try {
+    remu::RPiEmulator emu(opt);
 
-  /* In case of an error, code will jump here */
-  if (setjmp(emu.err_jmp))
-  {
-    if (emu.err_msg)
+    /* Run the emulator */
+    emu.init();
+    emu.load();
+
+    while (emu.isRunning())
     {
-      fprintf(stderr, "ERROR: %s\n", emu.err_msg);
+      emu.tick();
     }
+  } catch(const std::exception &exc) {
+    fprintf(stderr, "Fatal Error:  %s\n", exc.what());
+
     return EXIT_FAILURE;
-  }
-
-  /* Run the emulator */
-  emu.init();
-  emu.load();
-
-  while (emu.isRunning())
-  {
-    emu.tick();
-  }
-
-  if (!opt.quiet)
-  {
-    emu.dump();
   }
 
   return EXIT_SUCCESS;
