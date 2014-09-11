@@ -75,9 +75,9 @@ public:
   }
 
   /* Modules */
-  Framebuffer   fb;
   Memory        memory;
   Cpu           cpu;
+  Framebuffer   fb;
 protected:
   Gpio         *gpio;
 public:

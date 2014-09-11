@@ -6,8 +6,8 @@
 namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
-  : fb(opt.mem_size)
-  , memory(this, opt.mem_size)
+  : memory(this, opt.mem_size)
+  , fb(opt.mem_size)
   , gpio(new Gpio(*this, memory))
   , mbox(this)
   , terminated( false )
