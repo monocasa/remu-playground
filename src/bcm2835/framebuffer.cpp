@@ -343,18 +343,16 @@ uint64_t Framebuffer::readIo(uint64_t addr, unsigned int size)
   throw EmulationException("Read unimplemented for framebuffer @ %08llx:%xB", addr, size);
 }
 
-void Framebuffer::writeIo(uint64_t address, uint64_t val, unsigned int size)
+void Framebuffer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
 {
   switch(size) {
     case sizeof(uint16_t): {
-      const uint32_t addr = address - fb_address;
       framebuffer[addr + 0] = (val >> 0) & 0xFF;
       framebuffer[addr + 1] = (val >> 8) & 0xFF;
       return;
     }
 
     case sizeof(uint32_t): {
-      const uint32_t addr = address - fb_address;
       framebuffer[addr + 0] = (val >> 0) & 0xFF;
       framebuffer[addr + 1] = (val >> 8) & 0xFF;
       framebuffer[addr + 2] = (val >> 16) & 0xFF;
@@ -363,7 +361,7 @@ void Framebuffer::writeIo(uint64_t address, uint64_t val, unsigned int size)
     }
 
     default: {
-      throw EmulationException("Write unimplemented for framebuffer @ %08lx:%xB <- %lx", address, size, val);
+      throw EmulationException("Write unimplemented for framebuffer @ %08lx:%xB <- %lx", addr, size, val);
     }
   }
 }

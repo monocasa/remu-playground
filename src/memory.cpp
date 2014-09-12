@@ -169,7 +169,7 @@ uint32_t Memory::readDwordLe(uint32_t addr)
   /* Grab relevant IoRegion and call it if registered */
   IoRegion *ioregion = iomap.getRegionForAddr(addr);
   if (ioregion) {
-    return ioregion->readIo(addr, sizeof(uint32_t));
+    return ioregion->readIo(addr - ioregion->base, sizeof(uint32_t));
   }
 
   /* Mailbox interface */
@@ -274,7 +274,7 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
   /* Grab relevant IoRegion and call it if registered */
   IoRegion *ioregion = iomap.getRegionForAddr(addr);
   if (ioregion) {
-    ioregion->writeIo(addr, value, sizeof(uint32_t));
+    ioregion->writeIo(addr - ioregion->base, value, sizeof(uint32_t));
     return;
   }
 

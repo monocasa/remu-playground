@@ -40,7 +40,7 @@ uint64_t Gpio::readIo(uint64_t address, unsigned int size)
 
   /* Align the address */
   address &= ~0x3;
-  assert(Gpio::isGpioAddress(address));
+  //assert(Gpio::isGpioAddress(address));
 
   switch (address)
   {
@@ -100,7 +100,7 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
 
   /* Align the address */
   address &= ~0x3;
-  assert(Gpio::isGpioAddress(address));
+  //assert(Gpio::isGpioAddress(address));
 
   /* If nes controller is enabled, write to controller */
   switch (address)
