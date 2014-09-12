@@ -363,7 +363,7 @@ void Framebuffer::writeIo(uint64_t address, uint64_t val, unsigned int size)
     }
 
     default: {
-      throw EmulationException("Read unimplemented for framebuffer @ %08lx:%xB", address, size);
+      throw EmulationException("Write unimplemented for framebuffer @ %08lx:%xB <- %lx", address, size, val);
     }
   }
 }
