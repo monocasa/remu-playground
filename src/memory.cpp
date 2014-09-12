@@ -172,12 +172,6 @@ uint32_t Memory::readDwordLe(uint32_t addr)
     return ioregion->readIo(addr - ioregion->base, sizeof(uint32_t));
   }
 
-  /* Mailbox interface */
-  if (mbox_is_port(addr))
-  {
-    return mbox_read(&emu->mbox, addr);
-  }
-
   /* DMA - just ignore it */
   if (dma_is_port(addr))
   {
@@ -269,13 +263,6 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
   IoRegion *ioregion = iomap.getRegionForAddr(addr);
   if (ioregion) {
     ioregion->writeIo(addr - ioregion->base, value, sizeof(uint32_t));
-    return;
-  }
-
-  /* Mailbox interface */
-  if (mbox_is_port(addr))
-  {
-    mbox_write(&emu->mbox, addr, value);
     return;
   }
 

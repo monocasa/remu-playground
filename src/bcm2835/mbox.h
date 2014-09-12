@@ -1,23 +1,12 @@
 #ifndef REMU_BCM2835_MBOX_H
 #define REMU_BCM2835_MBOX_H
 
+#include "ioregion.h"
+
 namespace remu {
 
 class Emulator;
-
-/**
- * List of mailbox register addresses
- */
-typedef enum
-{
-  MBOX_BASE   = 0x2000b880,
-  MBOX_READ   = MBOX_BASE + 0x00,
-  MBOX_POLL   = MBOX_BASE + 0x10,
-  MBOX_SENDER = MBOX_BASE + 0x14,
-  MBOX_STATUS = MBOX_BASE + 0x18,
-  MBOX_CONFIG = MBOX_BASE + 0x1c,
-  MBOX_WRITE  = MBOX_BASE + 0x20
-} mbox_ports_t;
+class Memory;
 
 /**
  * Mailbox structure
@@ -25,30 +14,34 @@ typedef enum
  * are serviced immediately, so the status bits are always set
  * to ready
  */
-class Mbox
+class Mbox : public IoRegion
 {
 public:
-  Mbox(Emulator *emu);
-  virtual ~Mbox() = default;
+  Mbox(Emulator *emu, Memory &mem);
+  virtual ~Mbox();
+
+  uint64_t readIo(uint64_t addr, unsigned int size) override final;
+  void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
+
+  static const uint32_t MBOX_BASE = 0x2000b880;
+
+  /**
+   * List of mailbox register addresses
+   */
+  typedef enum
+  {
+    MBOX_READ   = 0x00,
+    MBOX_POLL   = 0x10,
+    MBOX_SENDER = 0x14,
+    MBOX_STATUS = 0x18,
+    MBOX_CONFIG = 0x1c,
+    MBOX_WRITE  = 0x20,
+  } mbox_ports_t;
 
   Emulator   *emu;
+  Memory     &mem;
   uint8_t     last_channel;
 };
-
-uint32_t mbox_read(Mbox *mbox, uint32_t addr);
-void     mbox_write(Mbox *mbox, uint32_t addr, uint32_t val);
-
-/**
- * Checks whether a given address is a mailbox port.
- * It seems that the CPU ignores the last 4 bits of the address, so
- * all writes are aligned on a 4 byte boundary.
- */
-static inline int
-mbox_is_port(uint32_t addr)
-{
-  addr &= ~0x3;
-  return MBOX_BASE <= addr && addr <= MBOX_WRITE;
-}
 
 } /*namespace remu*/
 
