@@ -178,12 +178,6 @@ uint32_t Memory::readDwordLe(uint32_t addr)
     return mbox_read(&emu->mbox, addr);
   }
 
-  /* Peripherals */
-  if (Peripheral::isPeripheralAddress(addr))
-  {
-    return emu->pr->readPort(addr);
-  }
-
   /* DMA - just ignore it */
   if (dma_is_port(addr))
   {
@@ -282,13 +276,6 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
   if (mbox_is_port(addr))
   {
     mbox_write(&emu->mbox, addr, value);
-    return;
-  }
-
-  /* Peripherals */
-  if (Peripheral::isPeripheralAddress(addr))
-  {
-    emu->pr->writePort(addr, value);
     return;
   }
 

@@ -43,7 +43,7 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   fb_init(&fb, this, &memory);
-  pr = new Peripheral(*this);
+  pr = new Peripheral(*this, memory);
 }
 
 /**

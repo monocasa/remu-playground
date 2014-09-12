@@ -1,13 +1,17 @@
 #include "common.h"
 
+#include "emulationexception.h"
+#include "memory.h"
+
 namespace remu {
 
 /**
  * Initialises peripherials
  * @param emu   Reference to the emulator structure
  */
-Peripheral::Peripheral(Ui &ui)
+Peripheral::Peripheral(Ui &ui, Memory &mem)
   : ui(ui)
+  , mem(mem)
   , spi1_enable(false)
   , spi2_enable(false)
   , irq_tx(false)
@@ -15,15 +19,27 @@ Peripheral::Peripheral(Ui &ui)
   , uart_enable(false)
   , uart_bits(7)
   , uart_dlab(0)
-{ }
+{
+  mem.addRegion(this);
+}
+
+Peripheral::~Peripheral()
+{
+  mem.removeRegion(this);
+}
 
 /**
  * Handles a write to a peripherial register
  * @param addr  Port number
  * @param data  Data received
  */
-void Peripheral::writePort(uint32_t addr, uint8_t data)
+void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
 {
+  if (size != sizeof(uint32_t))
+  {
+    throw EmulationException("Unknown peripheral write to addr %08lx:%dB <- %lx", addr, size, data);
+  }
+
   switch (addr)
   {
     case AUX_ENABLES:
@@ -84,8 +100,13 @@ void Peripheral::writePort(uint32_t addr, uint8_t data)
  * @param addr Port address
  * @return     Read value
  */
-uint32_t Peripheral::readPort(uint32_t addr)
+uint64_t Peripheral::readIo(uint64_t addr, unsigned int size)
 {
+  if (size != sizeof(uint32_t))
+  {
+    throw EmulationException("Unknown peripheral read from %08lx:%dB", addr, size);
+  }
+
   switch (addr)
   {
     case AUX_ENABLES:

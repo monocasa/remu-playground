@@ -1,19 +1,24 @@
 #ifndef REMU_BCM2835_PERIPHERAL_H
 #define REMU_BCM2835_PERIPHERAL_H
 
+#include "ioregion.h"
+
 namespace remu {
+
+class Memory;
+class Ui;
 
 /**
  * Peripherials state
  */
-class Peripheral
+class Peripheral : public IoRegion
 {
 public:
-  Peripheral(Ui &ui);
-  virtual ~Peripheral() = default;
+  Peripheral(Ui &ui, Memory &mem);
+  virtual ~Peripheral();
 
-  void writePort(uint32_t port, uint8_t data);
-  uint32_t readPort(uint32_t port);
+  uint64_t readIo(uint64_t addr, unsigned int size) override final;
+  void writeIo(uint64_t port, uint64_t data, unsigned int size) override final;
 
   /**
    * Checks whether a port is a peripherial or not
@@ -25,34 +30,35 @@ public:
   }
 
 private:
+  static const uint32_t AUX_BASE = 0x20215000;
   /**
    * List of auxiliary peripherial ports
    */
   enum {
-    AUX_BASE           = 0x20215000,
-    AUX_IRQ            = AUX_BASE + 0x00,
-    AUX_ENABLES        = AUX_BASE + 0x04,
-    AUX_MU_IO_REG      = AUX_BASE + 0x40,
-    AUX_MU_IER_REG     = AUX_BASE + 0x44,
-    AUX_MU_IIR_REG     = AUX_BASE + 0x48,
-    AUX_MU_LCR_REG     = AUX_BASE + 0x4C,
-    AUX_MU_MCR_REG     = AUX_BASE + 0x50,
-    AUX_MU_LSR_REG     = AUX_BASE + 0x54,
-    AUX_MU_MSR_REG     = AUX_BASE + 0x58,
-    AUX_MU_SCRATCH     = AUX_BASE + 0x5C,
-    AUX_MU_CNTL_REG    = AUX_BASE + 0x60,
-    AUX_MU_STAT_REG    = AUX_BASE + 0x64,
-    AUX_MU_BAUD_REG    = AUX_BASE + 0x68,
-    AUX_SPI0_CNTL0_REG = AUX_BASE + 0x80,
-    AUX_SPI0_CNTL1_REG = AUX_BASE + 0x84,
-    AUX_SPI0_STAT_REG  = AUX_BASE + 0x88,
-    AUX_SPI0_IO_REG    = AUX_BASE + 0x90,
-    AUX_SPI0_PEEK_REG  = AUX_BASE + 0x94,
-    AUX_SPI1_CNTL0_REG = AUX_BASE + 0xC0,
-    AUX_SPI1_CNTL1_REG = AUX_BASE + 0xC4
+    AUX_IRQ            = 0x00,
+    AUX_ENABLES        = 0x04,
+    AUX_MU_IO_REG      = 0x40,
+    AUX_MU_IER_REG     = 0x44,
+    AUX_MU_IIR_REG     = 0x48,
+    AUX_MU_LCR_REG     = 0x4C,
+    AUX_MU_MCR_REG     = 0x50,
+    AUX_MU_LSR_REG     = 0x54,
+    AUX_MU_MSR_REG     = 0x58,
+    AUX_MU_SCRATCH     = 0x5C,
+    AUX_MU_CNTL_REG    = 0x60,
+    AUX_MU_STAT_REG    = 0x64,
+    AUX_MU_BAUD_REG    = 0x68,
+    AUX_SPI0_CNTL0_REG = 0x80,
+    AUX_SPI0_CNTL1_REG = 0x84,
+    AUX_SPI0_STAT_REG  = 0x88,
+    AUX_SPI0_IO_REG    = 0x90,
+    AUX_SPI0_PEEK_REG  = 0x94,
+    AUX_SPI1_CNTL0_REG = 0xC0,
+    AUX_SPI1_CNTL1_REG = 0xC4
   };
 
-  Ui &ui;
+  Ui     &ui;
+  Memory &mem;
 
   /* True if SPI 1 module is enabled */
   bool spi1_enable;
