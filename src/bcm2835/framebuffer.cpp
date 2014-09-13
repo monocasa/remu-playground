@@ -1,6 +1,9 @@
-#include "common.h"
+#include "bcm2835/framebuffer.h"
 #include "emulationexception.h"
 #include "emulator.h"
+#include "memory.h"
+
+#include <cassert>
 
 namespace remu {
 

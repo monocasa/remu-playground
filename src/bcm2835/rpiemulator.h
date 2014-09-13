@@ -3,8 +3,9 @@
 
 #include "common.h"
 
-#include "bcm2835/peripheral.h"
+#include "bcm2835/framebuffer.h"
 #include "bcm2835/gpio.h"
+#include "bcm2835/peripheral.h"
 #include "bitbang/button.h"
 #include "bitbang/nes.h"
 #include "emulator.h"

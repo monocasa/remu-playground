@@ -9,6 +9,7 @@
 namespace remu {
 
 class Gpio;
+class Emulator;
 class KeyListener;
 class Mbox;
 

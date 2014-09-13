@@ -30,7 +30,6 @@
 #include "cpu.h"
 #include "bcm2835/gpio.h"
 #include "bcm2835/mbox.h"
-#include "bcm2835/framebuffer.h"
 
 #endif /*REMU_COMMON_H */
 
