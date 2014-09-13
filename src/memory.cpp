@@ -44,19 +44,6 @@ void Memory::dump()
 }
 
 /**
- * Frees the memory
- * @param memory Reference to the memory structure
- */
-void
-memory_destroy(Memory* m)
-{
-  if (!m)
-  {
-    return;
-  }
-}
-
-/**
  * Reads a byte from memory
  * @param addr Memory location
  */
