@@ -6,10 +6,8 @@ class TestIoRegion : public remu::IoRegion
 {
 public:
   TestIoRegion(uint32_t base, uint32_t length)
-  {
-    this->base = base;
-    this->length = length;
-  }
+    : IoRegion(base, length)
+  { }
 
   uint64_t readIo(uint64_t offset, unsigned int size) override final {
     (void)offset;

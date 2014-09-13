@@ -10,7 +10,8 @@ namespace remu {
  * @param emu   Reference to the emulator structure
  */
 Peripheral::Peripheral(Ui &ui, Memory &mem)
-  : ui(ui)
+  : IoRegion(AUX_BASE, 0x1000)
+  , ui(ui)
   , mem(mem)
   , spi1_enable(false)
   , spi2_enable(false)

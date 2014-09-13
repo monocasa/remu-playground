@@ -4,7 +4,8 @@
 namespace remu {
 
 Framebuffer::Framebuffer(size_t mem_size)
-  : emu(nullptr)
+  : IoRegion(0, 0)
+  , emu(nullptr)
   , mem_size(mem_size)
   , framebuffer(nullptr)
   , fb_bpp(0)
