@@ -5,7 +5,7 @@
 
 namespace remu {
 
-class Emulator;
+class Ui;
 class Memory;
 
 /**
@@ -44,7 +44,7 @@ public:
     int channelNum;
   };
 
-  Mbox(Emulator *emu, Memory &mem);
+  Mbox(Ui &ui, Memory &mem);
   virtual ~Mbox();
 
   void addChannel(Channel *channel);
@@ -71,7 +71,7 @@ private:
     MBOX_WRITE  = 0x20,
   } mbox_ports_t;
 
-  Emulator   *emu;
+  Ui         &ui;
   Memory     &mem;
   uint8_t     last_channel;
   Channel    *channels[NUM_CHANNELS];

@@ -7,7 +7,7 @@ namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
-  , mbox(this, memory)
+  , mbox(*this, memory)
   , fb(opt.mem_size, *this, memory, mbox)
   , terminated( false )
   , image( opt.image )

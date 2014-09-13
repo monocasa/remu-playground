@@ -7,9 +7,9 @@ namespace remu {
 /**
  * Initialises the mailbox
  */
-Mbox::Mbox(Emulator *emu, Memory &mem)
+Mbox::Mbox(Ui &ui, Memory &mem)
   : IoRegion(MBOX_BASE, 0x24)
-  , emu(emu)
+  , ui(ui)
   , mem(mem)
   , last_channel(0x0)
 {
@@ -96,7 +96,7 @@ uint64_t Mbox::readIo(uint64_t addr, unsigned int size)
 
     default:
     {
-      emu->error("Mailbox unimplemented 0x%08x", addr);
+      ui.error("Mailbox unimplemented 0x%08x", addr);
       return 0;
     }
   }
@@ -131,14 +131,14 @@ void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
       }
       else
       {
-        emu->error("Wrong channel 0x%x", channel);
+        ui.error("Wrong channel 0x%x", channel);
       }
     }
     break;
 
     default:
     {
-      emu->error("Mailbox unimplemented 0x%08x", addr);
+      ui.error("Mailbox unimplemented 0x%08x", addr);
     }
     break;
   }
