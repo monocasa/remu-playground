@@ -1,5 +1,5 @@
-#include "common.h"
-
+#include "bcm2835/gpio.h"
+#include "memory.h"
 #include "ui.h"
 
 namespace remu {

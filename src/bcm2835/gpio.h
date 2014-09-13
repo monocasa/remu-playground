@@ -2,8 +2,10 @@
 #define REMU_BCM2835_GPIO_H
 
 #include "gpioblock.h"
+#include "ioregion.h"
 
 #include <cstdint>
+#include <cstdlib>
 #include <vector>
 
 namespace remu {
