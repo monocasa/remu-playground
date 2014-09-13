@@ -31,7 +31,6 @@ Emulator::~Emulator()
 void Emulator::init()
 {
   cpu_init(&cpu, this);
-  vfp_init(&cpu);
 }
 
 /**

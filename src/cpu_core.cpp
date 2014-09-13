@@ -1589,6 +1589,9 @@ cpu_init(Cpu* cpu, Emulator* emu)
 
   /* Load start address */
   cpu_write_register(cpu, PC, emu->getStartAddr());
+
+  /* Vfp init */
+  vfp_init(cpu);
 }
 
 /**
