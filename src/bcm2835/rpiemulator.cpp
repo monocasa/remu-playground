@@ -72,15 +72,13 @@ void RPiEmulator::tick()
 
   /* When graphics are emulated, we execute a screen refresh after 34ms has
    * passed (30 frames per second) */
-  uint32_t frame_time = 20;
-  if (isGraphicsEnabled())
+  const uint32_t frame_time = 20;
+
+  const uint64_t now = getTime();
+  if ((now - last_refresh) > frame_time)
   {
-    uint64_t now = getTime();
-    if ((now - last_refresh) > frame_time)
-    {
-      fb.tick();
-      last_refresh = now;
-    }
+    fb.tick();
+    last_refresh = now;
   }
 }
 

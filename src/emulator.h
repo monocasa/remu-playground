@@ -18,7 +18,6 @@ struct EmulatorOptions
 	: image( nullptr )
     , mem_size( 0 )
     , start_addr( 0 )
-    , graphics( 0 )
     , usage( 0 )
     , quiet( 0 )
     , nes_enabled( 0 )
@@ -29,7 +28,6 @@ struct EmulatorOptions
 
   size_t        mem_size;
   uint32_t      start_addr;
-  int           graphics;
   int           usage;
   int           quiet;
   int           nes_enabled;
@@ -59,10 +57,6 @@ public:
     terminated = true;
   }
 
-  bool isGraphicsEnabled() const {
-    return graphics;
-  }
-
 protected:
   uint64_t getTime() const;
 
@@ -75,7 +69,6 @@ private:
   /* Arguments */
   size_t        mem_size;
   uint32_t      start_addr;
-  int           graphics;
   int           usage;
   int           quiet;
   int           nes_enabled;

@@ -182,8 +182,6 @@ uint32_t Framebuffer::getPixel(uint32_t x, uint32_t y)
  */
 void Framebuffer::tick()
 {
-  assert(emu.isGraphicsEnabled());
-
   /* Handle all SDL events */
   SDL_Event event;
   while (SDL_PollEvent(&event))
@@ -241,14 +239,6 @@ void Framebuffer::request(uint32_t addr)
 
   /* Clear error flag */
   error = false;
-
-  /* Graphic flag must be set*/
-  if (!emu.isGraphicsEnabled())
-  {
-    emu.error("Graphic mode must be enabled for framebuffer");
-    error = true;
-    return;
-  }
 
   /* Check whether address is valid */
   if (addr < 0x40000000)

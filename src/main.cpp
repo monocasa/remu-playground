@@ -29,7 +29,6 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
 {
   struct option options[] =
   {
-    { "graphics",  no_argument,        &opt.graphics,     1 },
     { "help",      no_argument,        &opt.usage,        1 },
     { "quiet",     no_argument,        &opt.quiet,        1 },
     { "nes",       no_argument,        &opt.nes_enabled,  1 },
@@ -51,7 +50,6 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
     switch (c)
     {
       case 'q': opt.quiet = 1; break;
-      case 'g': opt.graphics = 1; break;
       case 'h': opt.usage = 1; break;
       case 'm':
       {
