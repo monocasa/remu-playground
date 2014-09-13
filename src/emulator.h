@@ -56,10 +56,6 @@ public:
     terminated = true;
   }
 
-  bool isNesEnabled() const {
-    return nes_enabled;
-  }
-
   bool isGraphicsEnabled() const {
     return graphics;
   }
