@@ -8,7 +8,6 @@ namespace remu {
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
   , mbox(*this, memory)
-  , fb(opt.mem_size, *this, memory, mbox)
   , terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
@@ -18,7 +17,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , quiet( opt.quiet )
   , nes_enabled( opt.nes_enabled )
   , system_timer_base( getTime() * 1000 )
-  , last_refresh( 0 )
 {
   memset(&cpu,    0, sizeof(cpu));
   memset(&vfp,    0, sizeof(vfp));
@@ -108,19 +106,6 @@ uint64_t Emulator::getSystemTimer() const
 void Emulator::tick()
 {
   cpu_tick(&cpu);
-
-  /* When graphics are emulated, we execute a screen refresh after 34ms has
-   * passed (30 frames per second) */
-  uint32_t frame_time = 20;
-  if (graphics)
-  {
-    uint64_t now = getTime();
-    if ((now - last_refresh) > frame_time)
-    {
-      fb.tick();
-      last_refresh = now;
-    }
-  }
 }
 
 /**

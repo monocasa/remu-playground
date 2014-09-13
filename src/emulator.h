@@ -47,7 +47,7 @@ public:
   void load();
   bool isRunning() const;
   uint64_t getSystemTimer() const;
-  void tick();
+  virtual void tick();
 
   void info(const char *fmt, ...) override final;
   void error(const char *fmt, ...) override final;
@@ -74,12 +74,12 @@ public:
   Memory        memory;
   Cpu           cpu;
   Mbox          mbox;
-  Framebuffer   fb;
   Vfp           vfp;
 
-private:
+protected:
   uint64_t getTime() const;
 
+private:
   int           terminated;
 
   /* Kernel image */
@@ -95,9 +95,6 @@ private:
 
   /* System Timer */
   uint64_t      system_timer_base;
-
-  /* Refresh */
-  uint64_t      last_refresh;
 };
 
 } /*namespace remu*/

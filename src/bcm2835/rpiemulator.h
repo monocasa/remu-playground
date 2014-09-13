@@ -18,6 +18,7 @@ public:
     : Emulator(opt)
     , pr(*this, memory)
     , gpio(*this, memory)
+    , fb(opt.mem_size, *this, memory, mbox)
     , buttons { bitbang::Button(gpio, fb, opt.gpio_test_offset + 0, SDLK_KP0),
                 bitbang::Button(gpio, fb, opt.gpio_test_offset + 1, SDLK_KP1),
                 bitbang::Button(gpio, fb, opt.gpio_test_offset + 2, SDLK_KP2),
@@ -32,6 +33,7 @@ public:
     , dma(0x20007000, 0x1000, memory)
     , clock(0x20101000, 0x1000, memory)
     , pwm(0x2020C000, 0x1000, memory)
+    , last_refresh(0)
   {
     if(opt.nes_enabled) {
       nes = new bitbang::Nes(*this, gpio, fb);
@@ -42,6 +44,8 @@ public:
   {
     delete nes;
   }
+
+  virtual void tick() override final;
 
 private:
   static const int NUM_BUTTONS = 10;
@@ -56,13 +60,18 @@ private:
     Memory &mem;
   };
 
+  /* Modules */
   Peripheral      pr;
   Gpio            gpio;
+  Framebuffer     fb;
   bitbang::Button buttons[NUM_BUTTONS];
   bitbang::Nes   *nes;
   RPiStubRegion   dma;
   RPiStubRegion   clock;
   RPiStubRegion   pwm;
+
+  /* Refresh */
+  uint64_t      last_refresh;
 };
 
 } /*namespace remu*/
