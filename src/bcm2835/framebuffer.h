@@ -38,8 +38,8 @@ class Framebuffer : public KeyDispatcher
                   , public IoRegion
 {
 public:
-  Framebuffer(size_t mem_size);
-  virtual ~Framebuffer() = default;
+  Framebuffer(size_t mem_size, Emulator*, Memory*);
+  virtual ~Framebuffer();
 
   void tick();
 
@@ -49,9 +49,22 @@ public:
   Gpio         *gpio;
   const size_t  mem_size;
 
+  //void createWindow(uint32_t width, uint32_t height);
+  void dump();
+  void request(uint32_t data);
+
+  bool getError() const {
+    return error;
+  }
+
+private:
   /* IoRegion overrides */
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
   void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
+
+  static void putPixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
+
+  uint32_t getPixel(uint32_t x, uint32_t y);
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -62,7 +75,7 @@ public:
   uint16_t      fb_palette[256];
 
   /* Flag if set if query is malformed */
-  int           error;
+  bool          error;
 
   /* Window */
   SDL_Surface*  surface;
@@ -70,12 +83,6 @@ public:
   uint32_t      height;
   uint32_t      depth;
 };
-
-void fb_init(Framebuffer*, Emulator*, Memory*);
-void fb_create_window(Framebuffer*, uint32_t width, uint32_t height);
-void fb_destroy(Framebuffer*);
-void fb_dump(Framebuffer*);
-void fb_request(Framebuffer*, uint32_t address);
 
 } /*namespace remu*/
 

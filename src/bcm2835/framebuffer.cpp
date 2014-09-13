@@ -3,9 +3,10 @@
 
 namespace remu {
 
-Framebuffer::Framebuffer(size_t mem_size)
+Framebuffer::Framebuffer(size_t mem_size, Emulator *emu, Memory *mem)
   : IoRegion(0, 0)
-  , emu(nullptr)
+  , emu(emu)
+  , mem(mem)
   , mem_size(mem_size)
   , framebuffer(nullptr)
   , fb_bpp(0)
@@ -13,37 +14,17 @@ Framebuffer::Framebuffer(size_t mem_size)
   , fb_size(0)
   , fb_address(0)
   , fb_palette()
-  , error(0)
+  , error(false)
   , surface(nullptr)
-  , width(0)
-  , height(0)
-  , depth(0)
-{ }
-
-/**
- * Initialises the framebuffer interface
- * @param fb  Reference to the framebuffer structure
- * @param emu Reference to the emulator structure
- */
-void
-fb_init(Framebuffer* fb, Emulator* emu, Memory *mem)
+  , width(640)
+  , height(480)
+  , depth(32)
 {
-  assert(fb);
-  assert(emu);
-  assert(mem);
-
-  fb->emu = emu;
-  fb->mem = mem;
-
-  mem->addRegion(fb);
+  mem->addRegion(this);
 
   /* Create the window */
   SDL_Init(SDL_INIT_EVERYTHING);
-  fb->width = 640;
-  fb->height = 480;
-  fb->depth = 32;
-  fb->surface =
-    SDL_SetVideoMode(fb->width, fb->height, fb->depth, SDL_SWSURFACE);
+  surface = SDL_SetVideoMode(width, height, depth, SDL_SWSURFACE);
 
   /* Set the window caption */
   SDL_WM_SetCaption("Remu", "Remu");
@@ -51,26 +32,20 @@ fb_init(Framebuffer* fb, Emulator* emu, Memory *mem)
 
 /**
  * Cleans up memory used by the framebuffer
- * @param fb  Reference to the framebuffer structure
  */
-void
-fb_destroy(Framebuffer* fb)
+Framebuffer::~Framebuffer()
 {
-  if (!fb || !fb->emu->isGraphicsEnabled())
-  {
-    return;
-  }
-
   /* Destroy SDL */
-  SDL_FreeSurface(fb->surface);
+  if (surface)
+  {
+    SDL_FreeSurface(surface);
+  }
   SDL_Quit();
-  fb->surface = 0;
 
   /* Free framebuffer */
-  if (fb->framebuffer)
+  if (framebuffer)
   {
-    free(fb->framebuffer);
-    fb->framebuffer = NULL;
+    free(framebuffer);
   }
 }
 
@@ -78,8 +53,7 @@ fb_destroy(Framebuffer* fb)
  * Set the pixel at (x, y) to the given value
  * NOTE: The surface must be locked before calling this!
  */
-void
-put_pixel(SDL_Surface *surface, int x, int y, uint32_t pixel)
+void Framebuffer::putPixel(SDL_Surface *surface, int x, int y, uint32_t pixel)
 {
   int bpp = surface->format->BytesPerPixel;
 
@@ -126,25 +100,22 @@ put_pixel(SDL_Surface *surface, int x, int y, uint32_t pixel)
  * Gets the specified pixel colour at a particular location and converts
  * it to the output format.
  *
- * @param fb Reference to the framebuffer structure
  * @param x X position
  * @param y Y position
  */
-uint32_t fb_get_pixel(Framebuffer* fb, uint32_t x, uint32_t y)
+uint32_t Framebuffer::getPixel(uint32_t x, uint32_t y)
 {
-  assert(fb);
-
-  if (!fb->framebuffer)
+  if (!framebuffer)
   {
-    return SDL_MapRGB(fb->surface->format, 0xff, 0x00, 0xff);
+    return SDL_MapRGB(surface->format, 0xff, 0x00, 0xff);
   }
 
-  switch (fb->fb_bpp)
+  switch (fb_bpp)
   {
     case 1: // 1 byte per pixel - 8 bit colour
     {
-      uint8_t key = fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp];
-      uint16_t value = fb->fb_palette[key];
+      uint8_t key = framebuffer[y * fb_pitch + x * fb_bpp];
+      uint16_t value = fb_palette[key];
 
       /* Format: RRRRRGGGGGGBBBBB */
       uint32_t r = (value >> 11) & 0x1F;
@@ -157,13 +128,13 @@ uint32_t fb_get_pixel(Framebuffer* fb, uint32_t x, uint32_t y)
       b = (b * 255) / 31;
 
       /* Return colour */
-      return SDL_MapRGB(fb->surface->format, r, g, b);
+      return SDL_MapRGB(surface->format, r, g, b);
     }
     case 2: // 2 bytes per pixel - R5G6B5
     {
       uint16_t value =
-        fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp] +
-        (fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp + 1] << 8);
+        framebuffer[y * fb_pitch + x * fb_bpp] +
+        (framebuffer[y * fb_pitch + x * fb_bpp + 1] << 8);
 
       /* Format: BBBBBGGGGGGRRRRR */
       uint32_t r = value & 0x1F;
@@ -176,24 +147,24 @@ uint32_t fb_get_pixel(Framebuffer* fb, uint32_t x, uint32_t y)
       b = (b * 255) / 31;
 
       /* Return colour */
-      return SDL_MapRGB(fb->surface->format, r, g, b);
+      return SDL_MapRGB(surface->format, r, g, b);
     }
     case 3: // 3 bytes per pixel - RGB8
     case 4: // 4 bytes per pixel - XRGB8
     {
       uint32_t value =
-        fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp] +
-        (fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp + 1] << 8) +
-        (fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp + 2] << 16) +
-        (fb->framebuffer[y * fb->fb_pitch + x * fb->fb_bpp + 3] << 24);
+        framebuffer[y * fb_pitch + x * fb_bpp] +
+        (framebuffer[y * fb_pitch + x * fb_bpp + 1] << 8) +
+        (framebuffer[y * fb_pitch + x * fb_bpp + 2] << 16) +
+        (framebuffer[y * fb_pitch + x * fb_bpp + 3] << 24);
 
       /* Format: BBBBBBBBGGGGGGGGRRRRRRRR */
-      return SDL_MapRGB(fb->surface->format,
+      return SDL_MapRGB(surface->format,
         value & 0xFF, (value >> 8) & 0xFF, (value >> 16) & 0xFF);
     }
     default:
     {
-      fb->emu->error("Unsupported pixel format");
+      emu->error("Unsupported pixel format");
       break;
     }
   }
@@ -239,7 +210,7 @@ void Framebuffer::tick()
   {
     for (uint32_t x = 0; x < width; ++x)
     {
-      put_pixel(surface, x, y, fb_get_pixel(this, x, y));
+      putPixel(surface, x, y, getPixel(x, y));
     }
   }
 
@@ -256,33 +227,29 @@ void Framebuffer::tick()
 /**
  * Handles a framebuffer request received through the mailbox interface
  *
- * @param fb   Framebuffer structure
  * @param addr Address received from the mailbox
  */
-void
-fb_request(Framebuffer *fb, uint32_t addr)
+void Framebuffer::request(uint32_t addr)
 {
   size_t i;
   framebuffer_req_t req;
 
-  assert(fb);
-
   /* Clear error flag */
-  fb->error = 0;
+  error = false;
 
   /* Graphic flag must be set*/
-  if (!fb->emu->isGraphicsEnabled())
+  if (!emu->isGraphicsEnabled())
   {
-    fb->emu->error("Graphic mode must be enabled for framebuffer");
-    fb->error = 1;
+    emu->error("Graphic mode must be enabled for framebuffer");
+    error = true;
     return;
   }
 
   /* Check whether address is valid */
   if (addr < 0x40000000)
   {
-    fb->emu->error("Invalid framebuffer address");
-    fb->error = 1;
+    emu->error("Invalid framebuffer address");
+    error = true;
     return;
   }
 
@@ -290,14 +257,13 @@ fb_request(Framebuffer *fb, uint32_t addr)
   addr -= 0x40000000;
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    req.data[i] = fb->mem->readDwordLe(addr + (i << 2));
+    req.data[i] = mem->readDwordLe(addr + (i << 2));
   }
 
   /* Free old framebuffer */
-  if (fb->framebuffer)
+  if (framebuffer)
   {
-    free(fb->framebuffer);
-    fb->framebuffer = NULL;
+    free(framebuffer);
   }
 
   /* Read palette if 8 bit colour
@@ -306,37 +272,36 @@ fb_request(Framebuffer *fb, uint32_t addr)
   {
     for (i = 0; i < 256; ++i)
     {
-      fb->fb_palette[i] = fb->mem->readWordLe(addr + sizeof(req) + i * 2);
+      fb_palette[i] = mem->readWordLe(addr + sizeof(req) + i * 2);
     }
   }
 
   /* Allocate a nice frame buffer, placed after the main memory */
-  fb->fb_bpp = req.fb.depth >> 3;
-  fb->fb_pitch = req.fb.virt_width * fb->fb_bpp;
-  req.fb.pitch = fb->fb_pitch + (4 - (fb->fb_pitch % 4)) % 4;
-  req.fb.size = fb->fb_size = fb->fb_pitch * req.fb.virt_height;
-  fb->framebuffer = static_cast<uint8_t*>( malloc(fb->fb_size) );
-  req.fb.addr = fb->fb_address = fb->mem_size;
-  fb->width = req.fb.virt_width;
-  fb->height = req.fb.virt_height;
+  fb_bpp = req.fb.depth >> 3;
+  fb_pitch = req.fb.virt_width * fb_bpp;
+  req.fb.pitch = fb_pitch + (4 - (fb_pitch % 4)) % 4;
+  req.fb.size = fb_size = fb_pitch * req.fb.virt_height;
+  framebuffer = static_cast<uint8_t*>( malloc(fb_size) );
+  req.fb.addr = fb_address = mem_size;
+  width = req.fb.virt_width;
+  height = req.fb.virt_height;
 
-  fb->base = fb->fb_address;
-  fb->length = fb->fb_size;
+  base = fb_address;
+  length = fb_size;
 
-  assert(fb->framebuffer);
-  memset(fb->framebuffer, 0, fb->fb_size);
+  memset(framebuffer, 0, fb_size);
 
   /* Write back structure into memory */
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    fb->mem->writeDwordLe(addr + (i << 2), req.data[i]);
+    mem->writeDwordLe(addr + (i << 2), req.data[i]);
   }
 
   /* Change the window caption */
   SDL_WM_SetCaption("Remu", "Remu");
 
   /* Change the window size */
-  fb->surface = SDL_SetVideoMode(fb->width, fb->height, fb->depth, SDL_SWSURFACE);
+  surface = SDL_SetVideoMode(width, height, depth, SDL_SWSURFACE);
 }
 
 uint64_t Framebuffer::readIo(uint64_t addr, unsigned int size)

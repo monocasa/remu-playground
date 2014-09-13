@@ -39,7 +39,7 @@ uint64_t Mbox::readIo(uint64_t addr, unsigned int size)
         case 1:
         {
           /* Return non zero after a failed request */
-          return last_channel | (emu->fb.error ? ~0xF : 0x0);
+          return last_channel | (emu->fb.getError() ? ~0xF : 0x0);
         }
         default:
         {
@@ -86,7 +86,7 @@ void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
       {
         case 1:   /* Framebuffer */
         {
-          fb_request(&emu->fb, data);
+          emu->fb.request(data);
           return;
         }
         default:

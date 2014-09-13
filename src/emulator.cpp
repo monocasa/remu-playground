@@ -8,7 +8,7 @@ namespace remu {
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
   , mbox(this, memory)
-  , fb(opt.mem_size)
+  , fb(opt.mem_size, this, &memory)
   , terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
@@ -26,7 +26,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  fb_destroy(&fb);
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);
 }
@@ -38,7 +37,6 @@ void Emulator::init()
 {
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
-  fb_init(&fb, this, &memory);
 }
 
 /**
