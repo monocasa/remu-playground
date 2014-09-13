@@ -70,10 +70,6 @@ public:
     return graphics;
   }
 
-  int getGpioTestOffset() const {
-    return gpio_test_offset;
-  }
-
   /* Modules */
   Memory        memory;
   Cpu           cpu;
@@ -96,7 +92,6 @@ private:
   int           usage;
   int           quiet;
   int           nes_enabled;
-  int           gpio_test_offset;
 
   /* System Timer */
   uint64_t      system_timer_base;

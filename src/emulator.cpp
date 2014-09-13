@@ -17,7 +17,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , usage( opt.usage )
   , quiet( opt.quiet )
   , nes_enabled( opt.nes_enabled )
-  , gpio_test_offset( opt.gpio_test_offset )
   , system_timer_base( getTime() * 1000 )
   , last_refresh( 0 )
 {
