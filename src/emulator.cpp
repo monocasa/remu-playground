@@ -20,40 +20,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 { }
 
 /**
- * Loads a binary image into memory
- */
-void Emulator::load()
-{
-  FILE *finput;
-  size_t file_size;
-  void* memory_start = memory.getDramArrayBase() + start_addr;
-
-  /* Throw error if file unopenable. */
-  if (!(finput = fopen(image, "rb")))
-  {
-    error("Cannot open file '%s'", image);
-  }
-
-  fseek(finput, 0L, SEEK_END);
-  file_size = ftell(finput);
-  fseek(finput, 0L, SEEK_SET);
-
-  /* Check for buffer overflow */
-  if(start_addr + file_size > mem_size)
-  {
-    throw EmulationException("Not enough memory for kernel");
-  }
-
-  /* Copy instructions into memory and error if incomplete */
-  if (fread(memory_start, 1, file_size, finput) != file_size)
-  {
-    error("Could not read entire file '%s'", image);
-  }
-
-  fclose(finput);
-}
-
-/**
  * Checks whether the emulator is still active
  */
 bool Emulator::isRunning() const

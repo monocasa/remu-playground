@@ -1,4 +1,5 @@
 #include "bcm2835/rpiemulator.h"
+#include "emulationexception.h"
 
 namespace remu {
 
@@ -12,6 +13,40 @@ RPiEmulator::RPiStubRegion::RPiStubRegion(uint32_t base, uint32_t length, Memory
 RPiEmulator::RPiStubRegion::~RPiStubRegion()
 {
   mem.removeRegion(this);
+}
+
+/**
+ * Loads a binary image into memory
+ */
+void RPiEmulator::load()
+{
+  FILE *finput;
+  size_t file_size;
+  void* memory_start = memory.getDramArrayBase() + opt.start_addr;
+
+  /* Throw error if file unopenable. */
+  if (!(finput = fopen(opt.image, "rb")))
+  {
+    error("Cannot open file '%s'", opt.image);
+  }
+
+  fseek(finput, 0L, SEEK_END);
+  file_size = ftell(finput);
+  fseek(finput, 0L, SEEK_SET);
+
+  /* Check for buffer overflow */
+  if(opt.start_addr + file_size > opt.mem_size)
+  {
+    throw EmulationException("Not enough memory for kernel");
+  }
+
+  /* Copy instructions into memory and error if incomplete */
+  if (fread(memory_start, 1, file_size, finput) != file_size)
+  {
+    error("Could not read entire file '%s'", opt.image);
+  }
+
+  fclose(finput);
 }
 
 void RPiEmulator::tick()

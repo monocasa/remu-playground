@@ -43,7 +43,6 @@ public:
 
   virtual ~Emulator() = default;
 
-  void load();
   bool isRunning() const;
   uint64_t getSystemTimer() const;
   virtual void tick();
@@ -56,10 +55,6 @@ public:
   void terminate() {
     terminated = true;
   }
-
-  //uint32_t getStartAddr() const {
-  //  return start_addr;
-  //}
 
   bool isNesEnabled() const {
     return nes_enabled;

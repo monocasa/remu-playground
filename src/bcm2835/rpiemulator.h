@@ -16,6 +16,7 @@ class RPiEmulator : public Emulator
 public:
   RPiEmulator(const EmulatorOptions &opt)
     : Emulator(opt)
+    , opt(opt)
     , pr(*this, memory)
     , gpio(*this, memory)
     , mbox(*this, memory)
@@ -46,6 +47,8 @@ public:
     delete nes;
   }
 
+  void load();
+
   virtual void tick() override final;
 
 private:
@@ -60,6 +63,8 @@ private:
   private:
     Memory &mem;
   };
+
+  const EmulatorOptions &opt;
 
   /* Modules */
   Peripheral      pr;
