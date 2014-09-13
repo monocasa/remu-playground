@@ -6,6 +6,8 @@
 #include "emulator.h"
 #include "memory.h"
 
+#include <cassert>
+
 namespace remu {
 
 /**

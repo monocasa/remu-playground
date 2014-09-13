@@ -3,6 +3,8 @@
 
 #include "opcode.h"
 
+#include <cstdint>
+
 namespace remu {
 
 class Emulator;

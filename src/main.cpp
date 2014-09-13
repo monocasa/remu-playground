@@ -1,6 +1,8 @@
 #include "common.h"
 #include "bcm2835/rpiemulator.h"
 
+#include <getopt.h>
+
 /**
  * Prints the command line options
  */

@@ -1,6 +1,8 @@
 #ifndef REMU_OPCODE_H
 #define REMU_OPCODE_H
 
+#include <cstdint>
+
 namespace remu {
 
 /**

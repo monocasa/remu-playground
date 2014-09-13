@@ -6,6 +6,8 @@
 #include "emulator.h"
 #include "memory.h"
 
+#include <cmath>
+
 namespace remu {
 
 /**
