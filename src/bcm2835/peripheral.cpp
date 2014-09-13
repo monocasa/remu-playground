@@ -2,6 +2,7 @@
 
 #include "emulationexception.h"
 #include "memory.h"
+#include "ui.h"
 
 namespace remu {
 

@@ -24,11 +24,6 @@
 #  define UNUSED_FUNCTION(x) UNUSED_ ## x
 #endif
 
-namespace remu {
-/* Emulator forward declaration */
-class Emulator;
-} /*namespace remu*/
-
 /* Modules */
 #include "memory.h"
 #include "opcode.h"
@@ -37,9 +32,6 @@ class Emulator;
 #include "bcm2835/mbox.h"
 #include "bcm2835/framebuffer.h"
 #include "bcm2835/peripheral.h"
-
-/* Emulator */
-#include "emulator.h"
 
 #endif /*REMU_COMMON_H */
 

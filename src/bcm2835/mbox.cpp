@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include "emulationexception.h"
+#include "ui.h"
 
 namespace remu {
 

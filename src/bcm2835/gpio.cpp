@@ -1,5 +1,7 @@
 #include "common.h"
 
+#include "ui.h"
+
 namespace remu {
 
 /**

@@ -3,7 +3,11 @@
 
 #include "ioregion.h"
 
+#include <cstdlib>
+
 namespace remu {
+
+class Emulator;
 
 /**
  * Memory system

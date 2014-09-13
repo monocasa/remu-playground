@@ -1,4 +1,5 @@
-#include "common.h"
+#include "emulator.h"
+#include "memory.h"
 
 #include <algorithm>
 

@@ -3,6 +3,9 @@
 
 #include "ui.h"
 
+#include <cstdint>
+#include <cstdlib>
+
 namespace remu {
 
 namespace bitbang {

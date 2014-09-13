@@ -1,6 +1,8 @@
-#include "bitbang/nes.h"
 #include "common.h"
+
 #include "emulationexception.h"
+#include "emulator.h"
+
 #include <sys/time.h>
 
 namespace remu {
