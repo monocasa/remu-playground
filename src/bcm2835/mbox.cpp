@@ -14,11 +14,52 @@ Mbox::Mbox(Emulator *emu, Memory &mem)
   , last_channel(0x0)
 {
   mem.addRegion(this);
+
+  for(auto &channel : channels)
+  {
+    channel = nullptr;
+  }
 }
 
 Mbox::~Mbox()
 {
   mem.removeRegion(this);
+}
+
+void Mbox::addChannel(Channel *channel)
+{
+  if (!channel)
+  {
+    throw EmulationException("Attempt to add null channel to Mbox");
+  }
+
+  const int channelNum = channel->getChannelNum();
+
+  if (channels[channelNum])
+  {
+    throw EmulationException("Attempt to double add a channel to Mbox:  channelNum=%d", 
+                             channelNum);
+  }
+
+  channels[channelNum] = channel;
+}
+
+void Mbox::removeChannel(Channel *channel)
+{
+  if (!channel)
+  {
+    throw EmulationException("Attempt to remove null channel from Mbox");
+  }
+
+  const int channelNum = channel->getChannelNum();
+
+  if (!channels[channelNum])
+  {
+    throw EmulationException("Attempt to remove a null channel from Mbox:  channelNum=%d", 
+                             channelNum);
+  }
+
+  channels[channelNum] = nullptr;
 }
 
 uint64_t Mbox::readIo(uint64_t addr, unsigned int size)
