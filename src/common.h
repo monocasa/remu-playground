@@ -12,8 +12,5 @@
 #include <time.h>
 #include <math.h>
 
-/* SDL */
-#include <SDL/SDL.h>
-
 #endif /*REMU_COMMON_H */
 
