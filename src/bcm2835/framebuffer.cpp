@@ -3,7 +3,7 @@
 
 namespace remu {
 
-Framebuffer::Framebuffer(size_t mem_size, Emulator *emu, Memory *mem, Mbox &mbox)
+Framebuffer::Framebuffer(size_t mem_size, Emulator &emu, Memory &mem, Mbox &mbox)
   : IoRegion(0, 0)
   , Channel(mbox, FRAMEBUFFER_CHANNEL_NUM)
   , emu(emu)
@@ -21,7 +21,7 @@ Framebuffer::Framebuffer(size_t mem_size, Emulator *emu, Memory *mem, Mbox &mbox
   , height(480)
   , depth(32)
 {
-  mem->addRegion(this);
+  mem.addRegion(this);
 
   /* Create the window */
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -165,7 +165,7 @@ uint32_t Framebuffer::getPixel(uint32_t x, uint32_t y)
     }
     default:
     {
-      emu->error("Unsupported pixel format");
+      emu.error("Unsupported pixel format");
       break;
     }
   }
@@ -178,7 +178,7 @@ uint32_t Framebuffer::getPixel(uint32_t x, uint32_t y)
  */
 void Framebuffer::tick()
 {
-  assert(emu->isGraphicsEnabled());
+  assert(emu.isGraphicsEnabled());
 
   /* Handle all SDL events */
   SDL_Event event;
@@ -186,7 +186,7 @@ void Framebuffer::tick()
   {
     if (event.type == SDL_QUIT)
     {
-      emu->terminate();
+      emu.terminate();
     }
 
     /* Route keyboard presses to the NES module if enabled */
@@ -239,9 +239,9 @@ void Framebuffer::request(uint32_t addr)
   error = false;
 
   /* Graphic flag must be set*/
-  if (!emu->isGraphicsEnabled())
+  if (!emu.isGraphicsEnabled())
   {
-    emu->error("Graphic mode must be enabled for framebuffer");
+    emu.error("Graphic mode must be enabled for framebuffer");
     error = true;
     return;
   }
@@ -249,7 +249,7 @@ void Framebuffer::request(uint32_t addr)
   /* Check whether address is valid */
   if (addr < 0x40000000)
   {
-    emu->error("Invalid framebuffer address");
+    emu.error("Invalid framebuffer address");
     error = true;
     return;
   }
@@ -258,7 +258,7 @@ void Framebuffer::request(uint32_t addr)
   addr -= 0x40000000;
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    req.data[i] = mem->readDwordLe(addr + (i << 2));
+    req.data[i] = mem.readDwordLe(addr + (i << 2));
   }
 
   /* Free old framebuffer */
@@ -273,7 +273,7 @@ void Framebuffer::request(uint32_t addr)
   {
     for (i = 0; i < 256; ++i)
     {
-      fb_palette[i] = mem->readWordLe(addr + sizeof(req) + i * 2);
+      fb_palette[i] = mem.readWordLe(addr + sizeof(req) + i * 2);
     }
   }
 
@@ -295,7 +295,7 @@ void Framebuffer::request(uint32_t addr)
   /* Write back structure into memory */
   for (i = 0; i < sizeof(req.data) / sizeof(req.data[0]); ++i)
   {
-    mem->writeDwordLe(addr + (i << 2), req.data[i]);
+    mem.writeDwordLe(addr + (i << 2), req.data[i]);
   }
 
   /* Change the window caption */

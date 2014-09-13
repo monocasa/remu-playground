@@ -41,23 +41,10 @@ class Framebuffer : public KeyDispatcher
                   , public Mbox::Channel
 {
 public:
-  Framebuffer(size_t mem_size, Emulator*, Memory*, Mbox&);
+  Framebuffer(size_t mem_size, Emulator&, Memory&, Mbox&);
   virtual ~Framebuffer();
 
   void tick();
-
-  /* Emulator reference */
-  Emulator     *emu;
-  Memory       *mem;
-  Gpio         *gpio;
-  const size_t  mem_size;
-
-  void dump();
-
-  void request(uint32_t data) override final;
-  bool getError() const override final{
-    return error;
-  }
 
 private:
   static const int FRAMEBUFFER_CHANNEL_NUM = 1;
@@ -66,9 +53,20 @@ private:
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
   void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
 
+  /* Mbox::Channel overrides */
+  void request(uint32_t data) override final;
+  bool getError() const override final{
+    return error;
+  }
+
   static void putPixel(SDL_Surface *surface, int x, int y, uint32_t pixel);
 
   uint32_t getPixel(uint32_t x, uint32_t y);
+
+  /* Emulator reference */
+  Emulator     &emu;
+  Memory       &mem;
+  const size_t  mem_size;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
