@@ -19,17 +19,18 @@ cmdline_usage(int argc, char **argv)
 
 /**
  * Parses command line arguments using getopt
- * @param opt  Reference to the options struct
- * @param argc Number of command line arguments
- * @param argv Argument values
+ * @param opt   Reference to the options struct
+ * @param argc  Number of command line arguments
+ * @param argv  Argument values
+ * @param usage Pointer to usage value
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
+cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv, int *usage)
 {
   struct option options[] =
   {
-    { "help",      no_argument,        &opt.usage,        1 },
+    { "help",      no_argument,        usage,             1 },
     { "quiet",     no_argument,        &opt.quiet,        1 },
     { "nes",       no_argument,        &opt.nes_enabled,  1 },
     { "memory",    required_argument, 0,                 'm' },
@@ -50,7 +51,7 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
     switch (c)
     {
       case 'q': opt.quiet = 1; break;
-      case 'h': opt.usage = 1; break;
+      case 'h': *usage = 1;    break;
       case 'm':
       {
         /* Handle prefixes */
@@ -114,14 +115,8 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
  * @return Nonzero if arguments are valid
  */
 static int
-cmdline_check(remu::EmulatorOptions &opt, int argc, char **argv)
+cmdline_check(remu::EmulatorOptions &opt)
 {
-  if (opt.usage)
-  {
-    cmdline_usage(argc, argv);
-    return 0;
-  }
-
   /* Image source */
   if (!opt.image)
   {
@@ -150,7 +145,19 @@ main(int argc, char **argv)
 {
   /* Parse command line arguments */
   remu::EmulatorOptions opt;
-  if (!cmdline_parse(opt, argc, argv) || !cmdline_check(opt, argc, argv))
+  int usage = 0;
+  if (!cmdline_parse(opt, argc, argv, &usage))
+  {
+    return EXIT_FAILURE;
+  }
+
+  if (usage)
+  {
+    cmdline_usage(argc, argv);
+    return EXIT_SUCCESS;
+  }
+
+  if (!cmdline_check(opt))
   {
     return EXIT_FAILURE;
   }

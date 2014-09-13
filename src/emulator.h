@@ -18,7 +18,6 @@ struct EmulatorOptions
 	: image( nullptr )
     , mem_size( 0 )
     , start_addr( 0 )
-    , usage( 0 )
     , quiet( 0 )
     , nes_enabled( 0 )
     , gpio_test_offset( 0 )
@@ -28,7 +27,6 @@ struct EmulatorOptions
 
   size_t        mem_size;
   uint32_t      start_addr;
-  int           usage;
   int           quiet;
   int           nes_enabled;
   int           gpio_test_offset;
@@ -69,7 +67,6 @@ private:
   /* Arguments */
   size_t        mem_size;
   uint32_t      start_addr;
-  int           usage;
   int           quiet;
   int           nes_enabled;
 
