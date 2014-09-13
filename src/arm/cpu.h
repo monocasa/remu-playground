@@ -1,14 +1,16 @@
 #ifndef REMU_CPU_H
 #define REMU_CPU_H
 
-#include "opcode.h"
+#include "arm/opcode.h"
 
 #include <cstdint>
 
 namespace remu {
-
 class Emulator;
 class Memory;
+} /*namespace remu*/
+
+namespace remu { namespace arm {
 
 /**
  * ARM condition codes
@@ -75,13 +77,13 @@ typedef enum
 class Cpu
 {
 public:
-  Cpu(Emulator *emu, Memory *memory, uint32_t start_addr);
+  Cpu(remu::Emulator *emu, remu::Memory *memory, uint32_t start_addr);
 
   void tick();
   void dump();
 
-  Emulator  *emu;
-  Memory    *memory;
+  remu::Emulator  *emu;
+  remu::Memory    *memory;
 
   /* User mode registers */
   union
@@ -257,7 +259,7 @@ public:
   void vfpRegTransfer(op_coproc_reg_transfer_t* instr);
 };
 
-} /*namespace remu*/
+}} /*namespace remu::arm*/
 
 #endif /* REMU_CPU_H */
 

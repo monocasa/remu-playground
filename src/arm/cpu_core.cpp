@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-namespace remu {
+namespace remu { namespace arm {
 
 /**
  * Checks the condition and returns 1 if the instruction should be executed
@@ -1753,5 +1753,5 @@ void Cpu::dump()
   printf("CPSR: %10d (0x%08x)\n", reg, reg);
 }
 
-} /*namespace remu*/
+}} /*namespace remu::arm*/
 

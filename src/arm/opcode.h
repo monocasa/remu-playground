@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace remu {
+namespace remu { namespace arm {
 
 /**
  * Multiply long encoding
@@ -230,7 +230,7 @@ typedef struct
   uint32_t        : 8;
 } op_swi_t;
 
-} /*namespace remu*/
+}} /*namespace remu::arm*/
 
 #endif /* REMU_OPCODE_H */
 

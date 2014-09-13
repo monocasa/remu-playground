@@ -76,7 +76,7 @@ private:
 
   /* Modules */
   Memory          memory;
-  Cpu             cpu;
+  arm::Cpu        cpu;
   Peripheral      pr;
   Gpio            gpio;
   Timer           timer;

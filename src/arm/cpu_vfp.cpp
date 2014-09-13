@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-namespace remu {
+namespace remu { namespace arm {
 
 /**
  * Initialises the vector floating point coprocessor
@@ -544,5 +544,5 @@ void Cpu::vfpRegTransfer(op_coproc_reg_transfer_t* instr)
   }
 }
 
-} /*namespace remu*/
+}} /*namespace remu::arm*/
 
