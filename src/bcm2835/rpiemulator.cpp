@@ -62,13 +62,13 @@ void RPiEmulator::execute()
  */
 void RPiEmulator::dump()
 {
-  cpu_dump(&cpu);
+  cpu.dump();
   memory.dump();
 }
 
 void RPiEmulator::tick()
 {
-  cpu_tick(&cpu);
+  cpu.tick();
 
   /* When graphics are emulated, we execute a screen refresh after 34ms has
    * passed (30 frames per second) */

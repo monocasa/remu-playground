@@ -77,6 +77,9 @@ class Cpu
 public:
   Cpu(Emulator *emu, Memory *memory, uint32_t start_addr);
 
+  void tick();
+  void dump();
+
   Emulator  *emu;
   Memory    *memory;
 
@@ -243,6 +246,9 @@ public:
     } fpexc;
   } vfp;
 
+  uint32_t readRegister(int reg) const;
+  void writeRegister(int reg, uint32_t value);
+
   void vfpInit();
   void vfpDump() const;
 
@@ -251,10 +257,6 @@ public:
   void vfpRegTransfer(op_coproc_reg_transfer_t* instr);
 };
 
-uint32_t cpu_read_register(const Cpu* cpu, int reg);
-void cpu_write_register(Cpu* cpu, int reg, uint32_t value);
-void cpu_tick(Cpu*);
-void cpu_dump(Cpu*);
 } /*namespace remu*/
 
 #endif /* REMU_CPU_H */

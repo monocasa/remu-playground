@@ -276,7 +276,7 @@ static inline void
 dt_single_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
                          uint32_t l)
 {
-  uint32_t base = cpu_read_register(cpu, Rn) + (offset << 2);
+  uint32_t base = cpu->readRegister(Rn) + (offset << 2);
 
   /* If l == 1 then load otherwise store */
   if (l)
@@ -305,13 +305,13 @@ dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
   uint32_t i;
   uint32_t base;
 
-  base = cpu_read_register(cpu, Rn) & 0xfffffffc;
+  base = cpu->readRegister(Rn) & 0xfffffffc;
 
   /* In mode 2 - decrement base and write back to Rn */
   if (mode == 2)
   {
     base -= offset << 2;
-    cpu_write_register(cpu, Rn, base);
+    cpu->writeRegister(Rn, base);
   }
 
   /* If l == 1 then load otherwise store */
@@ -336,7 +336,7 @@ dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
   /* In mode 1 - increment base and write back to Rn */
   if (mode == 1)
   {
-    cpu_write_register(cpu, Rn, base + (offset << 2));
+    cpu->writeRegister(Rn, base + (offset << 2));
   }
 }
 
@@ -405,11 +405,11 @@ rt_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
 {
   if (l)
   {
-    cpu_write_register(cpu, Rd, cpu->vfp.s[Fn]);
+    cpu->writeRegister(Rd, cpu->vfp.s[Fn]);
   }
   else
   {
-    cpu->vfp.s[Fn] = cpu_read_register(cpu, Rd);
+    cpu->vfp.s[Fn] = cpu->readRegister(Rd);
   }
 }
 
@@ -462,13 +462,13 @@ rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
     else
     {
       /* Write to destination register */
-      cpu_write_register(cpu, Rd, value);
+      cpu->writeRegister(Rd, value);
     }
   }
   else
   {
     /* Read source register */
-    value = cpu_read_register(cpu, Rd);
+    value = cpu->readRegister(Rd);
 
     /* Write to system register */
     switch (Fn)

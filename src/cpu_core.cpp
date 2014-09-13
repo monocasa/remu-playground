@@ -44,14 +44,11 @@ check_cond(const Cpu* cpu, int cc)
 
 /**
  * Reads the value of a register
- * @param cpu Reference to the CPU structure
  * @param reg Register index
  * @return Value of the register
  */
-uint32_t
-cpu_read_register(const Cpu* cpu, int reg)
+uint32_t Cpu::readRegister(int reg) const
 {
-  assert(cpu != NULL);
   assert(reg <= 0xF);
 
   switch (reg)
@@ -59,39 +56,39 @@ cpu_read_register(const Cpu* cpu, int reg)
     case R0 ... R7:
     {
       /* First 8 regs not banked */
-      return cpu->r_usr.r[reg];
+      return r_usr.r[reg];
     }
     case R8 ... R12:
     {
-      if (cpu->cpsr.b.m == MODE_FIQ)
+      if (cpsr.b.m == MODE_FIQ)
       {
         /* FIQ banked regs */
-        return cpu->r_fiq.r[reg - 8];
+        return r_fiq.r[reg - 8];
       }
       else
       {
         /* USR/SYS regs */
-        return cpu->r_usr.r[reg];
+        return r_usr.r[reg];
       }
     }
     case SP: case LR:
     {
       /* SP/LR always banked */
-      switch (cpu->cpsr.b.m)
+      switch (cpsr.b.m)
       {
-        case MODE_USR: case MODE_SYS: return cpu->r_usr.r[reg];
-        case MODE_FIQ: return cpu->r_fiq.r[reg - 8];
-        case MODE_IRQ: return cpu->r_irq.r[reg - 13];
-        case MODE_SVC: return cpu->r_svc.r[reg - 13];
-        case MODE_ABT: return cpu->r_abt.r[reg - 13];
-        case MODE_UND: return cpu->r_und.r[reg - 13];
+        case MODE_USR: case MODE_SYS: return r_usr.r[reg];
+        case MODE_FIQ: return r_fiq.r[reg - 8];
+        case MODE_IRQ: return r_irq.r[reg - 13];
+        case MODE_SVC: return r_svc.r[reg - 13];
+        case MODE_ABT: return r_abt.r[reg - 13];
+        case MODE_UND: return r_und.r[reg - 13];
       }
       throw EmulationException("Invalid mode");
     }
     case PC:
     {
       /* PC not banked */
-      return cpu->r_usr.reg.pc + 4;
+      return r_usr.reg.pc + 4;
     }
   }
 
@@ -100,14 +97,11 @@ cpu_read_register(const Cpu* cpu, int reg)
 
 /**
  * Writes a new value to a register
- * @param cpu Reference to the CPU structure
  * @param reg Register index
  * @param value Value to be written
  */
-void
-cpu_write_register(Cpu* cpu, int reg, uint32_t value)
+void Cpu::writeRegister(int reg, uint32_t value)
 {
-  assert(cpu != NULL);
   assert(reg <= 0xF);
 
   switch (reg)
@@ -115,41 +109,41 @@ cpu_write_register(Cpu* cpu, int reg, uint32_t value)
     case R0 ... R7:
     {
       /* First 8 regs not banked */
-      cpu->r_usr.r[reg] = value;
+      r_usr.r[reg] = value;
       break;
     }
     case R8 ... R12:
     {
-      if (cpu->cpsr.b.m == MODE_FIQ)
+      if (cpsr.b.m == MODE_FIQ)
       {
         /* FIQ banked regs */
-        cpu->r_fiq.r[reg - 8] = value;
+        r_fiq.r[reg - 8] = value;
       }
       else
       {
         /* USR/SYS regs */
-        cpu->r_usr.r[reg] = value;
+        r_usr.r[reg] = value;
       }
       break;
     }
     case SP: case LR:
     {
       /* SP/LR always banked */
-      switch (cpu->cpsr.b.m)
+      switch (cpsr.b.m)
       {
-        case MODE_USR: case MODE_SYS: cpu->r_usr.r[reg] = value; break;
-        case MODE_FIQ: cpu->r_fiq.r[reg - 8] = value; break;
-        case MODE_IRQ: cpu->r_irq.r[reg - 13] = value; break;
-        case MODE_SVC: cpu->r_svc.r[reg - 13] = value; break;
-        case MODE_ABT: cpu->r_abt.r[reg - 13] = value; break;
-        case MODE_UND: cpu->r_und.r[reg - 13] = value; break;
+        case MODE_USR: case MODE_SYS: r_usr.r[reg] = value; break;
+        case MODE_FIQ: r_fiq.r[reg - 8] = value; break;
+        case MODE_IRQ: r_irq.r[reg - 13] = value; break;
+        case MODE_SVC: r_svc.r[reg - 13] = value; break;
+        case MODE_ABT: r_abt.r[reg - 13] = value; break;
+        case MODE_UND: r_und.r[reg - 13] = value; break;
       }
       break;
     }
     case PC:
     {
       /* PC not banked */
-      cpu->r_usr.reg.pc = value;
+      r_usr.reg.pc = value;
       break;
     }
   }
@@ -259,8 +253,8 @@ instr_multiply_long(Cpu* cpu, op_multiply_long_t* opcode)
   // or 0 otherwise.
   if (opcode->a)
   {
-    output.lo = cpu_read_register(cpu, opcode->RdLo);
-    output.hi = cpu_read_register(cpu, opcode->RdHi);
+    output.lo = cpu->readRegister(opcode->RdLo);
+    output.hi = cpu->readRegister(opcode->RdHi);
   }
   else
   {
@@ -269,8 +263,8 @@ instr_multiply_long(Cpu* cpu, op_multiply_long_t* opcode)
   }
 
   // Operands
-  uint32_t operandA = cpu_read_register(cpu, opcode->Rm);
-  uint32_t operandB = cpu_read_register(cpu, opcode->Rs);
+  uint32_t operandA = cpu->readRegister(opcode->Rm);
+  uint32_t operandB = cpu->readRegister(opcode->Rs);
 
   // Calculate result
   if (opcode->u)
@@ -291,8 +285,8 @@ instr_multiply_long(Cpu* cpu, op_multiply_long_t* opcode)
   }
 
   // Write high and low
-  cpu_write_register(cpu, opcode->RdLo, output.lo);
-  cpu_write_register(cpu, opcode->RdHi, output.hi);
+  cpu->writeRegister(opcode->RdLo, output.lo);
+  cpu->writeRegister(opcode->RdHi, output.hi);
 }
 
 static inline void
@@ -301,13 +295,13 @@ instr_multiply(Cpu* cpu, op_multiply_t* opcode)
   int32_t res;
   int32_t op1, op2, opA;
 
-  op1 = cpu_read_register(cpu, opcode->Rm);
-  op2 = cpu_read_register(cpu, opcode->Rs);
+  op1 = cpu->readRegister(opcode->Rm);
+  op2 = cpu->readRegister(opcode->Rs);
 
   if (opcode->a)
   {
     /* MLA */
-    opA = cpu_read_register(cpu, opcode->Rn);
+    opA = cpu->readRegister(opcode->Rn);
     res = opA + op1 * op2;
   }
   else
@@ -323,7 +317,7 @@ instr_multiply(Cpu* cpu, op_multiply_t* opcode)
     cpu->cpsr.b.n = res >> 31;
   }
 
-  cpu_write_register(cpu, opcode->Rd, res);
+  cpu->writeRegister(opcode->Rd, res);
 }
 
 /**
@@ -337,13 +331,13 @@ instr_mrs(Cpu* cpu, op_mrs_t* opcode)
   // Choose the correct destination register
   if (opcode->Ps == 0)
   {
-    cpu_write_register(cpu, opcode->Rd, cpu->cpsr.r);
+    cpu->writeRegister(opcode->Rd, cpu->cpsr.r);
   }
   else
   {
     if (cpu->cpsr.b.m == MODE_USR)
     {
-      cpu_write_register(cpu, opcode->Rd, read_spsr(cpu));
+      cpu->writeRegister(opcode->Rd, read_spsr(cpu));
     }
     else
     {
@@ -412,7 +406,7 @@ write_psr(Cpu* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
 static void
 instr_msr_psr(Cpu* cpu, op_msr_psr_t* opcode)
 {
-  write_psr(cpu, opcode->Pd, cpu_read_register(cpu, opcode->Rm), 0);
+  write_psr(cpu, opcode->Pd, cpu->readRegister(opcode->Rm), 0);
 }
 
 /**
@@ -444,7 +438,7 @@ compute_offset_operand2(Cpu *cpu, uint32_t imm, uint8_t s)
   int32_t res = 0;
   uint32_t rm_data, shift_amount, shift_type;
 
-  rm_data = cpu_read_register(cpu, imm & 0x0000000F);
+  rm_data = cpu->readRegister(imm & 0x0000000F);
   shift_type = (imm >> 5) & 0x00000003;
 
   /* if bit 4 is set shift is specified by bottom byte of register Rs(11 - 8)
@@ -459,7 +453,7 @@ compute_offset_operand2(Cpu *cpu, uint32_t imm, uint8_t s)
       throw EmulationException("PC cannot be used as offset");
     }
 
-    shift_amount = cpu_read_register(cpu, rs) & 0x000000FF;
+    shift_amount = cpu->readRegister(rs) & 0x000000FF;
   }
   else
   {
@@ -580,7 +574,7 @@ instr_msr_psrf(Cpu* cpu, op_msr_psrf_t* opcode)
   if (opcode->i == 0)
   {
     // Register is stored in bits 0 to 3
-    write_psr(cpu, opcode->Pd, cpu_read_register(cpu, opcode->src & 0xf), 1);
+    write_psr(cpu, opcode->Pd, cpu->readRegister(opcode->src & 0xf), 1);
   }
   else
   {
@@ -604,7 +598,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
   int64_t res64;
 
   /* Get first operand */
-  op1 = cpu_read_register(cpu, opcode->Rn);
+  op1 = cpu->readRegister(opcode->Rn);
 
   /* Read operand 2 */
   if (opcode->i)
@@ -638,7 +632,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
 
       if (opcode->op == 0x0)
       {
-        cpu_write_register(cpu, opcode->Rd, res);
+        cpu->writeRegister(opcode->Rd, res);
       }
       return;
     }
@@ -654,7 +648,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
 
       if (opcode->op == 0x1)
       {
-        cpu_write_register(cpu, opcode->Rd, res);
+        cpu->writeRegister(opcode->Rd, res);
       }
       return;
     }
@@ -693,7 +687,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
 
       if (opcode->op == 0x2 || opcode->op == 0x3)
       {
-        cpu_write_register(cpu, opcode->Rd, res);
+        cpu->writeRegister(opcode->Rd, res);
       }
 
       return;
@@ -725,7 +719,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
       }
       if (opcode->op == 0x4)
       {
-        cpu_write_register(cpu, opcode->Rd, res);
+        cpu->writeRegister(opcode->Rd, res);
       }
       return;
     }
@@ -751,7 +745,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
         }
         cpu->cpsr.b.c = res64 >> 32 != 0;
       }
-      cpu_write_register(cpu, opcode->Rd, res);
+      cpu->writeRegister(opcode->Rd, res);
       return ;
     }
     case 0x6: /* SBC  => op1 - op2 + carry - 1 */
@@ -786,7 +780,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
           cpu->cpsr.b.v = 1;
         }
       }
-      cpu_write_register(cpu, opcode->Rd, res);
+      cpu->writeRegister(opcode->Rd, res);
       return;
     }
     case 0xC: /* ORR */
@@ -798,7 +792,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
         cpu->cpsr.b.n = res >> 31;
       }
 
-      cpu_write_register(cpu, opcode->Rd, res);
+      cpu->writeRegister(opcode->Rd, res);
       return;
     }
     case 0xD: /* MOV */
@@ -809,7 +803,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
         cpu->cpsr.b.n = op2 >> 31;
       }
 
-      cpu_write_register(cpu, opcode->Rd, op2);
+      cpu->writeRegister(opcode->Rd, op2);
       return;
     }
     case 0xE: /* BIC */
@@ -822,7 +816,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
         cpu->cpsr.b.n = res >> 31;
       }
 
-      cpu_write_register(cpu, opcode->Rd, res);
+      cpu->writeRegister(opcode->Rd, res);
       return;
     }
     case 0xF: /* MVN */
@@ -834,7 +828,7 @@ instr_single_data_processing(Cpu* cpu, op_data_proc_t* opcode)
         cpu->cpsr.b.n = res >> 31;
       }
 
-      cpu_write_register(cpu, opcode->Rd, res);
+      cpu->writeRegister(opcode->Rd, res);
       return;
     }
   }
@@ -869,7 +863,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
     }
   }
 
-  uint32_t address = cpu_read_register(cpu, opcode->rn) & 0xfffffffc;
+  uint32_t address = cpu->readRegister(opcode->rn) & 0xfffffffc;
   uint32_t offset = (opcode->u) ? 4 : -4;
   int16_t reg;
 
@@ -895,7 +889,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
      * This seems like the most logical functionality correct. */
     if (opcode->w && reg == opcode->rn)
     {
-      cpu_write_register(cpu, opcode->rn, address);
+      cpu->writeRegister(opcode->rn, address);
     }
 
     /* Load/store from memory */
@@ -907,7 +901,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
       }
       else
       {
-        cpu_write_register(cpu, reg, cpu->memory->readDwordLe(address));
+        cpu->writeRegister(reg, cpu->memory->readDwordLe(address));
       }
     }
     else
@@ -919,7 +913,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
       }
       else
       {
-        cpu->memory->writeDwordLe(address, cpu_read_register(cpu, reg));
+        cpu->memory->writeDwordLe(address, cpu->readRegister(reg));
       }
     }
 
@@ -940,7 +934,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
   /* Write-back if enabled and base is not in the register list*/
   if (opcode->w && (opcode->rl & (1 << opcode->rn)) == 0)
   {
-    cpu_write_register(cpu, opcode->rn, address);
+    cpu->writeRegister(opcode->rn, address);
   }
 }
 
@@ -965,15 +959,15 @@ instr_branch(Cpu* cpu, op_branch_t* opcode)
   }
 
   /* Add offset to PC */
-  pc = cpu_read_register(cpu, PC);
+  pc = cpu->readRegister(PC);
   lr = pc - 4;
   pc = pc + offset;
-  cpu_write_register(cpu, PC, pc);
+  cpu->writeRegister(PC, pc);
 
   /* Branch with link */
   if (opcode->l)
   {
-    cpu_write_register(cpu, LR, lr);
+    cpu->writeRegister(LR, lr);
   }
 }
 
@@ -993,8 +987,8 @@ instr_branch_exchange(Cpu* cpu, op_branch_exchange_t* opcode)
   }
 
   /* Write new PC value */
-  uint32_t pc = cpu_read_register(cpu, opcode->Rn);
-  cpu_write_register(cpu, PC, pc);
+  uint32_t pc = cpu->readRegister(opcode->Rn);
+  cpu->writeRegister(PC, pc);
 }
 
 /**
@@ -1009,7 +1003,7 @@ instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
   assert(opcode);
 
   uint32_t rn, offset, addr;
-  rn = cpu_read_register(cpu, opcode->rn);
+  rn = cpu->readRegister(opcode->rn);
 
   /* If i bit is set offset is interpreted as a shifted register,
      otherwise it is interpreted as an unsigned 12 bit immediate offset */
@@ -1040,13 +1034,11 @@ instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
      /* if b is set load byte, word otherwise */
     if (opcode->b)
     {
-      cpu_write_register(
-        cpu, opcode->rd, (uint32_t)cpu->memory->readByte(addr));
+      cpu->writeRegister(opcode->rd, (uint32_t)cpu->memory->readByte(addr));
     }
     else
     {
-      cpu_write_register(
-        cpu, opcode->rd, cpu->memory->readDwordLe(addr));
+      cpu->writeRegister(opcode->rd, cpu->memory->readDwordLe(addr));
      }
   }
   else
@@ -1054,11 +1046,11 @@ instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
     /* if b is set store byte, word otherwise */
     if (opcode->b)
     {
-      cpu->memory->writeByte(addr, cpu_read_register(cpu, opcode->rd));
+      cpu->memory->writeByte(addr, cpu->readRegister(opcode->rd));
     }
     else
     {
-      cpu->memory->writeDwordLe(addr, cpu_read_register(cpu, opcode->rd));
+      cpu->memory->writeDwordLe(addr, cpu->readRegister(opcode->rd));
     }
   }
 
@@ -1071,7 +1063,7 @@ instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
       throw EmulationException("Writeback to PC not allowed");
     }
 
-    cpu_write_register(cpu, opcode->rn, rn);
+    cpu->writeRegister(opcode->rn, rn);
   }
 }
 
@@ -1092,20 +1084,20 @@ instr_single_data_swap(Cpu* cpu, op_single_data_swap_t* opcode)
     return;
   }
 
-  uint32_t swap_address = cpu_read_register(cpu, opcode->rn);
+  uint32_t swap_address = cpu->readRegister(opcode->rn);
 
   /* if b bit is set swap byte quantity, word otherwise */
   if (opcode->b)
   {
     uint8_t tmp = cpu->memory->readByte(swap_address);
-    cpu->memory->writeByte(swap_address, cpu_read_register(cpu, opcode->rm));
-    cpu_write_register(cpu, opcode->rd, tmp);
+    cpu->memory->writeByte(swap_address, cpu->readRegister(opcode->rm));
+    cpu->writeRegister(opcode->rd, tmp);
   }
   else
   {
     uint32_t tmp = cpu->memory->readDwordLe(swap_address);
-    cpu->memory->writeDwordLe(swap_address, cpu_read_register(cpu, opcode->rm));
-    cpu_write_register(cpu, opcode->rd, tmp);
+    cpu->memory->writeDwordLe(swap_address, cpu->readRegister(opcode->rm));
+    cpu->writeRegister(opcode->rd, tmp);
   }
 }
 
@@ -1131,8 +1123,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
       /* if l is set load unsigned halfword form memory, store otherwise */
       if (op->l)
       {
-        cpu_write_register(
-          cpu, op->rd, cpu->memory->readWordLe(address));
+        cpu->writeRegister(op->rd, cpu->memory->readWordLe(address));
       }
       else
       {
@@ -1143,7 +1134,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
           address += 12;
         }
 
-        cpu->memory->writeWordLe(address, (uint16_t)cpu_read_register(cpu, op->rd));
+        cpu->memory->writeWordLe(address, (uint16_t)cpu->readRegister(op->rd));
       }
       break;
     }
@@ -1158,7 +1149,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
         {
           val = val | 0xFFFFFF00;
         }
-        cpu_write_register(cpu, op->rd, val);
+        cpu->writeRegister(op->rd, val);
       }
       else
       {
@@ -1177,7 +1168,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
         {
           val = val | 0xFFFF0000;
         }
-        cpu_write_register(cpu, op->rd, val);
+        cpu->writeRegister(op->rd, val);
       }
       else
       {
@@ -1200,7 +1191,7 @@ instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
   assert(op);
 
   uint32_t base, offset;
-  base = cpu_read_register(cpu, op->rn);
+  base = cpu->readRegister(op->rn);
   offset = 0;
 
   /* calculate offset based on the offset type
@@ -1217,7 +1208,7 @@ instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
       return;
     }
 
-    offset = cpu_read_register(cpu, op->rm_ln);
+    offset = cpu->readRegister(op->rm_ln);
   }
 
   /* if p bit is set add/substract offset before transfer,
@@ -1259,7 +1250,7 @@ instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
       throw EmulationException("Cannot write back to PC");
       return;
     }
-    cpu_write_register(cpu, op->rn, base);
+    cpu->writeRegister(op->rn, base);
   }
 }
 
@@ -1394,10 +1385,10 @@ instr_swi(Cpu* cpu, op_swi_t* UNUSED(opcode))
   change_mode(cpu, MODE_SVC);
 
   /* Save PC in lr, with PC adjusted to the word after SWI instruction */
-  cpu_write_register(cpu, LR, cpu_read_register(cpu, PC));
+  cpu->writeRegister(LR, cpu->readRegister(PC));
 
   /* Set PC to a fixed value (0x08) */
-  cpu_write_register(cpu, PC, 0x08);
+  cpu->writeRegister(PC, 0x08);
 
   /* Save CPSR in SPSR_svc */
   write_spsr(cpu, cpu->cpsr.r);
@@ -1414,10 +1405,10 @@ instr_undefined(Cpu* cpu)
   change_mode(cpu, MODE_UND);
 
   /* Save PC in lr */
-  cpu_write_register(cpu, LR, cpu_read_register(cpu, PC));
+  cpu->writeRegister(LR, cpu->readRegister(PC));
 
   /* take the undefined instruction trap */
-  cpu_write_register(cpu, PC, 0x04);
+  cpu->writeRegister(PC, 0x04);
 
   /* Save CPSR in SPSR_svc */
   write_spsr(cpu, cpu->cpsr.r);
@@ -1449,7 +1440,7 @@ debug_break(Cpu *cpu)
     {
       case 'c':
       {
-        cpu_dump(cpu);
+        cpu->dump();
         break;
       }
       case 'e':
@@ -1473,7 +1464,7 @@ debug_break(Cpu *cpu)
           n <<= 2;
 
           /* Print n words from the stack decreasing in address from SP */
-          uint32_t addr = cpu_read_register(cpu, SP);
+          uint32_t addr = cpu->readRegister(SP);
           for (uint32_t i = 0; i < n; i += 4)
           {
             uint32_t offset = -i;
@@ -1492,7 +1483,7 @@ debug_break(Cpu *cpu)
           n <<= 2;
 
           /* Print n words from the stack increasing in address from SP */
-          uint32_t addr = cpu_read_register(cpu, SP);
+          uint32_t addr = cpu->readRegister(SP);
           for (uint32_t i = 0; i < n; i += 4)
           {
             /* Reverse offset so smaller addresses are printed lower */
@@ -1517,7 +1508,7 @@ debug_break(Cpu *cpu)
           n <<= 2;
 
           /* Print n words from the address pointed by r */
-          uint32_t addr = cpu_read_register(cpu, r);
+          uint32_t addr = cpu->readRegister(r);
           for (uint32_t i = 0; i < n; i += 4)
           {
             uint32_t offset = -i;
@@ -1536,7 +1527,7 @@ debug_break(Cpu *cpu)
           n <<= 2;
 
           /* Print n words from the address pointed by r */
-          uint32_t addr = cpu_read_register(cpu, r);
+          uint32_t addr = cpu->readRegister(r);
           for (uint32_t i = 0; i < n; i += 4)
           {
             /* Reverse offset so smaller addresses are printed lower */
@@ -1590,30 +1581,28 @@ Cpu::Cpu(Emulator* emu, Memory *memory, uint32_t start_addr)
   memset(&spsr, 0, sizeof(spsr));
 
   /* Load start address */
-  cpu_write_register(this, PC, start_addr);
+  writeRegister(PC, start_addr);
 
   vfpInit();
 }
 
 /**
- * Fecthes, decodes and executed a single instruction
- * @param cpu   Reference to the CPU structure
+ * Fecthes, decodes and executes a single instruction
  */
-void
-cpu_tick(Cpu* cpu)
+void Cpu::tick()
 {
   uint32_t instr = 0;
   uint32_t pc;
 
   /* Fetch a single instruction */
-  pc = cpu->r_usr.reg.pc;
-  instr = cpu->memory->readDwordLe(pc);
-  cpu->r_usr.reg.pc = pc + 4;
+  pc = r_usr.reg.pc;
+  instr = memory->readDwordLe(pc);
+  r_usr.reg.pc = pc + 4;
 
   /* Terminate on NOP */
   if (instr == 0x0)
   {
-    cpu->emu->terminate();
+    emu->terminate();
     return;
   }
 
@@ -1624,7 +1613,7 @@ cpu_tick(Cpu* cpu)
   }
 
   /* Check condition */
-  if (!check_cond(cpu, instr >> 28))
+  if (!check_cond(this, instr >> 28))
   {
     return;
   }
@@ -1633,7 +1622,7 @@ cpu_tick(Cpu* cpu)
    * emulator to wait for input before continuing */
   if ((instr & 0x0fff00ff) == 0x03200003)
   {
-    debug_break(cpu);
+    debug_break(this);
   }
 
   switch ((instr >> 24) & 0xF)
@@ -1643,52 +1632,52 @@ cpu_tick(Cpu* cpu)
       if ((instr & 0x0FFFFFF0) == 0x012FFF10)
       {
         // Branch and exchange
-        instr_branch_exchange(cpu, (op_branch_exchange_t*)&instr);
+        instr_branch_exchange(this, (op_branch_exchange_t*)&instr);
       }
       else if ((instr & 0x0FC000F0) == 0x00000090)
       {
         /* Multiply */
-        instr_multiply(cpu, (op_multiply_t*)&instr);
+        instr_multiply(this, (op_multiply_t*)&instr);
       }
       else if ((instr & 0x0FC000F0) == 0x00800090)
       {
         /* Multiply Long */
-        instr_multiply_long(cpu, (op_multiply_long_t*)&instr);
+        instr_multiply_long(this, (op_multiply_long_t*)&instr);
       }
       else if ((instr & 0x0F400FF0) == 0x01000090)
       {
         // Single data swap
-        instr_single_data_swap(cpu, (op_single_data_swap_t*)&instr);
+        instr_single_data_swap(this, (op_single_data_swap_t*)&instr);
       }
       else if ((instr & 0x003F0FFF) == 0x000F0000)
       {
         // MRS
-        instr_mrs(cpu, (op_mrs_t*)&instr);
+        instr_mrs(this, (op_mrs_t*)&instr);
       }
       else if ((instr & 0x0FBFFFF0) == 0x0129F000)
       {
         // MSR
-        instr_msr_psr(cpu, (op_msr_psr_t*)&instr);
+        instr_msr_psr(this, (op_msr_psr_t*)&instr);
       }
       else if ((instr & 0x0DBFF000) == 0x0128F000)
       {
         // MSR flags only
-        instr_msr_psrf(cpu, (op_msr_psrf_t*)&instr);
+        instr_msr_psrf(this, (op_msr_psrf_t*)&instr);
       }
       else if ((instr & 0x0E400F90) == 0x00000090)
       {
         // Halfword and signed data transfer register offset
-        instr_hw_sd_transfer(cpu, (op_hw_sd_trans_t*)&instr);
+        instr_hw_sd_transfer(this, (op_hw_sd_trans_t*)&instr);
       }
       else if ((instr & 0x0E400090) == 0x00400090)
       {
         // Halfword and singed data transfer immediate offset
-        instr_hw_sd_transfer(cpu, (op_hw_sd_trans_t*)&instr);
+        instr_hw_sd_transfer(this, (op_hw_sd_trans_t*)&instr);
       }
       else
       {
         // Data processing instruction
-        instr_single_data_processing(cpu, (op_data_proc_t*) &instr);
+        instr_single_data_processing(this, (op_data_proc_t*) &instr);
       }
       break;
     }
@@ -1697,46 +1686,46 @@ cpu_tick(Cpu* cpu)
       if ((instr & 0x0E000010) == 0x06000010)
       {
         // Undefined
-        instr_undefined(cpu);
+        instr_undefined(this);
       }
       else
       {
         // Single data transfer
-        instr_single_data_trans(cpu, (op_single_data_trans_t*) &instr);
+        instr_single_data_trans(this, (op_single_data_trans_t*) &instr);
       }
       break;
     }
     case 0x8: case 0x9:
     {
-      instr_block_data_transfer(cpu, (op_block_data_trans_t*)&instr);
+      instr_block_data_transfer(this, (op_block_data_trans_t*)&instr);
       break;
     }
     case 0xA: case 0xB:
     {
-      instr_branch(cpu, (op_branch_t*)&instr);
+      instr_branch(this, (op_branch_t*)&instr);
       break;
     }
     case 0xC: case 0xD:
     {
-      instr_coproc_data_transfer(cpu, (op_coproc_data_transfer_t*)&instr);
+      instr_coproc_data_transfer(this, (op_coproc_data_transfer_t*)&instr);
       break;
     }
     case 0xE:
     {
       if ((instr & 0x10) == 0)
       {
-        instr_coproc_data_proc(cpu, (op_coproc_data_proc_t*)&instr);
+        instr_coproc_data_proc(this, (op_coproc_data_proc_t*)&instr);
       }
       else
       {
-        instr_coproc_reg_transfer(cpu, (op_coproc_reg_transfer_t*)&instr);
+        instr_coproc_reg_transfer(this, (op_coproc_reg_transfer_t*)&instr);
       }
       break;
     }
     case 0xF:
     {
       // Software Interrupt (SWI)
-      instr_swi(cpu, (op_swi_t*)&instr);
+      instr_swi(this, (op_swi_t*)&instr);
       break;
     }
   }
@@ -1744,10 +1733,8 @@ cpu_tick(Cpu* cpu)
 
 /**
  * Prints the state of the registers to stdout
- * @param cpu Reference to the CPU structure
  */
-void
-cpu_dump(Cpu* cpu)
+void Cpu::dump()
 {
   uint32_t reg;
   int i;
@@ -1755,14 +1742,14 @@ cpu_dump(Cpu* cpu)
   printf("Registers:\n");
   for (i = 0; i <= 12; ++i)
   {
-    reg = cpu_read_register(cpu, i);
+    reg = readRegister(i);
     printf("$%-3d: %10d (0x%08x)\n", i, reg, reg);
   }
 
   /* Increase the displayed PC by 4 */
-  reg = cpu_read_register(cpu, PC);
+  reg = readRegister(PC);
   printf("PC  : %10d (0x%08x)\n", reg, reg);
-  reg = cpu->cpsr.r & (~0x1F);
+  reg = cpsr.r & (~0x1F);
   printf("CPSR: %10d (0x%08x)\n", reg, reg);
 }
 
