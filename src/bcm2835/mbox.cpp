@@ -75,35 +75,36 @@ uint64_t Mbox::readIo(uint64_t addr, unsigned int size)
     case MBOX_READ:
     {
       /* Always return 0 + last channel id */
-      switch (last_channel)
+      Channel *channel = channels[last_channel];
+      if (channel)
       {
-        case 1:
-        {
-          /* Return non zero after a failed request */
-          return last_channel | (emu->fb.getError() ? ~0xF : 0x0);
-        }
-        default:
-        {
-          return last_channel;
-        }
+        /* Return non zero after a failed request */
+        return last_channel | (channel->getError() ? ~0xF : 0x0);
       }
-      break;
+      else
+      {
+        return last_channel;
+      }
     }
+
     case MBOX_STATUS:
     {
       /* Bit 31 == 0: ready to receive
          Bit 30 == 0: ready to send */
       return 0;
     }
-  }
 
-  emu->error("Mailbox unimplemented 0x%08x", addr);
-  return 0;
+    default:
+    {
+      emu->error("Mailbox unimplemented 0x%08x", addr);
+      return 0;
+    }
+  }
 }
 
 void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
 {
-  uint8_t channel;
+  uint8_t channelNum;
   uint32_t data;
 
   if (size != sizeof(uint32_t))
@@ -112,35 +113,35 @@ void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
   }
 
   /* Retrieve data & channel */
-  channel = val & 0xF;
+  channelNum = val & 0xF;
   data = val & ~0xF;
 
   /* Save the channel of the last request */
-  last_channel = channel;
+  last_channel = channelNum;
 
   /* Check which port is being written */
   switch (addr)
   {
     case MBOX_WRITE:
     {
-      switch (channel)
+      Channel *channel = channels[channelNum];
+      if (channel)
       {
-        case 1:   /* Framebuffer */
-        {
-          emu->fb.request(data);
-          return;
-        }
-        default:
-        {
-          emu->error("Wrong channel 0x%x", channel);
-          return;
-        }
+        channel->request(data);
       }
-      break;
+      else
+      {
+        emu->error("Wrong channel 0x%x", channel);
+      }
     }
-  }
+    break;
 
-  emu->error("Mailbox unimplemented 0x%08x", addr);
+    default:
+    {
+      emu->error("Mailbox unimplemented 0x%08x", addr);
+    }
+    break;
+  }
 }
 
 } /*namespace remu*/
