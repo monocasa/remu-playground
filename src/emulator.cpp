@@ -49,14 +49,6 @@ uint64_t Emulator::getSystemTimer() const
 }
 
 /**
- * Executes a single step
- */
-void Emulator::tick()
-{
-  cpu_tick(&cpu);
-}
-
-/**
  * Prints out the state of the emulator
  */
 void Emulator::dump()

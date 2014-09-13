@@ -49,9 +49,11 @@ public:
 
   void load();
 
-  virtual void tick() override final;
+  void execute();
 
 private:
+  void tick();
+
   static const int NUM_BUTTONS = 10;
 
   class RPiStubRegion : private StubRegion

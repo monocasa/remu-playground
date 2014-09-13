@@ -160,11 +160,7 @@ main(int argc, char **argv)
 
     /* Run the emulator */
     emu.load();
-
-    while (emu.isRunning())
-    {
-      emu.tick();
-    }
+    emu.execute();
   } catch(const std::exception &exc) {
     fprintf(stderr, "Fatal Error:  %s\n", exc.what());
 

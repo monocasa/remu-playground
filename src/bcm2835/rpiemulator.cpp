@@ -49,9 +49,17 @@ void RPiEmulator::load()
   fclose(finput);
 }
 
+void RPiEmulator::execute()
+{
+  while (isRunning())
+  {
+    tick();
+  }
+}
+
 void RPiEmulator::tick()
 {
-  Emulator::tick();
+  cpu_tick(&cpu);
 
   /* When graphics are emulated, we execute a screen refresh after 34ms has
    * passed (30 frames per second) */

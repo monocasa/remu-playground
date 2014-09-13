@@ -45,7 +45,6 @@ public:
 
   bool isRunning() const;
   uint64_t getSystemTimer() const;
-  virtual void tick();
 
   void info(const char *fmt, ...) override final;
   void error(const char *fmt, ...) override final;
