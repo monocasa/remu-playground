@@ -21,6 +21,29 @@ public:
   uint32_t length;
 };
 
+class StubRegion : public IoRegion
+{
+public:
+  StubRegion(uint32_t base, uint32_t length)
+    : IoRegion(base, length)
+  { }
+
+  virtual ~StubRegion() = default;
+
+  uint64_t readIo(uint64_t offset, unsigned int size) override final {
+    (void)offset;
+    (void)size;
+
+    return 0xFFFFFFFFFFFFFFFFULL;
+  }
+
+  void writeIo(uint64_t offset, uint64_t val, unsigned int size) override final {
+    (void)offset;
+    (void)val;
+    (void)size;
+  }
+};
+
 /* TODO: THM: switch this to a more appropriate data structure once I start caring */
 class IoMap
 {

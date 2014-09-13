@@ -5,33 +5,6 @@
 namespace remu {
 
 /**
- * Checks whether a port is a dma control port
- */
-static inline int
-dma_is_port(uint32_t addr)
-{
-  return 0x20007000 <= addr && addr < 0x20007FF4;
-}
-
-/**
- * Checks whether a port is a clock control port
- */
-static inline int
-clock_is_port(uint32_t addr)
-{
-  return 0x20101000 <= addr && addr < 0x20101FF4;
-}
-
-/**
- * Checks whether a port is a pwm control port
- */
-static inline int
-pwm_is_port(uint32_t addr)
-{
-  return 0x2020C000 <= addr && addr < 0x2020CFF4;
-}
-
-/**
  * Initialises the memory module
  * @param emu      Reference to the emulator structure
  * @param mem_size Size of dram in bytes
@@ -172,24 +145,6 @@ uint32_t Memory::readDwordLe(uint32_t addr)
     return ioregion->readIo(addr - ioregion->base, sizeof(uint32_t));
   }
 
-  /* DMA - just ignore it */
-  if (dma_is_port(addr))
-  {
-    return 0;
-  }
-
-  /* CLOCK - just ignore it */
-  if (clock_is_port(addr))
-  {
-    return 0;
-  }
-
-  /* PWM - just ignore it */
-  if (pwm_is_port(addr))
-  {
-    return 0;
-  }
-
   emu->error("Out of bounds memory access at address 0x%08x", addr);
   return 0;
 }
@@ -263,24 +218,6 @@ void Memory::writeDwordLe(uint32_t addr, uint32_t value)
   IoRegion *ioregion = iomap.getRegionForAddr(addr);
   if (ioregion) {
     ioregion->writeIo(addr - ioregion->base, value, sizeof(uint32_t));
-    return;
-  }
-
-  /* DMA - just ignore it */
-  if (dma_is_port(addr))
-  {
-    return;
-  }
-
-  /* CLOCK - just ignore it */
-  if (clock_is_port(addr))
-  {
-    return;
-  }
-
-  /* PWM - just ignore it */
-  if (pwm_is_port(addr))
-  {
     return;
   }
 
