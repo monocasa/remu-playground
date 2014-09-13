@@ -73,7 +73,6 @@ public:
   /* Modules */
   Memory        memory;
   Cpu           cpu;
-  Mbox          mbox;
   Vfp           vfp;
 
 protected:

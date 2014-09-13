@@ -18,6 +18,7 @@ public:
     : Emulator(opt)
     , pr(*this, memory)
     , gpio(*this, memory)
+    , mbox(*this, memory)
     , fb(opt.mem_size, *this, memory, mbox)
     , buttons { bitbang::Button(gpio, fb, opt.gpio_test_offset + 0, SDLK_KP0),
                 bitbang::Button(gpio, fb, opt.gpio_test_offset + 1, SDLK_KP1),
@@ -63,6 +64,7 @@ private:
   /* Modules */
   Peripheral      pr;
   Gpio            gpio;
+  Mbox            mbox;
   Framebuffer     fb;
   bitbang::Button buttons[NUM_BUTTONS];
   bitbang::Nes   *nes;
