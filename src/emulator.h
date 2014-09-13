@@ -58,9 +58,9 @@ public:
     terminated = true;
   }
 
-  uint32_t getStartAddr() const {
-    return start_addr;
-  }
+  //uint32_t getStartAddr() const {
+  //  return start_addr;
+  //}
 
   bool isNesEnabled() const {
     return nes_enabled;

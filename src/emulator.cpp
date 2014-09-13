@@ -7,6 +7,7 @@ namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
+  , cpu(this, opt.start_addr)
   , terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
@@ -17,7 +18,7 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , nes_enabled( opt.nes_enabled )
   , system_timer_base( getTime() * 1000 )
 {
-  memset(&cpu,    0, sizeof(cpu));
+  //memset(&cpu,    0, sizeof(cpu));
 }
 
 /**
@@ -25,7 +26,7 @@ Emulator::Emulator(const EmulatorOptions &opt)
  */
 void Emulator::init()
 {
-  cpu_init(&cpu, this);
+  //cpu_init(&cpu, this);
 }
 
 /**

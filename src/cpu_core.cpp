@@ -1564,34 +1564,31 @@ debug_break(Cpu *cpu)
 /**
  * Initialises the CPU
  * @param cpu
- * @param emu
- * @param start_addr
  */
-void
-cpu_init(Cpu* cpu, Emulator* emu)
+Cpu::Cpu(Emulator* emu, uint32_t start_addr)
+  : emu(emu)
+  , memory(&emu->memory)
 {
-  cpu->emu = emu;
-  cpu->memory = &emu->memory;
-
   /* Initialise registers to zero */
-  memset(&cpu->r_usr, 0, sizeof(cpu->r_usr));
-  memset(&cpu->r_fiq, 0, sizeof(cpu->r_fiq));
-  memset(&cpu->r_irq, 0, sizeof(cpu->r_irq));
-  memset(&cpu->r_abt, 0, sizeof(cpu->r_abt));
-  memset(&cpu->r_und, 0, sizeof(cpu->r_und));
-  memset(&cpu->r_svc, 0, sizeof(cpu->r_svc));
+  memset(&r_usr, 0, sizeof(r_usr));
+  memset(&r_fiq, 0, sizeof(r_fiq));
+  memset(&r_irq, 0, sizeof(r_irq));
+  memset(&r_abt, 0, sizeof(r_abt));
+  memset(&r_und, 0, sizeof(r_und));
+  memset(&r_svc, 0, sizeof(r_svc));
 
   /* Start in supervisor mode */
-  cpu->cpsr.b.m = MODE_SVC;
+  cpsr.r = 0;
+  cpsr.b.m = MODE_SVC;
 
   /* Initialise spsr to zero */
-  memset(&cpu->spsr, 0, sizeof(cpu->spsr));
+  memset(&spsr, 0, sizeof(spsr));
 
   /* Load start address */
-  cpu_write_register(cpu, PC, emu->getStartAddr());
+  cpu_write_register(this, PC, start_addr);
 
   /* Vfp init */
-  vfp_init(cpu);
+  vfp_init(this);
 }
 
 /**
