@@ -1,5 +1,6 @@
 #include "common.h"
 
+#include "util/compiler.h"
 #include "cpu.h"
 #include "emulationexception.h"
 #include "emulator.h"
