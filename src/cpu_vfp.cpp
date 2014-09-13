@@ -3,6 +3,7 @@
 #include "cpu.h"
 #include "emulationexception.h"
 #include "emulator.h"
+#include "memory.h"
 
 namespace remu {
 

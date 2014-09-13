@@ -10,6 +10,7 @@
 #include "bitbang/nes.h"
 #include "cpu.h"
 #include "emulator.h"
+#include "memory.h"
 
 namespace remu {
 

@@ -24,8 +24,5 @@
 #  define UNUSED_FUNCTION(x) UNUSED_ ## x
 #endif
 
-/* Modules */
-#include "memory.h"
-
 #endif /*REMU_COMMON_H */
 
