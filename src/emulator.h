@@ -73,8 +73,8 @@ public:
   /* Modules */
   Memory        memory;
   Cpu           cpu;
-  Framebuffer   fb;
   Mbox          mbox;
+  Framebuffer   fb;
   Vfp           vfp;
 
 private:
