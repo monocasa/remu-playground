@@ -6,7 +6,7 @@
 namespace remu {
 
 Timer::Timer(Emulator &emu, Memory &mem)
-  : IoRegion(0x20003000, 0xC)
+  : IoRegion(TIMER_BASE, TIMER_BANK_SIZE)
   , emu(emu)
   , mem(mem)
 {
@@ -27,13 +27,13 @@ uint64_t Timer::readIo(uint64_t addr, unsigned int size)
 
   switch (addr)
   {
-    case 4:
+    case TIMER_LOW:
     {
       uint64_t timer_value = emu.getSystemTimer();
       return (uint32_t)(timer_value & 0xffffffff);
     }
 
-    case 8:
+    case TIMER_HIGH:
     {
       uint64_t timer_value = emu.getSystemTimer();
       return (uint32_t)((timer_value >> 32) & 0xffffffff);
