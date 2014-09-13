@@ -1,8 +1,6 @@
 #ifndef REMU_BMC2835_RPIEMULATOR_H
 #define REMU_BCM2835_RPIEMULATOR_H
 
-#include "common.h"
-
 #include "bcm2835/framebuffer.h"
 #include "bcm2835/gpio.h"
 #include "bcm2835/peripheral.h"

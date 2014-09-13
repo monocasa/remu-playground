@@ -1,4 +1,3 @@
-#include "common.h"
 #include "bcm2835/rpiemulator.h"
 
 #include <getopt.h>
