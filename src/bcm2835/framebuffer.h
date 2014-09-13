@@ -1,6 +1,7 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
+#include "bcm2835/mbox.h"
 #include "keydispatcher.h"
 
 #include <vector>
@@ -9,6 +10,7 @@ namespace remu {
 
 class Gpio;
 class KeyListener;
+class Mbox;
 
 /**
  * Framebuffer request structure
@@ -36,9 +38,10 @@ typedef union
  */
 class Framebuffer : public KeyDispatcher
                   , public IoRegion
+                  , public Mbox::Channel
 {
 public:
-  Framebuffer(size_t mem_size, Emulator*, Memory*);
+  Framebuffer(size_t mem_size, Emulator*, Memory*, Mbox&);
   virtual ~Framebuffer();
 
   void tick();
@@ -50,13 +53,15 @@ public:
   const size_t  mem_size;
 
   void dump();
-  void request(uint32_t data);
 
-  bool getError() const {
+  void request(uint32_t data) override final;
+  bool getError() const override final{
     return error;
   }
 
 private:
+  static const int FRAMEBUFFER_CHANNEL_NUM = 1;
+
   /* IoRegion overrides */
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
   void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;

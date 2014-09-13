@@ -3,8 +3,9 @@
 
 namespace remu {
 
-Framebuffer::Framebuffer(size_t mem_size, Emulator *emu, Memory *mem)
+Framebuffer::Framebuffer(size_t mem_size, Emulator *emu, Memory *mem, Mbox &mbox)
   : IoRegion(0, 0)
+  , Channel(mbox, FRAMEBUFFER_CHANNEL_NUM)
   , emu(emu)
   , mem(mem)
   , mem_size(mem_size)
