@@ -1,6 +1,8 @@
 #ifndef REMU_CPU_H
 #define REMU_CPU_H
 
+#include "opcode.h"
+
 namespace remu {
 
 /**
