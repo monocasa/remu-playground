@@ -8,7 +8,6 @@ namespace remu {
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
   , fb(opt.mem_size)
-  , gpio(new Gpio(*this, memory))
   , mbox(this, memory)
   , terminated( false )
   , image( opt.image )
@@ -28,7 +27,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  delete gpio;
   fb_destroy(&fb);
   cpu_destroy(&cpu);
   vfp_destroy(&vfp);

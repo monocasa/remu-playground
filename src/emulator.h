@@ -78,9 +78,6 @@ public:
   Memory        memory;
   Cpu           cpu;
   Framebuffer   fb;
-protected:
-  Gpio         *gpio;
-public:
   Mbox          mbox;
   Vfp           vfp;
 
