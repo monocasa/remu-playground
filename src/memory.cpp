@@ -115,18 +115,6 @@ uint32_t Memory::readDwordLe(uint32_t addr)
            (data[base + ((off + 3) & 0x03)] << 24);
   }
 
-  /* System Timer */
-  if (addr == 0x20003004)
-  {
-    uint64_t timer_value = emu->getSystemTimer();
-    return (uint32_t)(timer_value & 0xffffffff);
-  }
-  else if (addr == 0x20003008)
-  {
-    uint64_t timer_value = emu->getSystemTimer();
-    return (uint32_t)((timer_value >> 32) & 0xffffffff);
-  }
-
   /* Grab relevant IoRegion and call it if registered */
   IoRegion *ioregion = iomap.getRegionForAddr(addr);
   if (ioregion) {
