@@ -49,7 +49,6 @@ public:
   Gpio         *gpio;
   const size_t  mem_size;
 
-  //void createWindow(uint32_t width, uint32_t height);
   void dump();
   void request(uint32_t data);
 
