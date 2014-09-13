@@ -1,6 +1,6 @@
-#include "common.h"
-
+#include "bcm2835/mbox.h"
 #include "emulationexception.h"
+#include "memory.h"
 #include "ui.h"
 
 namespace remu {

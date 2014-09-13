@@ -29,7 +29,6 @@
 #include "opcode.h"
 #include "cpu.h"
 #include "bcm2835/gpio.h"
-#include "bcm2835/mbox.h"
 
 #endif /*REMU_COMMON_H */
 
