@@ -22,7 +22,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  cpu_destroy(&cpu);
 }
 
 /**

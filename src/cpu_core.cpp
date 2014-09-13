@@ -1742,15 +1742,6 @@ cpu_tick(Cpu* cpu)
 }
 
 /**
- * Destroys the CPU
- * @param cpu Reference to the CPU structure
- */
-void
-cpu_destroy(Cpu *UNUSED(cpu))
-{
-}
-
-/**
  * Prints the state of the registers to stdout
  * @param cpu Reference to the CPU structure
  */

@@ -239,7 +239,6 @@ uint32_t cpu_read_register(const Cpu* cpu, int reg);
 void cpu_write_register(Cpu* cpu, int reg, uint32_t value);
 void cpu_init(Cpu*, Emulator*);
 void cpu_tick(Cpu*);
-void cpu_destroy(Cpu*);
 void cpu_dump(Cpu*);
 
 void vfp_init(Cpu*);
