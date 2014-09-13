@@ -27,7 +27,6 @@
 /* Modules */
 #include "memory.h"
 #include "opcode.h"
-#include "cpu.h"
 
 #endif /*REMU_COMMON_H */
 

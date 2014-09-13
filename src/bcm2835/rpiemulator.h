@@ -8,6 +8,7 @@
 #include "bcm2835/peripheral.h"
 #include "bitbang/button.h"
 #include "bitbang/nes.h"
+#include "cpu.h"
 #include "emulator.h"
 
 namespace remu {
