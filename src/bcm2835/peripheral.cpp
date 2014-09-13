@@ -1,5 +1,4 @@
-#include "common.h"
-
+#include "bcm2835/peripheral.h"
 #include "emulationexception.h"
 #include "memory.h"
 #include "ui.h"
@@ -8,7 +7,6 @@ namespace remu {
 
 /**
  * Initialises peripherials
- * @param emu   Reference to the emulator structure
  */
 Peripheral::Peripheral(Ui &ui, Memory &mem)
   : IoRegion(AUX_BASE, 0x1000)
