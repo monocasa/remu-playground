@@ -28,7 +28,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
 
 Emulator::~Emulator()
 {
-  delete pr;
   delete gpio;
   fb_destroy(&fb);
   cpu_destroy(&cpu);
@@ -43,7 +42,6 @@ void Emulator::init()
   cpu_init(&cpu, this);
   vfp_init(&vfp, this);
   fb_init(&fb, this, &memory);
-  pr = new Peripheral(*this, memory);
 }
 
 /**

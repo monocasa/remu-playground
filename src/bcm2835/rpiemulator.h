@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#include "bcm2835/peripheral.h"
 #include "bitbang/button.h"
 #include "bitbang/nes.h"
 #include "emulator.h"
@@ -14,6 +15,7 @@ class RPiEmulator : public Emulator
 public:
   RPiEmulator(const EmulatorOptions &opt)
     : Emulator(opt)
+    , pr(*this, memory)
     , buttons { bitbang::Button(*gpio, fb, opt.gpio_test_offset + 0, SDLK_KP0),
                 bitbang::Button(*gpio, fb, opt.gpio_test_offset + 1, SDLK_KP1),
                 bitbang::Button(*gpio, fb, opt.gpio_test_offset + 2, SDLK_KP2),
@@ -52,6 +54,7 @@ private:
     Memory &mem;
   };
 
+  Peripheral      pr;
   bitbang::Button buttons[NUM_BUTTONS];
   bitbang::Nes   *nes;
   RPiStubRegion   dma;

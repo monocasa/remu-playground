@@ -82,7 +82,6 @@ protected:
   Gpio         *gpio;
 public:
   Mbox          mbox;
-  Peripheral   *pr;
   Vfp           vfp;
 
 private:

@@ -20,6 +20,7 @@ public:
   Mbox(Emulator *emu, Memory &mem);
   virtual ~Mbox();
 
+private:
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
   void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
 
