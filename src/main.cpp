@@ -42,7 +42,8 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv)
   int c, index;
 
   /* Default args */
-  opt.mem_size = 0x10000;
+  opt.mem_size = 256 * 1024 * 1024;
+  opt.start_addr = 0x10000;
 
   /* Read all arguments */
   while ((c = getopt_long(argc, argv, "vghsm:a:", options, &index)) != -1)
