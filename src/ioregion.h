@@ -1,6 +1,8 @@
 #ifndef REMU_IOTREE_H
 #define REMU_IOTREE_H
 
+#include "util/compiler.h"
+
 #include <cstdint>
 #include <list>
 
@@ -30,17 +32,11 @@ public:
 
   virtual ~StubRegion() = default;
 
-  uint64_t readIo(uint64_t offset, unsigned int size) override final {
-    (void)offset;
-    (void)size;
-
+  uint64_t readIo(uint64_t UNUSED(offset), unsigned int UNUSED(size)) override final {
     return 0xFFFFFFFFFFFFFFFFULL;
   }
 
-  void writeIo(uint64_t offset, uint64_t val, unsigned int size) override final {
-    (void)offset;
-    (void)val;
-    (void)size;
+  void writeIo(uint64_t UNUSED(offset), uint64_t UNUSED(val), unsigned int UNUSED(size)) override final {
   }
 };
 

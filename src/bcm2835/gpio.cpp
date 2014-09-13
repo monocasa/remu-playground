@@ -1,4 +1,5 @@
 #include "bcm2835/gpio.h"
+#include "emulationexception.h"
 #include "memory.h"
 #include "ui.h"
 
@@ -37,12 +38,10 @@ uint64_t Gpio::readIo(uint64_t address, unsigned int size)
   uint8_t base;
   size_t i;
 
-  /* Ignore size for now */
-  (void)size;
-
-  /* Align the address */
-  address &= ~0x3;
-  //assert(Gpio::isGpioAddress(address));
+  if (size != sizeof(uint32_t))
+  {
+    throw EmulationException("Gpio has only implemented 32 bit reads:  addr=%08lx size=%d", address, size);
+  }
 
   switch (address)
   {
@@ -97,14 +96,11 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
   uint32_t offset = 0;
   size_t i;
 
-  /* Ignore size for now */
-  (void)size;
+  if (size != sizeof(uint32_t))
+  {
+    throw EmulationException("Gpio has only implemented 32 bit writes:  addr=%08lx val=%lx size=%d", address, val, size);
+  }
 
-  /* Align the address */
-  address &= ~0x3;
-  //assert(Gpio::isGpioAddress(address));
-
-  /* If nes controller is enabled, write to controller */
   switch (address)
   {
     case GPIO_FSEL0 ... GPIO_FSEL5:
