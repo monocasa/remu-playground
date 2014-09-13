@@ -32,7 +32,6 @@ class Emulator;
 /* Modules */
 #include "memory.h"
 #include "opcode.h"
-#include "vfp.h"
 #include "cpu.h"
 #include "bcm2835/gpio.h"
 #include "bcm2835/mbox.h"

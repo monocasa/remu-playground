@@ -29,12 +29,12 @@ ADD_LIBRARY( remu_core src/bcm2835/framebuffer.cpp
                        src/bcm2835/rpiemulator.cpp
                        src/bitbang/button.cpp
                        src/bitbang/nes.cpp
-                       src/cpu.cpp
+                       src/cpu_core.cpp
+                       src/cpu_vfp.cpp
                        src/emulator.cpp
                        src/gpioblock.cpp
                        src/keydispatcher.cpp
-                       src/memory.cpp
-                       src/vfp.cpp )
+                       src/memory.cpp )
 
 TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
 

@@ -1276,7 +1276,7 @@ instr_coproc_data_proc(Cpu* cpu, op_coproc_data_proc_t* opcode)
     case 10:
     {
       /* VFP single precisoin coprocessor */
-      vfp_data_proc(&cpu->emu->vfp, opcode);
+      vfp_data_proc(cpu, opcode);
       break;
     }
     case 11:
@@ -1315,7 +1315,7 @@ instr_coproc_data_transfer(Cpu* cpu, op_coproc_data_transfer_t* opcode)
     case 10:
     {
       /* VFP single precision coprocessor */
-      vfp_data_transfer(&cpu->emu->vfp, opcode);
+      vfp_data_transfer(cpu, opcode);
       break;
     }
     case 11:
@@ -1354,7 +1354,7 @@ instr_coproc_reg_transfer(Cpu* cpu, op_coproc_reg_transfer_t* opcode)
     case 10:
     {
       /* VFP single precision coprocessor */
-      vfp_reg_transfer(&cpu->emu->vfp, opcode);
+      vfp_reg_transfer(cpu, opcode);
       break;
     }
     case 11:
@@ -1454,7 +1454,7 @@ debug_break(Cpu *cpu)
       }
       case 'v':
       {
-        vfp_dump(&cpu->emu->vfp);
+        vfp_dump(cpu);
         break;
       }
       case 's':

@@ -73,7 +73,6 @@ public:
   /* Modules */
   Memory        memory;
   Cpu           cpu;
-  Vfp           vfp;
 
 protected:
   uint64_t getTime() const;

@@ -18,13 +18,11 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , system_timer_base( getTime() * 1000 )
 {
   memset(&cpu,    0, sizeof(cpu));
-  memset(&vfp,    0, sizeof(vfp));
 }
 
 Emulator::~Emulator()
 {
   cpu_destroy(&cpu);
-  vfp_destroy(&vfp);
 }
 
 /**
@@ -33,7 +31,7 @@ Emulator::~Emulator()
 void Emulator::init()
 {
   cpu_init(&cpu, this);
-  vfp_init(&vfp, this);
+  vfp_init(&cpu);
 }
 
 /**

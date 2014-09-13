@@ -9,37 +9,22 @@ namespace remu {
  * @param emu Emulator
  */
 void
-vfp_init(Vfp* vfp, Emulator* emu)
+vfp_init(Cpu *cpu)
 {
-  assert(vfp);
-  assert(emu);
-
-  vfp->emu = emu;
-
   /* Initialise registers */
-  memset(&vfp->reg.s, 0, sizeof(vfp->reg.s));
-  memset(&vfp->reg.fpscr, 0, sizeof(vfp->reg.fpscr));
-  memset(&vfp->reg.fpexc, 0, sizeof(vfp->reg.fpexc));
+  memset(&cpu->vfp.s, 0, sizeof(cpu->vfp.s));
+  memset(&cpu->vfp.fpscr, 0, sizeof(cpu->vfp.fpscr));
+  memset(&cpu->vfp.fpexc, 0, sizeof(cpu->vfp.fpexc));
 
   /* TODO: Initialise FPSID */
-  vfp->reg.fpsid = 0;
-}
-
-/**
- * Destroys the vector floating point coprocessor
- * @param vfp VFP context
- */
-void
-vfp_destroy(Vfp* UNUSED(vfp))
-{
-  /* Nothing was allocated on the heap so nothing to free */
+  cpu->vfp.fpsid = 0;
 }
 
 /**
  * Prints the state of the VFP coprocessor
  */
 void
-vfp_dump(Vfp *vfp)
+vfp_dump(Cpu *cpu)
 {
   int i;
   union
@@ -50,7 +35,7 @@ vfp_dump(Vfp *vfp)
 
   for (i = 0; i < 32; ++i)
   {
-    reg.u = vfp->reg.s[i];
+    reg.u = cpu->vfp.s[i];
     printf("s%02d: %f\n", i, reg.f);
   }
 }
@@ -63,28 +48,28 @@ vfp_dump(Vfp *vfp)
  * @param mode Set to 0 if no exceptions on quiet NaN's, 1 otherwise
  */
 void
-dp_fcmps(Vfp* vfp, float a, float b, uint32_t UNUSED(mode))
+dp_fcmps(Cpu *cpu, float a, float b, uint32_t UNUSED(mode))
 {
   /* Determine if a and b are unordered (NaNs) */
   if ((a != a) || (b != b))
   {
     /* NZCV = 0011 */
-    vfp->reg.fpscr.b.flags = 0x3;
+    cpu->vfp.fpscr.b.flags = 0x3;
   }
   else if (a == b)
   {
     /* NZCV = 0110 */
-    vfp->reg.fpscr.b.flags = 0x6;
+    cpu->vfp.fpscr.b.flags = 0x6;
   }
   else if (a < b)
   {
     /* NZCV = 1000 */
-    vfp->reg.fpscr.b.flags = 0x8;
+    cpu->vfp.fpscr.b.flags = 0x8;
   }
   else
   {
     /* NZCV = 0010 */
-    vfp->reg.fpscr.b.flags = 0x2;
+    cpu->vfp.fpscr.b.flags = 0x2;
   }
 }
 
@@ -94,7 +79,7 @@ dp_fcmps(Vfp* vfp, float a, float b, uint32_t UNUSED(mode))
  * @param instr Instruction
  */
 void
-vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
+vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
 {
   uint32_t opcode, Fd, Fn, Fm;
 
@@ -128,15 +113,15 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
 
   if (opcode != 0xf)
   {
-    in.u = vfp->reg.s[Fn];
+    in.u = cpu->vfp.s[Fn];
   }
   else
   {
     in.u = 0;
   }
 
-  im.u = vfp->reg.s[Fm];
-  o.u = vfp->reg.s[Fd];
+  im.u = cpu->vfp.s[Fm];
+  o.u = cpu->vfp.s[Fd];
 
   /* Dispatch instruction */
   switch (opcode)
@@ -213,22 +198,22 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
         }
         case 0x8: /* FCMPS */
         {
-          dp_fcmps(vfp, o.f, im.f, 0);
+          dp_fcmps(cpu, o.f, im.f, 0);
           break;
         }
         case 0x9: /* FCMPES */
         {
-          dp_fcmps(vfp, o.f, im.f, 1);
+          dp_fcmps(cpu, o.f, im.f, 1);
           break;
         }
         case 0xa: /* FCMPZS */
         {
-          dp_fcmps(vfp, o.f, 0.0f, 0);
+          dp_fcmps(cpu, o.f, 0.0f, 0);
           break;
         }
         case 0xb: /* FCMPEZS */
         {
-          dp_fcmps(vfp, o.f, 0.0f, 1);
+          dp_fcmps(cpu, o.f, 0.0f, 1);
           break;
         }
         case 0x10: /* FUITOS */
@@ -263,7 +248,7 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
         }
         default:
         {
-          vfp->emu->error( "Undefined VFP extension data proc instruction");
+          cpu->emu->error( "Undefined VFP extension data proc instruction");
         }
       }
       break;
@@ -275,7 +260,7 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
   }
 
   /* Write output back to Fd */
-  vfp->reg.s[Fd] = o.u;
+  cpu->vfp.s[Fd] = o.u;
 }
 
 /**
@@ -288,19 +273,19 @@ vfp_data_proc(Vfp* vfp, op_coproc_data_proc_t* instr)
  * @param l        Load/store
  */
 static inline void
-dt_single_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
+dt_single_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
                          uint32_t l)
 {
-  uint32_t base = cpu_read_register(&vfp->emu->cpu, Rn) + (offset << 2);
+  uint32_t base = cpu_read_register(cpu, Rn) + (offset << 2);
 
   /* If l == 1 then load otherwise store */
   if (l)
   {
-    vfp->reg.s[Fd] = vfp->emu->memory.readDwordLe(base);
+    cpu->vfp.s[Fd] = cpu->emu->memory.readDwordLe(base);
   }
   else
   {
-    vfp->emu->memory.writeDwordLe(base, vfp->reg.s[Fd]);
+    cpu->emu->memory.writeDwordLe(base, cpu->vfp.s[Fd]);
   }
 }
 
@@ -314,19 +299,19 @@ dt_single_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
  * @param mode     0 - unindexed, 1 - increment, 2 - decrement
  */
 static inline void
-dt_multiple_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
+dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
                           uint32_t l, uint32_t mode)
 {
   uint32_t i;
   uint32_t base;
 
-  base = cpu_read_register(&vfp->emu->cpu, Rn) & 0xfffffffc;
+  base = cpu_read_register(cpu, Rn) & 0xfffffffc;
 
   /* In mode 2 - decrement base and write back to Rn */
   if (mode == 2)
   {
     base -= offset << 2;
-    cpu_write_register(&vfp->emu->cpu, Rn, base);
+    cpu_write_register(cpu, Rn, base);
   }
 
   /* If l == 1 then load otherwise store */
@@ -335,8 +320,8 @@ dt_multiple_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
     /* Load registers from Fd to Fd + offset from memory */
     for (i = 0; i < offset; ++i)
     {
-      vfp->reg.s[Fd + i] =
-        vfp->emu->memory.readDwordLe(base + (i << 2));
+      cpu->vfp.s[Fd + i] =
+        cpu->emu->memory.readDwordLe(base + (i << 2));
     }
   }
   else
@@ -344,14 +329,14 @@ dt_multiple_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
     /* Write registers from Fd to Fd + offset to memory */
     for (i = 0; i < offset; ++i)
     {
-      vfp->emu->memory.writeDwordLe(base + (i << 2), vfp->reg.s[Fd + i]);
+      cpu->emu->memory.writeDwordLe(base + (i << 2), cpu->vfp.s[Fd + i]);
     }
   }
 
   /* In mode 1 - increment base and write back to Rn */
   if (mode == 1)
   {
-    cpu_write_register(&vfp->emu->cpu, Rn, base + (offset << 2));
+    cpu_write_register(cpu, Rn, base + (offset << 2));
   }
 }
 
@@ -361,7 +346,7 @@ dt_multiple_data_transfer(Vfp* vfp, uint32_t Fd, uint32_t Rn, uint32_t offset,
  * @param instr Instruction
  */
 void
-vfp_data_transfer(Vfp* vfp, op_coproc_data_transfer_t* instr)
+vfp_data_transfer(Cpu *cpu, op_coproc_data_transfer_t* instr)
 {
   uint32_t opcode, Fd, Rn;
 
@@ -380,31 +365,31 @@ vfp_data_transfer(Vfp* vfp, op_coproc_data_transfer_t* instr)
     case 0x2:
     {
       /* FLDMS or FSTMS (unindexed) */
-      dt_multiple_data_transfer(vfp, Fd, Rn, instr->offset, instr->l, 0);
+      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 0);
       break;
     }
     case 0x3:
     {
       /* FLDMS or FSTMS (increment) */
-      dt_multiple_data_transfer(vfp, Fd, Rn, instr->offset, instr->l, 1);
+      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 1);
       break;
     }
     case 0x4:
     {
       /* FLDS or FSTS (negative offset) */
-      dt_single_data_transfer(vfp, Fd, Rn, -instr->offset, instr->l);
+      dt_single_data_transfer(cpu, Fd, Rn, -instr->offset, instr->l);
       break;
     }
     case 0x5:
     {
       /* FLDMS or FSTMS (decrement) */
-      dt_multiple_data_transfer(vfp, Fd, Rn, instr->offset, instr->l, 2);
+      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 2);
       break;
     }
     case 0x6:
     {
       /* FLDS or FSTS (positive offset) */
-      dt_single_data_transfer(vfp, Fd, Rn, instr->offset, instr->l);
+      dt_single_data_transfer(cpu, Fd, Rn, instr->offset, instr->l);
       break;
     }
     default:
@@ -418,20 +403,20 @@ vfp_data_transfer(Vfp* vfp, op_coproc_data_transfer_t* instr)
  * Register Transfer sub-instructions
  */
 static inline void
-rt_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
+rt_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
 {
   if (l)
   {
-    cpu_write_register(&vfp->emu->cpu, Rd, vfp->reg.s[Fn]);
+    cpu_write_register(cpu, Rd, cpu->vfp.s[Fn]);
   }
   else
   {
-    vfp->reg.s[Fn] = cpu_read_register(&vfp->emu->cpu, Rd);
+    cpu->vfp.s[Fn] = cpu_read_register(cpu, Rd);
   }
 }
 
 static inline void
-rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
+rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
 {
   uint32_t value = 0;
   if (l)
@@ -442,19 +427,19 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       case 0x0:
       {
         /* FPSID */
-        value = vfp->reg.fpsid;
+        value = cpu->vfp.fpsid;
         break;
       }
       case 0x2:
       {
         /* FPSCR */
-        value = vfp->reg.fpscr.r;
+        value = cpu->vfp.fpscr.r;
         break;
       }
       case 0x10:
       {
         /* FPEXC */
-        value = vfp->reg.fpexc.r;
+        value = cpu->vfp.fpexc.r;
         break;
       }
       default:
@@ -468,8 +453,8 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
     {
       if (Fn == 0x2)
       {
-        vfp->emu->cpu.cpsr.r &= 0x0fffffff;
-        vfp->emu->cpu.cpsr.r |= value & 0xf0000000;
+        cpu->cpsr.r &= 0x0fffffff;
+        cpu->cpsr.r |= value & 0xf0000000;
       }
       else
       {
@@ -479,13 +464,13 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
     else
     {
       /* Write to destination register */
-      cpu_write_register(&vfp->emu->cpu, Rd, value);
+      cpu_write_register(cpu, Rd, value);
     }
   }
   else
   {
     /* Read source register */
-    value = cpu_read_register(&vfp->emu->cpu, Rd);
+    value = cpu_read_register(cpu, Rd);
 
     /* Write to system register */
     switch (Fn)
@@ -493,19 +478,19 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
       case 0x0:
       {
         /* FPSID */
-        vfp->reg.fpsid = value;
+        cpu->vfp.fpsid = value;
         break;
       }
       case 0x2:
       {
         /* FPSCR */
-        vfp->reg.fpscr.r = value;
+        cpu->vfp.fpscr.r = value;
         break;
       }
       case 0x10:
       {
         /* FPEXC */
-        vfp->reg.fpexc.r = value;
+        cpu->vfp.fpexc.r = value;
         break;
       }
       default:
@@ -522,7 +507,7 @@ rt_status_reg_transfer(Vfp* vfp, uint32_t Fn, uint32_t Rd, uint32_t l)
  * @param instr Instruction
  */
 void
-vfp_reg_transfer(Vfp* vfp, op_coproc_reg_transfer_t* instr)
+vfp_reg_transfer(Cpu *cpu, op_coproc_reg_transfer_t* instr)
 {
   uint32_t opcode, Rd, Fn;
 
@@ -547,13 +532,13 @@ vfp_reg_transfer(Vfp* vfp, op_coproc_reg_transfer_t* instr)
     case 0x0:
     {
       /* FMSR and FMRS */
-      rt_reg_transfer(vfp, Fn, Rd, instr->l);
+      rt_reg_transfer(cpu, Fn, Rd, instr->l);
       break;
     }
     case 0x7:
     {
       /* FMXR, FMRX and FMSTAT */
-      rt_status_reg_transfer(vfp, Fn, Rd, instr->l);
+      rt_status_reg_transfer(cpu, Fn, Rd, instr->l);
       break;
     }
     default:
