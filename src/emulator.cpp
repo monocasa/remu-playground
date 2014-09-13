@@ -7,7 +7,6 @@ namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
   : memory(this, opt.mem_size)
-  , cpu(this, opt.start_addr)
   , terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
@@ -46,15 +45,6 @@ uint64_t Emulator::getSystemTimer() const
   gettimeofday(&tv, NULL);
   uint64_t us = (tv.tv_sec) * 1000000ULL + tv.tv_usec;
   return us - system_timer_base;
-}
-
-/**
- * Prints out the state of the emulator
- */
-void Emulator::dump()
-{
-  cpu_dump(&cpu);
-  memory.dump();
 }
 
 /**

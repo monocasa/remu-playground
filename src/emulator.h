@@ -49,7 +49,8 @@ public:
   void info(const char *fmt, ...) override final;
   void error(const char *fmt, ...) override final;
 
-  void dump();
+  virtual void execute() = 0;
+  virtual void dump() = 0;
 
   void terminate() {
     terminated = true;
@@ -61,7 +62,6 @@ public:
 
   /* Modules */
   Memory        memory;
-  Cpu           cpu;
 
 protected:
   uint64_t getTime() const;

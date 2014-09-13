@@ -57,6 +57,15 @@ void RPiEmulator::execute()
   }
 }
 
+/**
+ * Prints out the state of the emulator
+ */
+void RPiEmulator::dump()
+{
+  cpu_dump(&cpu);
+  memory.dump();
+}
+
 void RPiEmulator::tick()
 {
   cpu_tick(&cpu);

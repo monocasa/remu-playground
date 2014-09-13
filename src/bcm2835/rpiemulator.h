@@ -17,6 +17,7 @@ public:
   RPiEmulator(const EmulatorOptions &opt)
     : Emulator(opt)
     , opt(opt)
+    , cpu(this, opt.start_addr)
     , pr(*this, memory)
     , gpio(*this, memory)
     , mbox(*this, memory)
@@ -49,7 +50,8 @@ public:
 
   void load();
 
-  void execute();
+  void execute() override final;
+  void dump() override final;
 
 private:
   void tick();
@@ -69,6 +71,7 @@ private:
   const EmulatorOptions &opt;
 
   /* Modules */
+  Cpu             cpu;
   Peripheral      pr;
   Gpio            gpio;
   Mbox            mbox;
