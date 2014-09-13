@@ -41,7 +41,7 @@ class Emulator : public Ui
 public:
   Emulator(const EmulatorOptions &opt);
 
-  virtual ~Emulator();
+  virtual ~Emulator() = default;
 
   void init();
   void load();

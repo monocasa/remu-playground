@@ -20,10 +20,6 @@ Emulator::Emulator(const EmulatorOptions &opt)
   memset(&cpu,    0, sizeof(cpu));
 }
 
-Emulator::~Emulator()
-{
-}
-
 /**
  * Initialises the emulator
  */
