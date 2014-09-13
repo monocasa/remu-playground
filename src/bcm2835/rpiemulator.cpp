@@ -1,7 +1,7 @@
 #include "bcm2835/rpiemulator.h"
 #include "emulationexception.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 RPiEmulator::RPiStubRegion::RPiStubRegion(uint32_t base, uint32_t length, Memory &mem)
   : StubRegion(base, length)
@@ -82,5 +82,5 @@ void RPiEmulator::tick()
   }
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
  

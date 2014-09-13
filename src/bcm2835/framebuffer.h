@@ -7,10 +7,14 @@
 #include <vector>
 
 namespace remu {
+class Emulator;
+class Memory;
+class KeyListener;
+} /*namespace remu*/
+
+namespace remu { namespace bcm2835 {
 
 class Gpio;
-class Emulator;
-class KeyListener;
 class Mbox;
 
 /**
@@ -42,7 +46,7 @@ class Framebuffer : public KeyDispatcher
                   , public Mbox::Channel
 {
 public:
-  Framebuffer(size_t mem_size, Emulator&, Memory&, Mbox&);
+  Framebuffer(size_t mem_size, remu::Emulator&, remu::Memory&, Mbox&);
   virtual ~Framebuffer();
 
   void tick();
@@ -65,9 +69,9 @@ private:
   uint32_t getPixel(uint32_t x, uint32_t y);
 
   /* Emulator reference */
-  Emulator     &emu;
-  Memory       &mem;
-  const size_t  mem_size;
+  remu::Emulator &emu;
+  remu::Memory   &mem;
+  const size_t    mem_size;
 
   /* Framebuffer */
   uint8_t*      framebuffer;
@@ -87,7 +91,7 @@ private:
   uint32_t      depth;
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /* REMU_BCM2835_FRAMEBUFFER_H */
 

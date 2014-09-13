@@ -11,7 +11,7 @@
 #include "emulator.h"
 #include "memory.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 class RPiEmulator : public Emulator
 {
@@ -92,7 +92,7 @@ private:
   uint64_t      last_refresh;
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /*REMU_BCM2835_RPIEMULATOR_H*/
 

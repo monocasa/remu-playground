@@ -3,7 +3,7 @@
 #include "memory.h"
 #include "ui.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 /**
  * Initialises memory for the gpio registers
@@ -153,5 +153,5 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
   ui.error("GPIO unimplemented 0x%08x", address);
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 

@@ -4,14 +4,16 @@
 #include "ioregion.h"
 
 namespace remu {
-
 class Emulator;
 class Memory;
+} /*namespace remu*/
+
+namespace remu { namespace bcm2835 {
 
 class Timer : private IoRegion
 {
 public:
-  Timer(Emulator &emu, Memory &mem);
+  Timer(remu::Emulator &emu, remu::Memory &mem);
   virtual ~Timer();
 
 private:
@@ -26,11 +28,11 @@ private:
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
   void writeIo(uint64_t addr, uint64_t val, unsigned int size) override final;
 
-  Emulator &emu;
-  Memory   &mem;
+  remu::Emulator &emu;
+  remu::Memory   &mem;
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /*REMU_BCM2825_TIMER_H*/
 

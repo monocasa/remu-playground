@@ -3,7 +3,7 @@
 #include "emulator.h"
 #include "memory.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 Timer::Timer(Emulator &emu, Memory &mem)
   : IoRegion(TIMER_BASE, TIMER_BANK_SIZE)
@@ -52,5 +52,5 @@ void Timer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
   throw EmulationException("Timer writes not implemented:  addr=%08lx val=%lx, size=%d", addr, val, size);
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 

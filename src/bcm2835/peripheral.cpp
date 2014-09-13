@@ -3,7 +3,7 @@
 #include "memory.h"
 #include "ui.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 /**
  * Initialises peripherials
@@ -146,5 +146,5 @@ uint64_t Peripheral::readIo(uint64_t addr, unsigned int size)
   return 0;
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 

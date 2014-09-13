@@ -3,7 +3,7 @@
 #include "memory.h"
 #include "ui.h"
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
 /**
  * Initialises the mailbox
@@ -145,5 +145,5 @@ void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
   }
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 

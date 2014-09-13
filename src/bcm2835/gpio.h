@@ -9,11 +9,12 @@
 #include <vector>
 
 namespace remu {
-
-class Emulator;
 class Memory;
 class GpioListener;
 class Ui;
+} /*namespace remu*/
+
+namespace remu { namespace bcm2835 {
 
 /**
  * GPIO emulation
@@ -22,7 +23,7 @@ class Gpio : public IoRegion
            , public GpioBlock
 {
 public:
-  Gpio(Ui &ui, Memory &mem);
+  Gpio(remu::Ui &ui, remu::Memory &mem);
   virtual ~Gpio();
 
   /**
@@ -87,15 +88,15 @@ private:
     GPIO_UDCLK1 = 0x9C,
   };
 
-  Ui     &ui;
-  Memory &mem;
+  remu::Ui     &ui;
+  remu::Memory &mem;
   std::vector<gpio_port_t> ports;
 
   uint64_t readIo(uint64_t offset, unsigned int size) override final;
   void writeIo(uint64_t offset, uint64_t val, unsigned int size) override final;
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /* REMU_BCM2835_GPIO_H */
 

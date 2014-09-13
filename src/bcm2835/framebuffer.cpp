@@ -5,9 +5,9 @@
 
 #include <cassert>
 
-namespace remu {
+namespace remu { namespace bcm2835 {
 
-Framebuffer::Framebuffer(size_t mem_size, Emulator &emu, Memory &mem, Mbox &mbox)
+Framebuffer::Framebuffer(size_t mem_size, remu::Emulator &emu, remu::Memory &mem, Mbox &mbox)
   : IoRegion(0, 0)
   , Channel(mbox, FRAMEBUFFER_CHANNEL_NUM)
   , emu(emu)
@@ -327,5 +327,5 @@ void Framebuffer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
   }
 }
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 

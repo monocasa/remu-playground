@@ -163,7 +163,7 @@ main(int argc, char **argv)
   }
 
   try {
-    remu::RPiEmulator emu(opt);
+    remu::bcm2835::RPiEmulator emu(opt);
 
     /* Run the emulator */
     emu.load();

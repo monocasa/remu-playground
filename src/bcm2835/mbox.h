@@ -4,9 +4,11 @@
 #include "ioregion.h"
 
 namespace remu {
-
 class Ui;
 class Memory;
+} /*namespace remu*/
+
+namespace remu { namespace bcm2835 {
 
 /**
  * Mailbox structure
@@ -44,7 +46,7 @@ public:
     int channelNum;
   };
 
-  Mbox(Ui &ui, Memory &mem);
+  Mbox(remu::Ui &ui, remu::Memory &mem);
   virtual ~Mbox();
 
   void addChannel(Channel *channel);
@@ -71,13 +73,13 @@ private:
     MBOX_WRITE  = 0x20,
   } mbox_ports_t;
 
-  Ui         &ui;
-  Memory     &mem;
-  uint8_t     last_channel;
-  Channel    *channels[NUM_CHANNELS];
+  remu::Ui     &ui;
+  remu::Memory &mem;
+  uint8_t       last_channel;
+  Channel      *channels[NUM_CHANNELS];
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /*REMU_BCM2835_MBOX_H*/
 

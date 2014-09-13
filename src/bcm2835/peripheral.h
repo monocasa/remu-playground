@@ -4,9 +4,11 @@
 #include "ioregion.h"
 
 namespace remu {
-
 class Memory;
 class Ui;
+} /*namespace remu*/
+
+namespace remu { namespace bcm2835 {
 
 /**
  * Peripherials state
@@ -14,7 +16,7 @@ class Ui;
 class Peripheral : public IoRegion
 {
 public:
-  Peripheral(Ui &ui, Memory &mem);
+  Peripheral(remu::Ui &ui, remu::Memory &mem);
   virtual ~Peripheral();
 
   uint64_t readIo(uint64_t addr, unsigned int size) override final;
@@ -57,8 +59,8 @@ private:
     AUX_SPI1_CNTL1_REG = 0xC4
   };
 
-  Ui     &ui;
-  Memory &mem;
+  remu::Ui     &ui;
+  remu::Memory &mem;
 
   /* True if SPI 1 module is enabled */
   bool spi1_enable;
@@ -82,7 +84,7 @@ private:
   int uart_dlab;
 };
 
-} /*namespace remu*/
+}} /*namespace remu::bcm2835*/
 
 #endif /* REMU_BCM2835_PERIPHERAL_H */
 
