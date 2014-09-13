@@ -60,9 +60,6 @@ public:
     return graphics;
   }
 
-  /* Modules */
-  Memory        memory;
-
 protected:
   uint64_t getTime() const;
 

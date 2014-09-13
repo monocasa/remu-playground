@@ -68,7 +68,7 @@ typedef enum
 class Cpu
 {
 public:
-  Cpu(Emulator *emu, uint32_t start_addr);
+  Cpu(Emulator *emu, Memory *memory, uint32_t start_addr);
 
   Emulator  *emu;
   Memory    *memory;

@@ -6,8 +6,7 @@
 namespace remu {
 
 Emulator::Emulator(const EmulatorOptions &opt)
-  : memory(this, opt.mem_size)
-  , terminated( false )
+  : terminated( false )
   , image( opt.image )
   , mem_size( opt.mem_size )
   , start_addr( opt.start_addr )

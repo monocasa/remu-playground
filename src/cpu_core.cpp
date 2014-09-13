@@ -1565,9 +1565,9 @@ debug_break(Cpu *cpu)
  * Initialises the CPU
  * @param cpu
  */
-Cpu::Cpu(Emulator* emu, uint32_t start_addr)
+Cpu::Cpu(Emulator* emu, Memory *memory, uint32_t start_addr)
   : emu(emu)
-  , memory(&emu->memory)
+  , memory(memory)
 {
   /* Initialise registers to zero */
   memset(&r_usr, 0, sizeof(r_usr));

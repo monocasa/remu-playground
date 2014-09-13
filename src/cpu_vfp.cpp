@@ -281,11 +281,11 @@ dt_single_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
   /* If l == 1 then load otherwise store */
   if (l)
   {
-    cpu->vfp.s[Fd] = cpu->emu->memory.readDwordLe(base);
+    cpu->vfp.s[Fd] = cpu->memory->readDwordLe(base);
   }
   else
   {
-    cpu->emu->memory.writeDwordLe(base, cpu->vfp.s[Fd]);
+    cpu->memory->writeDwordLe(base, cpu->vfp.s[Fd]);
   }
 }
 
@@ -321,7 +321,7 @@ dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
     for (i = 0; i < offset; ++i)
     {
       cpu->vfp.s[Fd + i] =
-        cpu->emu->memory.readDwordLe(base + (i << 2));
+        cpu->memory->readDwordLe(base + (i << 2));
     }
   }
   else
@@ -329,7 +329,7 @@ dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
     /* Write registers from Fd to Fd + offset to memory */
     for (i = 0; i < offset; ++i)
     {
-      cpu->emu->memory.writeDwordLe(base + (i << 2), cpu->vfp.s[Fd + i]);
+      cpu->memory->writeDwordLe(base + (i << 2), cpu->vfp.s[Fd + i]);
     }
   }
 
