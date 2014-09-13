@@ -43,7 +43,6 @@ public:
 
   virtual ~Emulator() = default;
 
-  void init();
   void load();
   bool isRunning() const;
   uint64_t getSystemTimer() const;

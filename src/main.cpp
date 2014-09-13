@@ -159,7 +159,6 @@ main(int argc, char **argv)
     remu::RPiEmulator emu(opt);
 
     /* Run the emulator */
-    emu.init();
     emu.load();
 
     while (emu.isRunning())

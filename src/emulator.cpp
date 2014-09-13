@@ -17,17 +17,7 @@ Emulator::Emulator(const EmulatorOptions &opt)
   , quiet( opt.quiet )
   , nes_enabled( opt.nes_enabled )
   , system_timer_base( getTime() * 1000 )
-{
-  //memset(&cpu,    0, sizeof(cpu));
-}
-
-/**
- * Initialises the emulator
- */
-void Emulator::init()
-{
-  //cpu_init(&cpu, this);
-}
+{ }
 
 /**
  * Loads a binary image into memory
