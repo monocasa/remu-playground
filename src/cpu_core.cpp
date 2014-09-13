@@ -1281,7 +1281,7 @@ instr_coproc_data_proc(Cpu* cpu, op_coproc_data_proc_t* opcode)
     case 10:
     {
       /* VFP single precisoin coprocessor */
-      vfp_data_proc(cpu, opcode);
+      cpu->vfpDataProc(opcode);
       break;
     }
     case 11:
@@ -1320,7 +1320,7 @@ instr_coproc_data_transfer(Cpu* cpu, op_coproc_data_transfer_t* opcode)
     case 10:
     {
       /* VFP single precision coprocessor */
-      vfp_data_transfer(cpu, opcode);
+      cpu->vfpDataTransfer(opcode);
       break;
     }
     case 11:
@@ -1359,7 +1359,7 @@ instr_coproc_reg_transfer(Cpu* cpu, op_coproc_reg_transfer_t* opcode)
     case 10:
     {
       /* VFP single precision coprocessor */
-      vfp_reg_transfer(cpu, opcode);
+      cpu->vfpRegTransfer(opcode);
       break;
     }
     case 11:
@@ -1459,7 +1459,7 @@ debug_break(Cpu *cpu)
       }
       case 'v':
       {
-        vfp_dump(cpu);
+        cpu->vfpDump();
         break;
       }
       case 's':
@@ -1592,8 +1592,7 @@ Cpu::Cpu(Emulator* emu, Memory *memory, uint32_t start_addr)
   /* Load start address */
   cpu_write_register(this, PC, start_addr);
 
-  /* Vfp init */
-  vfp_init(this);
+  vfpInit();
 }
 
 /**

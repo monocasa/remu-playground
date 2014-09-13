@@ -242,20 +242,19 @@ public:
       } b;
     } fpexc;
   } vfp;
+
+  void vfpInit();
+  void vfpDump() const;
+
+  void vfpDataProc(op_coproc_data_proc_t* instr);
+  void vfpDataTransfer(op_coproc_data_transfer_t* instr);
+  void vfpRegTransfer(op_coproc_reg_transfer_t* instr);
 };
 
 uint32_t cpu_read_register(const Cpu* cpu, int reg);
 void cpu_write_register(Cpu* cpu, int reg, uint32_t value);
 void cpu_tick(Cpu*);
 void cpu_dump(Cpu*);
-
-void vfp_init(Cpu*);
-void vfp_dump(Cpu*);
-
-void vfp_data_proc(Cpu*, op_coproc_data_proc_t* instr);
-void vfp_data_transfer(Cpu*, op_coproc_data_transfer_t* instr);
-void vfp_reg_transfer(Cpu*, op_coproc_reg_transfer_t* instr);
-
 } /*namespace remu*/
 
 #endif /* REMU_CPU_H */

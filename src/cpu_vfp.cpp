@@ -10,26 +10,22 @@ namespace remu {
 
 /**
  * Initialises the vector floating point coprocessor
- * @param vfp VFP context
- * @param emu Emulator
  */
-void
-vfp_init(Cpu *cpu)
+void Cpu::vfpInit()
 {
   /* Initialise registers */
-  memset(&cpu->vfp.s, 0, sizeof(cpu->vfp.s));
-  memset(&cpu->vfp.fpscr, 0, sizeof(cpu->vfp.fpscr));
-  memset(&cpu->vfp.fpexc, 0, sizeof(cpu->vfp.fpexc));
+  memset(&vfp.s, 0, sizeof(vfp.s));
+  memset(&vfp.fpscr, 0, sizeof(vfp.fpscr));
+  memset(&vfp.fpexc, 0, sizeof(vfp.fpexc));
 
   /* TODO: Initialise FPSID */
-  cpu->vfp.fpsid = 0;
+  vfp.fpsid = 0;
 }
 
 /**
  * Prints the state of the VFP coprocessor
  */
-void
-vfp_dump(Cpu *cpu)
+void Cpu::vfpDump() const
 {
   int i;
   union
@@ -40,7 +36,7 @@ vfp_dump(Cpu *cpu)
 
   for (i = 0; i < 32; ++i)
   {
-    reg.u = cpu->vfp.s[i];
+    reg.u = vfp.s[i];
     printf("s%02d: %f\n", i, reg.f);
   }
 }
@@ -83,8 +79,7 @@ dp_fcmps(Cpu *cpu, float a, float b, uint32_t UNUSED(mode))
  * @param vfp VFP context
  * @param instr Instruction
  */
-void
-vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
+void Cpu::vfpDataProc(op_coproc_data_proc_t* instr)
 {
   uint32_t opcode, Fd, Fn, Fm;
 
@@ -118,15 +113,15 @@ vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
 
   if (opcode != 0xf)
   {
-    in.u = cpu->vfp.s[Fn];
+    in.u = vfp.s[Fn];
   }
   else
   {
     in.u = 0;
   }
 
-  im.u = cpu->vfp.s[Fm];
-  o.u = cpu->vfp.s[Fd];
+  im.u = vfp.s[Fm];
+  o.u = vfp.s[Fd];
 
   /* Dispatch instruction */
   switch (opcode)
@@ -203,22 +198,22 @@ vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
         }
         case 0x8: /* FCMPS */
         {
-          dp_fcmps(cpu, o.f, im.f, 0);
+          dp_fcmps(this, o.f, im.f, 0);
           break;
         }
         case 0x9: /* FCMPES */
         {
-          dp_fcmps(cpu, o.f, im.f, 1);
+          dp_fcmps(this, o.f, im.f, 1);
           break;
         }
         case 0xa: /* FCMPZS */
         {
-          dp_fcmps(cpu, o.f, 0.0f, 0);
+          dp_fcmps(this, o.f, 0.0f, 0);
           break;
         }
         case 0xb: /* FCMPEZS */
         {
-          dp_fcmps(cpu, o.f, 0.0f, 1);
+          dp_fcmps(this, o.f, 0.0f, 1);
           break;
         }
         case 0x10: /* FUITOS */
@@ -253,7 +248,7 @@ vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
         }
         default:
         {
-          cpu->emu->error( "Undefined VFP extension data proc instruction");
+          emu->error( "Undefined VFP extension data proc instruction");
         }
       }
       break;
@@ -265,7 +260,7 @@ vfp_data_proc(Cpu *cpu, op_coproc_data_proc_t* instr)
   }
 
   /* Write output back to Fd */
-  cpu->vfp.s[Fd] = o.u;
+  vfp.s[Fd] = o.u;
 }
 
 /**
@@ -347,11 +342,9 @@ dt_multiple_data_transfer(Cpu *cpu, uint32_t Fd, uint32_t Rn, uint32_t offset,
 
 /**
  * Handles a data transfer instruction
- * @param vfp VFP context
  * @param instr Instruction
  */
-void
-vfp_data_transfer(Cpu *cpu, op_coproc_data_transfer_t* instr)
+void Cpu::vfpDataTransfer(op_coproc_data_transfer_t* instr)
 {
   uint32_t opcode, Fd, Rn;
 
@@ -370,31 +363,31 @@ vfp_data_transfer(Cpu *cpu, op_coproc_data_transfer_t* instr)
     case 0x2:
     {
       /* FLDMS or FSTMS (unindexed) */
-      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 0);
+      dt_multiple_data_transfer(this, Fd, Rn, instr->offset, instr->l, 0);
       break;
     }
     case 0x3:
     {
       /* FLDMS or FSTMS (increment) */
-      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 1);
+      dt_multiple_data_transfer(this, Fd, Rn, instr->offset, instr->l, 1);
       break;
     }
     case 0x4:
     {
       /* FLDS or FSTS (negative offset) */
-      dt_single_data_transfer(cpu, Fd, Rn, -instr->offset, instr->l);
+      dt_single_data_transfer(this, Fd, Rn, -instr->offset, instr->l);
       break;
     }
     case 0x5:
     {
       /* FLDMS or FSTMS (decrement) */
-      dt_multiple_data_transfer(cpu, Fd, Rn, instr->offset, instr->l, 2);
+      dt_multiple_data_transfer(this, Fd, Rn, instr->offset, instr->l, 2);
       break;
     }
     case 0x6:
     {
       /* FLDS or FSTS (positive offset) */
-      dt_single_data_transfer(cpu, Fd, Rn, instr->offset, instr->l);
+      dt_single_data_transfer(this, Fd, Rn, instr->offset, instr->l);
       break;
     }
     default:
@@ -508,11 +501,9 @@ rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
 
 /**
  * Handles a register transfer instruction
- * @param vfp VFP context
  * @param instr Instruction
  */
-void
-vfp_reg_transfer(Cpu *cpu, op_coproc_reg_transfer_t* instr)
+void Cpu::vfpRegTransfer(op_coproc_reg_transfer_t* instr)
 {
   uint32_t opcode, Rd, Fn;
 
@@ -537,13 +528,13 @@ vfp_reg_transfer(Cpu *cpu, op_coproc_reg_transfer_t* instr)
     case 0x0:
     {
       /* FMSR and FMRS */
-      rt_reg_transfer(cpu, Fn, Rd, instr->l);
+      rt_reg_transfer(this, Fn, Rd, instr->l);
       break;
     }
     case 0x7:
     {
       /* FMXR, FMRX and FMSTAT */
-      rt_status_reg_transfer(cpu, Fn, Rd, instr->l);
+      rt_status_reg_transfer(this, Fn, Rd, instr->l);
       break;
     }
     default:
