@@ -177,6 +177,38 @@ uint32_t Framebuffer::getPixel(uint32_t x, uint32_t y)
   return 0;
 }
 
+void Framebuffer::copyFramebuffer()
+{
+  switch (fb_bpp)
+  {
+    case 4:
+    {
+      uint8_t *fb_line = framebuffer;
+      uint8_t *surface_line = reinterpret_cast<uint8_t*>(surface->pixels);
+      const uint32_t fb_line_size = width * 4;
+      for (uint32_t y = 0; y < height; y++)
+      {
+        memcpy(surface_line, fb_line, fb_line_size);
+        fb_line += fb_pitch;
+        surface_line += surface->pitch;
+      }
+    }
+    break;
+
+    default:
+    {
+      for (uint32_t y = 0; y < height; y++)
+      {
+        for (uint32_t x = 0; x < width; x++)
+        {
+          putPixel(surface, x, y, getPixel(x, y));
+        }
+      }
+    }
+    break;
+  }
+}
+
 /**
  * Updates the display, displaying the framebuffer and handling events
  */
@@ -208,14 +240,7 @@ void Framebuffer::tick()
     SDL_LockSurface(surface);
   }
 
-  /* Copy the pixels to SDL */
-  for (uint32_t y = 0; y < height; ++y)
-  {
-    for (uint32_t x = 0; x < width; ++x)
-    {
-      putPixel(surface, x, y, getPixel(x, y));
-    }
-  }
+  copyFramebuffer();
 
   /* Unlock the surface */
   if (SDL_MUSTLOCK(surface))

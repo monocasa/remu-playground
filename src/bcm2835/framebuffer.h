@@ -68,6 +68,8 @@ private:
 
   uint32_t getPixel(uint32_t x, uint32_t y);
 
+  void copyFramebuffer();
+
   /* Emulator reference */
   remu::Emulator &emu;
   remu::Memory   &mem;
