@@ -23,9 +23,9 @@ cmdline_usage(int argc, char **argv)
  * @param argc  Number of command line arguments
  * @param argv  Argument values
  * @param usage Pointer to usage value
- * @return Nonzero if arguments are valid
+ * @return true if arguments are valid
  */
-static int
+static bool
 cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv, int *usage)
 {
   struct option options[] =
@@ -97,14 +97,14 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv, int *usage)
       case '?':
       {
         /* Error */
-        return 0;
+        return false;
       }
     }
   }
 
   /* Read image source */
   opt.image = optind >= argc ? NULL : argv[optind];
-  return 1;
+  return true;
 }
 
 /**
