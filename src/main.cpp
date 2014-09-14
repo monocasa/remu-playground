@@ -114,24 +114,24 @@ cmdline_parse(remu::EmulatorOptions &opt, int argc, char **argv, int *usage)
  * @param argv Argument values
  * @return Nonzero if arguments are valid
  */
-static int
+static bool
 cmdline_check(remu::EmulatorOptions &opt)
 {
   /* Image source */
   if (!opt.image)
   {
     fprintf(stderr, "No kernel image specified.\n");
-    return 0;
+    return false;
   }
 
   /* Memory size at least 64kb */
   if (opt.mem_size < 0x10000)
   {
     fprintf(stderr, "Must specify a minimum of 64kb of memory.\n");
-    return 0;
+    return false;
   }
 
-  return 1;
+  return true;
 }
 
 /**
