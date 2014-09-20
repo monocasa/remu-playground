@@ -21,29 +21,10 @@ ADD_SUBDIRECTORY( 3rdparty/google-test )
 
 ENABLE_TESTING()
 
-INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src" ${SDL_INCLUDE_DIRS} )
+INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src/remu_core/inc" ${SDL_INCLUDE_DIRS} )
 
-ADD_LIBRARY( remu_core src/arm/cpu_core.cpp
-                       src/arm/cpu_vfp.cpp
-                       src/bcm2835/framebuffer.cpp
-                       src/bcm2835/gpio.cpp
-                       src/bcm2835/mbox.cpp
-                       src/bcm2835/peripheral.cpp
-                       src/bcm2835/rpiemulator.cpp
-                       src/bcm2835/timer.cpp
-                       src/bitbang/button.cpp
-                       src/bitbang/nes.cpp
-                       src/host/linux/mem.cpp
-                       src/emulator.cpp
-                       src/gpioblock.cpp
-                       src/keydispatcher.cpp
-                       src/memory.cpp )
-
-TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
-
-ADD_EXECUTABLE( remu src/main.cpp )
-
-TARGET_LINK_LIBRARIES( remu m remu_core  )
+ADD_SUBDIRECTORY( src/remu_cli )
+ADD_SUBDIRECTORY( src/remu_core )
 
 ADD_SUBDIRECTORY( test )
 
