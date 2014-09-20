@@ -8,6 +8,7 @@
 namespace remu {
 
 class Emulator;
+class RamRegion;
 
 /**
  * Memory system
@@ -36,15 +37,21 @@ public:
     iomap.removeRegion(region);
   }
 
+  const std::list<RamRegion*>& getRamRegions() const {
+    return ramList;
+  }
+
   uint8_t* getDramArrayBase() {
     return data;
   }
 
 private:
-  Emulator    *emu;
-  const size_t mem_size;
-  uint8_t     *data;
-  IoMap        iomap;
+  Emulator             *emu;
+  const size_t          mem_size;
+  uint8_t              *data;
+  IoMap                 iomap;
+  RamRegion            *ramRegion;
+  std::list<RamRegion*> ramList;
 };
 
 } /*namesapce remu */

@@ -1,5 +1,6 @@
 #include "emulator.h"
 #include "memory.h"
+#include "ramregion.h"
 
 #include <algorithm>
 
@@ -14,8 +15,11 @@ Memory::Memory(Emulator *emu, size_t mem_size)
   : emu(emu)
   , mem_size(mem_size)
   , data(new uint8_t[mem_size])
+  , ramRegion(new RamRegion(mem_size, 0, false, data))
 {
   std::fill(data, data + mem_size, 0);
+
+  ramList.push_back(ramRegion);
 }
 
 /**
@@ -23,6 +27,7 @@ Memory::Memory(Emulator *emu, size_t mem_size)
  */
 Memory::~Memory()
 {
+  delete ramRegion;
   delete data;
 }
 
