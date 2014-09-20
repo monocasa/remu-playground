@@ -10,6 +10,7 @@
 #include "bitbang/nes.h"
 #include "emulator.h"
 #include "memory.h"
+#include "ramregion.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -20,6 +21,7 @@ public:
     : Emulator(opt)
     , opt(opt)
     , memory(this, opt.mem_size)
+    , dram(opt.mem_size, DRAM_BASE, false)
     , cpu(this, &memory, opt.start_addr)
     , pr(*this, memory)
     , gpio(*this, memory)
@@ -62,6 +64,8 @@ private:
 
   static const int NUM_BUTTONS = 10;
 
+  static const uint64_t DRAM_BASE = 0x00000000;
+
   class RPiStubRegion : private StubRegion
   {
   public:
@@ -76,6 +80,7 @@ private:
 
   /* Modules */
   Memory          memory;
+  RamRegion       dram;
   arm::Cpu        cpu;
   Peripheral      pr;
   Gpio            gpio;
