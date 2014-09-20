@@ -1,5 +1,5 @@
-#include "remu/gpioblock.h"
-#include "remu/gpiolistener.h"
+#include "remu/GpioBlock.h"
+#include "remu/GpioListener.h"
 
 namespace remu {
 

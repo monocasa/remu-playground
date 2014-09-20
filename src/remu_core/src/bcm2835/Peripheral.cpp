@@ -1,7 +1,7 @@
-#include "remu/bcm2835/peripheral.h"
-#include "remu/emulationexception.h"
-#include "remu/memory.h"
-#include "remu/ui.h"
+#include "remu/bcm2835/Peripheral.h"
+#include "remu/EmulationException.h"
+#include "remu/Memory.h"
+#include "remu/Ui.h"
 
 namespace remu { namespace bcm2835 {
 

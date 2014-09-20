@@ -1,8 +1,8 @@
 #ifndef REMU_NES_H
 #define REMU_NES_H
 
-#include "remu/keylistener.h"
-#include "remu/gpiolistener.h"
+#include "remu/KeyListener.h"
+#include "remu/GpioListener.h"
 
 namespace remu {
 class GpioBlock;

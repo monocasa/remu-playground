@@ -1,4 +1,4 @@
-#include "remu/ioregion.h"
+#include "remu/IoRegion.h"
 
 #include <gtest/gtest.h>
 

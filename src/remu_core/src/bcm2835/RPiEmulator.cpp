@@ -1,5 +1,5 @@
-#include "remu/bcm2835/rpiemulator.h"
-#include "remu/emulationexception.h"
+#include "remu/bcm2835/RPiEmulator.h"
+#include "remu/EmulationException.h"
 
 namespace remu { namespace bcm2835 {
 

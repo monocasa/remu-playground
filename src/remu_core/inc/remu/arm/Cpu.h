@@ -1,7 +1,7 @@
 #ifndef REMU_CPU_H
 #define REMU_CPU_H
 
-#include "remu/arm/opcode.h"
+#include "remu/arm/Opcode.h"
 
 #include <cstdint>
 

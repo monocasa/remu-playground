@@ -1,7 +1,7 @@
 #ifndef REMU_RAMREGION_H
 #define REMU_RAMREGION_H
 
-#include "remu/host/mem.h"
+#include "remu/host/Mem.h"
 
 #include <cstdint>
 #include <cstdlib>

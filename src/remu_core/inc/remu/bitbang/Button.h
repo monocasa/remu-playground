@@ -1,7 +1,7 @@
 #ifndef REMU_BITBANG_BUTTON_H
 #define REMU_BITBANG_BUTTON_H
 
-#include "remu/keylistener.h"
+#include "remu/KeyListener.h"
 
 namespace remu {
 class GpioBlock;

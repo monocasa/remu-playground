@@ -1,7 +1,7 @@
 #ifndef REMU_MEMORY_H
 #define REMU_MEMORY_H
 
-#include "remu/ioregion.h"
+#include "remu/IoRegion.h"
 
 #include <cstdlib>
 

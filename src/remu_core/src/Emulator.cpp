@@ -1,5 +1,5 @@
-#include "remu/emulationexception.h"
-#include "remu/emulator.h"
+#include "remu/EmulationException.h"
+#include "remu/Emulator.h"
 
 #include <sys/time.h>
 

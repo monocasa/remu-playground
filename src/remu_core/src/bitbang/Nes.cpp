@@ -1,6 +1,6 @@
-#include "remu/bitbang/nes.h"
-#include "remu/gpioblock.h"
-#include "remu/keydispatcher.h"
+#include "remu/bitbang/Nes.h"
+#include "remu/GpioBlock.h"
+#include "remu/KeyDispatcher.h"
 
 namespace remu { namespace bitbang {
 

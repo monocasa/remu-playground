@@ -1,4 +1,4 @@
-#include "remu/bcm2835/rpiemulator.h"
+#include "remu/bcm2835/RPiEmulator.h"
 
 #include <getopt.h>
 

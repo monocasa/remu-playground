@@ -1,5 +1,5 @@
-#include "remu/keydispatcher.h"
-#include "remu/keylistener.h"
+#include "remu/KeyDispatcher.h"
+#include "remu/KeyListener.h"
 
 namespace remu {
 

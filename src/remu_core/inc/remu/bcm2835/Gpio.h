@@ -1,8 +1,8 @@
 #ifndef REMU_BCM2835_GPIO_H
 #define REMU_BCM2835_GPIO_H
 
-#include "remu/gpioblock.h"
-#include "remu/ioregion.h"
+#include "remu/GpioBlock.h"
+#include "remu/IoRegion.h"
 
 #include <cstdint>
 #include <cstdlib>

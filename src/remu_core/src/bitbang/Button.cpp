@@ -1,6 +1,6 @@
-#include "remu/bitbang/button.h"
-#include "remu/gpioblock.h"
-#include "remu/keydispatcher.h"
+#include "remu/bitbang/Button.h"
+#include "remu/GpioBlock.h"
+#include "remu/KeyDispatcher.h"
 
 #include <cstdint>
 

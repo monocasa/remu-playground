@@ -1,7 +1,7 @@
 #ifndef REMU_BCM2835_MBOX_H
 #define REMU_BCM2835_MBOX_H
 
-#include "remu/ioregion.h"
+#include "remu/IoRegion.h"
 
 namespace remu {
 class Ui;

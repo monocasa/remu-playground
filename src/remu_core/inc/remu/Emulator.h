@@ -1,7 +1,7 @@
 #ifndef REMU_EMULATOR_H
 #define REMU_EMULATOR_H
 
-#include "remu/ui.h"
+#include "remu/Ui.h"
 
 #include <cstdint>
 #include <cstdlib>

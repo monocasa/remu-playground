@@ -1,6 +1,6 @@
-#include "remu/emulator.h"
-#include "remu/memory.h"
-#include "remu/ramregion.h"
+#include "remu/Emulator.h"
+#include "remu/Memory.h"
+#include "remu/RamRegion.h"
 
 #include <algorithm>
 

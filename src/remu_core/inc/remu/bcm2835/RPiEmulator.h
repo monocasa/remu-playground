@@ -1,15 +1,15 @@
 #ifndef REMU_BMC2835_RPIEMULATOR_H
 #define REMU_BCM2835_RPIEMULATOR_H
 
-#include "remu/arm/cpu.h"
-#include "remu/bcm2835/framebuffer.h"
-#include "remu/bcm2835/gpio.h"
-#include "remu/bcm2835/peripheral.h"
-#include "remu/bcm2835/timer.h"
-#include "remu/bitbang/button.h"
-#include "remu/bitbang/nes.h"
-#include "remu/emulator.h"
-#include "remu/memory.h"
+#include "remu/arm/Cpu.h"
+#include "remu/bcm2835/Framebuffer.h"
+#include "remu/bcm2835/Gpio.h"
+#include "remu/bcm2835/Peripheral.h"
+#include "remu/bcm2835/Timer.h"
+#include "remu/bitbang/Button.h"
+#include "remu/bitbang/Nes.h"
+#include "remu/Emulator.h"
+#include "remu/Memory.h"
 
 namespace remu { namespace bcm2835 {
 

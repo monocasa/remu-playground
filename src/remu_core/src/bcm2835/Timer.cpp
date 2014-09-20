@@ -1,7 +1,7 @@
-#include "remu/bcm2835/timer.h"
-#include "remu/emulationexception.h"
-#include "remu/emulator.h"
-#include "remu/memory.h"
+#include "remu/bcm2835/Timer.h"
+#include "remu/EmulationException.h"
+#include "remu/Emulator.h"
+#include "remu/Memory.h"
 
 namespace remu { namespace bcm2835 {
 

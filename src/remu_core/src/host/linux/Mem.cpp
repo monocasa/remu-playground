@@ -1,5 +1,5 @@
-#include "remu/host/mem.h"
-#include "remu/emulationexception.h"
+#include "remu/host/Mem.h"
+#include "remu/EmulationException.h"
 
 namespace remu { namespace host {
 

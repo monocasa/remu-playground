@@ -1,7 +1,7 @@
-#include "remu/bcm2835/framebuffer.h"
-#include "remu/emulationexception.h"
-#include "remu/emulator.h"
-#include "remu/memory.h"
+#include "remu/bcm2835/Framebuffer.h"
+#include "remu/EmulationException.h"
+#include "remu/Emulator.h"
+#include "remu/Memory.h"
 
 #include <cassert>
 

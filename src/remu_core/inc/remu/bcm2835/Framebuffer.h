@@ -1,8 +1,8 @@
 #ifndef REMU_BCM2835_FRAMEBUFFER_H
 #define REMU_BCM2835_FRAMEBUFFER_H
 
-#include "remu/bcm2835/mbox.h"
-#include "remu/keydispatcher.h"
+#include "remu/bcm2835/Mbox.h"
+#include "remu/KeyDispatcher.h"
 
 #include <vector>
 
