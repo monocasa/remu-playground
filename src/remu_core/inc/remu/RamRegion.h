@@ -35,6 +35,22 @@ public:
     }
   }
 
+  size_t getSize() const {
+    return size;
+  }
+
+  uint64_t getBase() const {
+    return base;
+  }
+
+  bool isReadOnly() const {
+    return readOnly;
+  }
+
+  void* getBuffer() const {
+    return buffer;
+  }
+
 private:
   const size_t   size;
   const uint64_t base;

@@ -8,6 +8,7 @@
 #include "remu/bcm2835/Timer.h"
 #include "remu/bitbang/Button.h"
 #include "remu/bitbang/Nes.h"
+#include "remu/kvm/CrossVmm.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
 
@@ -40,6 +41,7 @@ public:
     , dma(0x20007000, 0x1000, memory)
     , clock(0x20101000, 0x1000, memory)
     , pwm(0x2020C000, 0x1000, memory)
+    , crossVmm(memory)
     , last_refresh(0)
   {
     if(opt.nes_enabled) {
@@ -89,6 +91,8 @@ private:
   RPiStubRegion   dma;
   RPiStubRegion   clock;
   RPiStubRegion   pwm;
+
+  kvm::CrossVmm   crossVmm;
 
   /* Refresh */
   uint64_t      last_refresh;
