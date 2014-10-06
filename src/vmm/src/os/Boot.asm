@@ -23,6 +23,7 @@ __entry_point:
 
 	push     0x08
 	push     .gdt64_ready
+	retf
 
 [BITS 64]
 [EXTERN _ZN2os4initEv]
