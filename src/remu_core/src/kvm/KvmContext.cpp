@@ -204,11 +204,9 @@ void KvmContext::Cpu::run()
           void *dataPtr = &(((uint8_t*)kvmRun)[kvmRun->io.data_offset]);
           switch (kvmRun->io.size)
           {
-            case 4:
-            {
-              data = *((uint32_t*)dataPtr);
-              break;
-            }
+            case 1: { data = *((uint8_t*)dataPtr);  break; }
+            case 2: { data = *((uint16_t*)dataPtr); break; }
+            case 4: { data = *((uint32_t*)dataPtr); break; }
 
             default:
             {
