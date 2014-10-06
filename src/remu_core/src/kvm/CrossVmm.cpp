@@ -1,5 +1,6 @@
 #include "remu/kvm/CrossVmm.h"
 #include "remu/loader/Loader.h"
+#include "remu/EmulationException.h"
 #include "remu/Memory.h"
 
 #include <cstring>
@@ -16,7 +17,7 @@ CrossVmm::CrossVmm(Memory &emuPhysMem)
   : emuPhysMem(emuPhysMem)
   , wram(WRAM_SIZE, WRAM_BASE, false)
   , kvmContext()
-  , vcpu(kvmContext.allocateCpu(), kvmContext)
+  , vcpu(kvmContext.allocateCpu(), kvmContext, *this)
 {
   uint64_t entry = 0;
 
@@ -42,6 +43,21 @@ uint8_t* CrossVmm::bufferForRegion(uint64_t base_addr, size_t size)
   }
 
   return ((uint8_t*)wram.getBuffer()) + base_addr;
+}
+
+void CrossVmm::onOut(int size, uint16_t port, uint64_t data)
+{
+  switch (port)
+  {
+    case 0: {
+      vcpu.stop();
+      break;
+    }
+
+    default: {
+      throw EmulationException("CrossVmm::onOut(size=%d, port=0x%x, data=0x%lx)", size, port, data);
+    }
+  }
 }
 
 }} /*namespace remu::kvm*/

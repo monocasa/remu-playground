@@ -93,7 +93,13 @@ public:
   class Cpu : public FdWrapper
   {
   public:
-    Cpu(int fd, const KvmContext &kvmContext);
+    class IoPortHandler
+    {
+    public:
+      virtual void onOut(int size, uint16_t port, uint64_t data) = 0;
+    };
+
+    Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler);
 
     virtual ~Cpu() = default;
 
@@ -103,9 +109,13 @@ public:
 
     void run();
 
+    void stop();
+
   private:
     const KvmContext &kvmContext;
-    struct kvm_run *kvmRun;
+    IoPortHandler    &portHandler;
+    struct kvm_run  *kvmRun;
+    bool             running;
 
     kvm_run* mmapKvmRun(size_t size);
 

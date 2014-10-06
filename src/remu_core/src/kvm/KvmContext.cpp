@@ -110,10 +110,12 @@ void KvmContext::VmFile::setMemRegion(int slot, uint64_t guestBase, size_t memSi
   }
 }
 
-KvmContext::Cpu::Cpu(int fd, const KvmContext &kvmContext)
+KvmContext::Cpu::Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler)
   : FdWrapper(fd)
   , kvmContext(kvmContext)
+  , portHandler(portHandler)
   , kvmRun(mmapKvmRun(kvmContext.getVcpuMmapSize()))
+  , running(false)
 {
   setupRegisters();
   setupSpecialRegisters();
@@ -174,7 +176,7 @@ void KvmContext::Cpu::setPc(uint64_t pc)
 
 void KvmContext::Cpu::run()
 {
-  bool running = true;
+  running = true;
 
   while (running)
   {
@@ -187,7 +189,35 @@ void KvmContext::Cpu::run()
     {
       case KVM_EXIT_IO:
       {
-        running = false;
+        if (kvmRun->io.count != 1)
+        {
+          throw EmulationException("Write to I/O port count not 1:  count=%d", kvmRun->io.count);
+        }
+
+        if (KVM_EXIT_IO_IN == kvmRun->io.direction)
+        {
+          throw EmulationException("IO Port In not implemented");
+        }
+        else
+        {
+          uint64_t data = 0;
+          void *dataPtr = &(((uint8_t*)kvmRun)[kvmRun->io.data_offset]);
+          switch (kvmRun->io.size)
+          {
+            case 4:
+            {
+              data = *((uint32_t*)dataPtr);
+              break;
+            }
+
+            default:
+            {
+              throw EmulationException("Unimplemented IO Out size:  %d", kvmRun->io.size);
+            }
+          }
+          portHandler.onOut(kvmRun->io.size, kvmRun->io.port, data);
+        }
+        break;
       }
 
       default:
@@ -197,6 +227,11 @@ void KvmContext::Cpu::run()
       }
     }
   }
+}
+
+void KvmContext::Cpu::stop()
+{
+  running = false;
 }
 
 struct kvm_run* KvmContext::Cpu::mmapKvmRun(size_t kvmRunSize)
