@@ -2,6 +2,7 @@
 #define REMU_KVM_CROSSVMM_H
 
 #include "remu/kvm/KvmContext.h"
+#include "remu/loader/Loader.h"
 #include "remu/RamRegion.h"
 
 #include <cstdint>
@@ -14,7 +15,7 @@ class Memory;
 
 namespace remu { namespace kvm {
 
-class CrossVmm
+class CrossVmm : private remu::loader::Target
 {
 public:
   CrossVmm(Memory &emuPhysMem);
@@ -40,6 +41,8 @@ private:
   RamRegion       wram;
   KvmContext      kvmContext;
   KvmContext::Cpu vcpu;
+
+  virtual uint8_t* bufferForRegion(uint64_t base_addr, size_t size) override final;
 };
 
 }} /*namespace remu::kvm*/

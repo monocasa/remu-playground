@@ -99,6 +99,7 @@ public:
 
     void setGdt(uint64_t guestAddr, int size);
     void setIdt(uint64_t guestAddr, int size);
+    void setPc(uint64_t pc);
 
     void run();
 
@@ -113,6 +114,8 @@ public:
 
     static void setSegmentFlags(struct kvm_segment *segment, uint16_t selector, uint32_t base,
                                 uint32_t limit, uint32_t flags, int usuable);
+
+    void dump();
   };
 
 private:

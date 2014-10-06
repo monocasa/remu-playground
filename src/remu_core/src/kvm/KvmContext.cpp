@@ -155,6 +155,23 @@ void KvmContext::Cpu::setIdt(uint64_t guestAddr, int len)
   }
 }
 
+void KvmContext::Cpu::setPc(uint64_t pc)
+{
+  struct kvm_regs regs;
+
+  if (!callIoctl(KVM_GET_REGS, &regs))
+  {
+    throw EmulationException("Couldn't KVM_GET_REGS");
+  }
+
+  regs.rip = pc;
+
+  if (!callIoctl(KVM_SET_REGS, &regs))
+  {
+    throw EmulationException("Couldn't KVM_SET_REGS");
+  }
+}
+
 void KvmContext::Cpu::run()
 {
   bool running = true;
@@ -170,11 +187,12 @@ void KvmContext::Cpu::run()
     {
       case KVM_EXIT_IO:
       {
-        throw EmulationException("Got here");
+        running = false;
       }
 
       default:
       {
+        dump();
         throw EmulationException("other reason (%d)", kvmRun->exit_reason);
       }
     }
@@ -211,7 +229,7 @@ void KvmContext::Cpu::setupRegisters()
   regs.rbp = 0x00000000;
   regs.rsp = 0x00003000 - 16;
 
-  regs.rip = 0x00100000;
+  regs.rip = 0x00000000;
   regs.rflags = 0x00000046;
 
   if (!callIoctl(KVM_SET_REGS, &regs))
@@ -276,6 +294,18 @@ void KvmContext::Cpu::setSegmentFlags(struct kvm_segment *segment, uint16_t sele
   segment->avl     = (flags >> 20) & 1;
 
   segment->unusable = unusable;
+}
+
+void KvmContext::Cpu::dump()
+{
+  struct kvm_regs regs;
+
+  if (!callIoctl(KVM_GET_REGS, &regs))
+  {
+    throw EmulationException("Couldn't KVM_GET_REGS");
+  }
+
+  printf("rip:  %08llx\n", regs.rip);
 }
 
 int KvmContext::openDeviceFile()

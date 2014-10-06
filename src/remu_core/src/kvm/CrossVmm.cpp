@@ -1,4 +1,5 @@
 #include "remu/kvm/CrossVmm.h"
+#include "remu/loader/Loader.h"
 #include "remu/Memory.h"
 
 #include <cstring>
@@ -17,6 +18,8 @@ CrossVmm::CrossVmm(Memory &emuPhysMem)
   , kvmContext()
   , vcpu(kvmContext.allocateCpu(), kvmContext)
 {
+  uint64_t entry = 0;
+
   kvmContext.setTssLocation(TSS_LOCATION);
 
   memcpy(((uint8_t*)wram.getBuffer()) + INITIAL_GDT_LOCATION, INITIAL_GDT, sizeof(INITIAL_GDT));
@@ -25,7 +28,20 @@ CrossVmm::CrossVmm(Memory &emuPhysMem)
 
   vcpu.setGdt(INITIAL_GDT_LOCATION, sizeof(INITIAL_GDT));
 
-  ((uint8_t*)wram.getBuffer())[0x00100000] = 0xEE;
+  remu::loader::loadElf(*this, "bin/vmm.bin", entry);
+
+  vcpu.setPc(entry);
+
+  run();
+}
+
+uint8_t* CrossVmm::bufferForRegion(uint64_t base_addr, size_t size)
+{
+  if ((base_addr + size) > WRAM_SIZE) {
+    return nullptr;
+  }
+
+  return ((uint8_t*)wram.getBuffer()) + base_addr;
 }
 
 }} /*namespace remu::kvm*/

@@ -11,6 +11,7 @@ ADD_LIBRARY( remu_core src/arm/Cpu_core.cpp
                        src/host/linux/Mem.cpp
                        src/kvm/CrossVmm.cpp
                        src/kvm/KvmContext.cpp
+                       src/loader/LoadElf.cpp
                        src/Emulator.cpp
                        src/GpioBlock.cpp
                        src/KeyDispatcher.cpp
