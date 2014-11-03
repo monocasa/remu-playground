@@ -5,8 +5,13 @@ SET( CMAKE_ASM_NASM_OBJECT_FORMAT "elf64" )
 
 ENABLE_LANGUAGE( ASM_NASM )
 
-ADD_LIBRARY( vmm_os STATIC src/os/Boot.asm
-                           src/os/Init.cpp )
+INCLUDE_DIRECTORIES( inc/ )
+
+ADD_LIBRARY( vmm_os STATIC src/os/Board-kvmvmm.cpp
+                           src/os/Boot.asm
+                           src/os/Init.cpp
+                           src/os/Log.cpp
+                           src/os/Vfnprintf.cpp )
 
 ADD_LIBRARY( vmm_app STATIC src/app/Main.cpp )
 
