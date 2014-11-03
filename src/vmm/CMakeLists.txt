@@ -11,6 +11,7 @@ ADD_LIBRARY( vmm_os STATIC src/os/Board-kvmvmm.cpp
                            src/os/Boot.asm
                            src/os/Init.cpp
                            src/os/Log.cpp
+                           src/os/MemoryManager.cpp
                            src/os/Vfnprintf.cpp )
 
 ADD_LIBRARY( vmm_app STATIC src/app/Main.cpp )
