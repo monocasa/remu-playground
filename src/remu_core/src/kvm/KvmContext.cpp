@@ -110,10 +110,12 @@ void KvmContext::VmFile::setMemRegion(int slot, uint64_t guestBase, size_t memSi
   }
 }
 
-KvmContext::Cpu::Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler)
+KvmContext::Cpu::Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler,
+                     MmioHandler &mmioHandler)
   : FdWrapper(fd)
   , kvmContext(kvmContext)
   , portHandler(portHandler)
+  , mmioHandler(mmioHandler)
   , kvmRun(mmapKvmRun(kvmContext.getVcpuMmapSize()))
   , running(false)
 {
@@ -214,6 +216,29 @@ void KvmContext::Cpu::run()
             }
           }
           portHandler.onOut(kvmRun->io.size, kvmRun->io.port, data);
+        }
+        break;
+      }
+
+      case KVM_EXIT_MMIO:
+      {
+        if( kvmRun->mmio.is_write )
+        {
+          throw EmulationException("KVM_EXIT_MMIO writes not implemented");
+        }
+
+        switch (kvmRun->mmio.len)
+        {
+          case 4:
+          {
+            mmioHandler.onRead(kvmRun->mmio.len, kvmRun->mmio.phys_addr, kvmRun->mmio.data);
+            break;
+          }
+
+          default:
+          {
+            throw EmulationException("KVM_EXIT_MMIO read of size %d not implemented", kvmRun->mmio.len);
+          }
         }
         break;
       }

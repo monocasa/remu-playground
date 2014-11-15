@@ -99,7 +99,14 @@ public:
       virtual void onOut(int size, uint16_t port, uint64_t data) = 0;
     };
 
-    Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler);
+    class MmioHandler
+    {
+    public:
+      virtual void onRead(int size, uint64_t addr, uint8_t *data) = 0;
+    };
+
+    Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler,
+        MmioHandler &mmioHandler);
 
     virtual ~Cpu() = default;
 
@@ -114,6 +121,7 @@ public:
   private:
     const KvmContext &kvmContext;
     IoPortHandler    &portHandler;
+    MmioHandler      &mmioHandler;
     struct kvm_run  *kvmRun;
     bool             running;
 

@@ -17,6 +17,7 @@ namespace remu { namespace kvm {
 
 class CrossVmm : private remu::loader::Target
                , private KvmContext::Cpu::IoPortHandler
+               , private KvmContext::Cpu::MmioHandler
 {
 public:
   CrossVmm(Memory &emuPhysMem);
@@ -46,6 +47,8 @@ private:
   uint8_t* bufferForRegion(uint64_t base_addr, size_t size) override final;
 
   void onOut(int size, uint16_t port, uint64_t data) override final;
+
+  void onRead(int size, uint64_t addr, uint8_t *data) override final;
 };
 
 }} /*namespace remu::kvm*/
