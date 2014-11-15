@@ -28,5 +28,3 @@ ADD_SUBDIRECTORY( src/remu_cli )
 ADD_SUBDIRECTORY( src/remu_core )
 ADD_SUBDIRECTORY( src/vmm )
 
-ADD_SUBDIRECTORY( test )
-

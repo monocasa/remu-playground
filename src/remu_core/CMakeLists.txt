@@ -19,3 +19,5 @@ ADD_LIBRARY( remu_core src/arm/Cpu_core.cpp
 
 TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
 
+ADD_SUBDIRECTORY( test )
+
