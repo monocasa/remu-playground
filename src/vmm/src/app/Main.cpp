@@ -1,12 +1,20 @@
 #include "os/Log.h"
 #include "os/MemoryManager.h"
 
-uint64_t *emulation_pml2 = nullptr;
+uint64_t *emulation_pml2[4] = 
+{
+	nullptr, nullptr, nullptr, nullptr,
+};
+
 uint64_t *emulation_pml3 = nullptr;
 
 void appMain()
 {
-	emulation_pml2 = (uint64_t*)os::mm::allocate_page();
+	emulation_pml2[0] = (uint64_t*)os::mm::allocate_page();
+	emulation_pml2[1] = (uint64_t*)os::mm::allocate_page();
+	emulation_pml2[2] = (uint64_t*)os::mm::allocate_page();
+	emulation_pml2[3] = (uint64_t*)os::mm::allocate_page();
+
 	emulation_pml3 = (uint64_t*)os::mm::allocate_page();
 
 	const int NUM_PAGE_TABLE_ENTRIES_PER_PAGE = (4096 / sizeof(uint64_t));
@@ -16,13 +24,19 @@ void appMain()
 	}
 
 	for( int ii = 0; ii < NUM_PAGE_TABLE_ENTRIES_PER_PAGE; ii++ ) {
-		const uint64_t PHYS_PAGE = ((2 * 1024 * 1024) * ii) + 0x100000000UL;
-		emulation_pml2[ii] = PHYS_PAGE | 0x83;
+		for( int jj = 0; jj < 4; jj++ ) {
+			const uint64_t PHYS_PAGE = ((2 * 1024 * 1024) * ii) + 
+			                           ((1 * 1024 * 1024 *1024) * jj) + 
+			                           0x100000000UL;
+			emulation_pml2[jj][ii] = PHYS_PAGE | 0x83;
+		}
 	}
 
-	const uint64_t pml2_phys_addr = ((uint64_t)emulation_pml2) - 0xFFFFFFFF80000000UL;
+	for( int ii = 0; ii < 4; ii++ ) {
+		const uint64_t pml2_phys_addr = ((uint64_t)emulation_pml2[ii]) - 0xFFFFFFFF80000000UL;
 
-	emulation_pml3[0] = pml2_phys_addr | 1;
+		emulation_pml3[ii] = pml2_phys_addr | 1;
+	}
 
 	os::mm::set_lower_pml3(emulation_pml3, 0);
 
