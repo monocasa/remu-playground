@@ -62,6 +62,19 @@ void invalidate_all_pages()
 	asm volatile( "movq %rax, %cr3" );
 }
 
+void* vmm_virt_to_phys( void *virt )
+{
+	uint64_t addr = reinterpret_cast<uint64_t>( virt );
+	if( addr >= 0xFFFFFFFFA0000000UL ) {
+		return nullptr;
+	}
+	else if( addr >= 0xFFFFFFFF80000000UL ) {
+		return reinterpret_cast<void*>( addr & 0x7FFFFFFFUL );
+	}
+
+	return nullptr;
+}
+
 void* phys_to_vmm_virt( void *phys )
 {
 	uint64_t addr = reinterpret_cast<uint64_t>( phys );
@@ -128,15 +141,41 @@ namespace os { namespace mm {
 
 void init()
 {
-	::pml4        = reinterpret_cast<uint64_t*>(phys_to_vmm_virt(__boot_pml4));
-	::higher_pml3 = reinterpret_cast<uint64_t*>(phys_to_vmm_virt(__boot_pml3));
-	::vmm_pml2    = reinterpret_cast<uint64_t*>(phys_to_vmm_virt(__boot_pml2));
+	::pml4        = reinterpret_cast<uint64_t*>(::phys_to_vmm_virt(__boot_pml4));
+	::higher_pml3 = reinterpret_cast<uint64_t*>(::phys_to_vmm_virt(__boot_pml3));
+	::vmm_pml2    = reinterpret_cast<uint64_t*>(::phys_to_vmm_virt(__boot_pml2));
 
 	::init_upper_wram();
 
 	::unmap_boot_lower();
 
 	::initialize_contiguous_heap();
+}
+
+void* allocate_page()
+{
+	for( int i = (::contig_num_pages - 1); i > 0; i-- ) {
+		if( !::contig_heap_info[i].allocated ) {
+			::contig_heap_info[i].allocated = true;
+			auto page = &::contig_heap[i];
+			return page;
+		}
+	}
+
+	return nullptr;
+}
+
+void set_lower_pml3(void *pml3, uint64_t virt_base)
+{
+	uint64_t phys_pml3_addr = reinterpret_cast<uint64_t>(::vmm_virt_to_phys(pml3));
+	uint64_t offset = virt_base / 0x0000008000000000UL;
+
+	pml4[ offset ] = phys_pml3_addr | 1;
+
+	os::log("adding pml3 @ virt:%p phys=0x%08lx to virt_base %08lx (offset = %lx)\n", 
+	        pml3, phys_pml3_addr, virt_base, offset);
+
+	::invalidate_all_pages();
 }
 
 }} /*namespace os::mm*/
