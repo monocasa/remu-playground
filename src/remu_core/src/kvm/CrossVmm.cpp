@@ -20,12 +20,20 @@ CrossVmm::CrossVmm(Memory &emuPhysMem)
   , vcpu(kvmContext.allocateCpu(), kvmContext, *this)
 {
   uint64_t entry = 0;
+  int cur_slot = 0;
 
   kvmContext.setTssLocation(TSS_LOCATION);
 
   memcpy(((uint8_t*)wram.getBuffer()) + INITIAL_GDT_LOCATION, INITIAL_GDT, sizeof(INITIAL_GDT));
 
-  kvmContext.setMemRegion(WRAM_SLOT, WRAM_BASE, WRAM_SIZE, wram.getBuffer());
+  kvmContext.setMemRegion(cur_slot++, WRAM_BASE, WRAM_SIZE, wram.getBuffer());
+
+  for(auto region : emuPhysMem.getRamRegions()) {
+    kvmContext.setMemRegion(cur_slot++,
+                            region->getBase() + EMU_BASE,
+                            region->getSize(),
+                            region->getBuffer());
+  }
 
   vcpu.setGdt(INITIAL_GDT_LOCATION, sizeof(INITIAL_GDT));
 

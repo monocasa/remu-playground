@@ -24,6 +24,6 @@ void appMain()
 
 	uint32_t *first_instr = reinterpret_cast<uint32_t*>(0x00010000);
 
-	os::log("instr_ptr(%p) = %08x", first_instr, *first_instr);
+	os::log("instr_ptr(%p) = %08x\n", first_instr, *first_instr);
 }
 

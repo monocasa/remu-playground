@@ -14,8 +14,8 @@ namespace remu {
 Memory::Memory(Emulator *emu, size_t mem_size)
   : emu(emu)
   , mem_size(mem_size)
-  , data(new uint8_t[mem_size])
-  , ramRegion(new RamRegion(mem_size, 0, false, data))
+  , ramRegion(new RamRegion(mem_size, 0, false))
+  , data(reinterpret_cast<uint8_t*>(ramRegion->getBuffer()))
 {
   std::fill(data, data + mem_size, 0);
 
@@ -28,7 +28,6 @@ Memory::Memory(Emulator *emu, size_t mem_size)
 Memory::~Memory()
 {
   delete ramRegion;
-  delete data;
 }
 
 /**

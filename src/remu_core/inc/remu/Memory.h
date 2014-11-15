@@ -48,9 +48,9 @@ public:
 private:
   Emulator             *emu;
   const size_t          mem_size;
-  uint8_t              *data;
   IoMap                 iomap;
   RamRegion            *ramRegion;
+  uint8_t              *data;
   std::list<RamRegion*> ramList;
 };
 
