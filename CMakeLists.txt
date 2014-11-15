@@ -23,6 +23,7 @@ ENABLE_TESTING()
 
 INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src/remu_core/inc" ${SDL_INCLUDE_DIRS} )
 
+ADD_SUBDIRECTORY( src/jitpp )
 ADD_SUBDIRECTORY( src/remu_cli )
 ADD_SUBDIRECTORY( src/remu_core )
 ADD_SUBDIRECTORY( src/vmm )
