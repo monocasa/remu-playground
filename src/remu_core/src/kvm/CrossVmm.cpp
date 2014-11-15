@@ -32,8 +32,6 @@ CrossVmm::CrossVmm(Memory &emuPhysMem)
   remu::loader::loadElf(*this, "bin/vmm.bin", entry);
 
   vcpu.setPc(entry);
-
-  run();
 }
 
 uint8_t* CrossVmm::bufferForRegion(uint64_t base_addr, size_t size)
