@@ -8,11 +8,6 @@ uint64_t *emulation_pml2[4] =
 	nullptr, nullptr, nullptr, nullptr,
 };
 
-extern "C" void __cxa_pure_virtual()
-{
-
-}
-
 uint64_t *emulation_pml3 = nullptr;
 
 void appMain()
