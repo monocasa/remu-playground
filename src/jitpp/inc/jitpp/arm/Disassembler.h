@@ -21,6 +21,8 @@ private:
 
 	void onNop() override final;
 
+	void onBx(CC cc, int rm) override final;
+
 	void onPld(int rn, uint32_t imm) override final;
 };
 

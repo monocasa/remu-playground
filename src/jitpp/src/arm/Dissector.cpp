@@ -2,13 +2,18 @@
 
 #include <cstdio>
 
+using remu::jitpp::arm::Dissector;
+
 namespace {
 
-const int COND_RSVD = 0xF;
-
-int getCond(uint32_t instr)
+Dissector::CC getCc(uint32_t instr)
 {
-	return (instr >> 28) & 0xF;
+	return (Dissector::CC)((instr >> 28) & 0xF);
+}
+
+int getRm(uint32_t instr)
+{
+	return instr & 0xF;
 }
 
 } /*anonymous namespace*/
@@ -22,12 +27,30 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		return;
 	}
 
-	if(COND_RSVD == getCond(instr)) {
+	if(CC_RSVD == getCc(instr)) {
 		onRsvdCondInstr(instr, addr);
 		return;
 	}
 
-	onUnknownInstr(instr);
+	switch( (instr >> 24) & 0xF )
+	{
+
+	case 0: case 1: case 2: case 3: {
+		if( (instr & 0x0FFFFFF0) == 0x012FFF10 ) {
+			onBx(getCc(instr), getRm(instr));
+		}
+		else {
+			onUnknownInstr(instr);
+		}
+	}
+	return;
+
+	default: {
+		onUnknownInstr(instr);
+	}
+	return;
+
+	}
 }
 
 void Dissector::onRsvdCondInstr(uint32_t instr, uint64_t addr)

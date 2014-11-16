@@ -22,6 +22,16 @@ TEST(ArmDisassembler, Nop)
 	EXPECT_STREQ( "nop", buffer );
 }
 
+TEST(ArmDisassembler, Bx)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xB12FFF15, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "bxlt     r5", buffer );
+}
+
 TEST(ArmDisassembler, Pld)
 {
 	char buffer[ BUFFER_SIZE ];
