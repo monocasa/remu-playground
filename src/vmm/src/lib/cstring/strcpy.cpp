@@ -3,9 +3,14 @@
 extern "C"
 char* strcpy(char *dest, const char *src)
 {
-	(void)dest;
-	(void)src;
+	char *original_dest = dest;
 
-	return nullptr;
+	while(*src) {
+		*dest = *src;
+		dest++;
+		src++;
+	}
+
+	return original_dest;
 }
 
