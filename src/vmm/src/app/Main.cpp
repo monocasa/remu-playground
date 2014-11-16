@@ -1,5 +1,5 @@
-#include "os/Log.h"
-#include "os/MemoryManager.h"
+#include <os/Log.h>
+#include <os/MemoryManager.h>
 
 uint64_t *emulation_pml2[4] = 
 {

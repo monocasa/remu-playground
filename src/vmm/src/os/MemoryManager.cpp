@@ -1,6 +1,6 @@
-#include "os/Log.h"
-#include "os/MemoryManager.h"
-#include "os/Types.h"
+#include <os/Log.h>
+#include <os/MemoryManager.h>
+#include <os/Types.h>
 
 //Provided by linker
 extern uint64_t __boot_pml4[];

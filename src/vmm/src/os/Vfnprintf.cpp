@@ -34,14 +34,11 @@
  *	@(#)subr_prf.c	8.3 (Berkeley) 1/21/94
  */
 
-#include "os/Board.h"
-#include "os/Types.h"
-#include "os/Vfnprintf.h"
+#include <os/Board.h>
+#include <os/Types.h>
+#include <os/Vfnprintf.h>
 
 namespace {
-
-typedef unsigned long size_t;
-typedef long ssize_t;
 
 #ifdef __64BIT__
 typedef unsigned long long uintmax_t;

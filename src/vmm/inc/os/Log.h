@@ -1,7 +1,7 @@
 #ifndef REMU_VMM_OS_LOG_H
 #define REMU_VMM_OS_LOG_H
 
-#include "os/Types.h"
+#include <os/Types.h>
 
 namespace os {
 

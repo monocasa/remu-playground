@@ -1,0 +1,7 @@
+#ifndef VMM_CSTDLIB
+#define VMM_CSTDLIB
+
+#include <os/Types.h>
+
+#endif /*VMM_CSTDLIB*/
+

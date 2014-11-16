@@ -1,7 +1,7 @@
 #ifndef REMU_VMM_OS_VFNPRINTF_H
 #define REMU_VMM_OS_VFNPRINTF_H
 
-#include "os/Types.h"
+#include <os/Types.h>
 
 namespace os {
 

@@ -1,7 +1,7 @@
 #ifndef REMU_VMM_OS_TYPES_H
 #define REMU_VMM_OS_TYPES_H
 
-#include "os/Compiler.h"
+#include <os/Compiler.h>
 
 static const int CHAR_BITS = 8;
 
@@ -24,6 +24,9 @@ static_assert(sizeof(int8_t)  == 1, "sizeof(int8_t)  != 1");
 static_assert(sizeof(int16_t) == 2, "sizeof(int16_t) != 2");
 static_assert(sizeof(int32_t) == 4, "sizeof(int32_t) != 4");
 static_assert(sizeof(int64_t) == 8, "sizeof(int64_t) != 8");
+
+typedef unsigned long size_t;
+typedef signed long   ssize_t; 
 
 #endif /*REMU_VMM_OS_TYPES_H*/
 
