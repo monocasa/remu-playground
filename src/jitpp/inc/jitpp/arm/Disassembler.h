@@ -17,15 +17,16 @@ private:
 	char  *_buffer;
 	size_t _buffer_size;
 
-	void printInstr(const char *instr, const char *args);
-	void printInstr(const char *instr, Dissector::CC cc, const char *args);
+	void printInstr(const char *instr, bool s, const char *args);
+	void printInstr(const char *instr, bool s, Dissector::CC cc, const char *args);
 
 	void onUnknownInstr(uint32_t instr) override final;
 
 	void onNop() override final;
 
 	void onBx(CC cc, int rm) override final;
-
+	void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) override final;
+	void onMul(CC cc, bool s, int rd, int rn, int rm) override final;
 	void onPld(int rn, uint32_t imm) override final;
 };
 

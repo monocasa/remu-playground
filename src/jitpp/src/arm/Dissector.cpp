@@ -11,9 +11,24 @@ Dissector::CC getCc(uint32_t instr)
 	return (Dissector::CC)((instr >> 28) & 0xF);
 }
 
-int getRm(uint32_t instr)
+int getReg0(uint32_t instr)
 {
 	return instr & 0xF;
+}
+
+int getReg2(uint32_t instr)
+{
+	return (instr >> 8) & 0xF;
+}
+
+int getReg3(uint32_t instr)
+{
+	return (instr >> 12) & 0xF;
+}
+
+int getReg4(uint32_t instr)
+{
+	return (instr >> 16) & 0xF;
 }
 
 } /*anonymous namespace*/
@@ -37,7 +52,19 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 
 	case 0: case 1: case 2: case 3: {
 		if( (instr & 0x0FFFFFF0) == 0x012FFF10 ) {
-			onBx(getCc(instr), getRm(instr));
+			onBx(getCc(instr), getReg0(instr));
+		}
+		else if( (instr & 0x0FF0F0F0) == 0x00000090 ) {
+			onMul(getCc(instr), false, getReg4(instr), getReg0(instr), getReg2(instr));
+		}
+		else if( (instr & 0x0FF0F0F0) == 0x00100090 ) {
+			onMul(getCc(instr), true, getReg4(instr), getReg0(instr), getReg2(instr));
+		}
+		else if( (instr & 0x0FF000F0) == 0x00200090 ) {
+			onMla(getCc(instr), false, getReg4(instr), getReg0(instr), getReg2(instr), getReg3(instr));
+		}
+		else if( (instr & 0x0FF000F0) == 0x00300090 ) {
+			onMla(getCc(instr), true, getReg4(instr), getReg0(instr), getReg2(instr), getReg3(instr));
 		}
 		else {
 			onUnknownInstr(instr);

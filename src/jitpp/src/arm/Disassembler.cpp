@@ -54,15 +54,18 @@ void Disassembler::disassemble(uint32_t instr, uint64_t addr, char *buffer, size
 	dissect(instr, addr);
 }
 
-void Disassembler::printInstr(const char *instr, const char *args)
+void Disassembler::printInstr(const char *instr, bool s, const char *args)
 {
-	printInstr(instr, CC_AL, args);
+	printInstr(instr, s, CC_AL, args);
 }
 
-void Disassembler::printInstr(const char *instr, CC cc, const char *args)
+void Disassembler::printInstr(const char *instr, bool s, CC cc, const char *args)
 {
 	char instr_name[8];
-	::snprintf(instr_name, 8, "%s%s", instr, getCcName(cc));
+	::snprintf(instr_name, 8, "%s%s%s", 
+	           instr,
+	           s ? "s" : "",
+	           getCcName(cc) );
 
 	::snprintf(_buffer, _buffer_size, "%-8s %s", instr_name, args);
 }
@@ -79,7 +82,25 @@ void Disassembler::onNop()
 
 void Disassembler::onBx(CC cc, int rm)
 {
-	printInstr("bx", cc, getRegName(rm));
+	printInstr("bx", false, cc, getRegName(rm));
+}
+
+void Disassembler::onMla(CC cc, bool s, int rd, int rn, int rm, int ra)
+{
+	char args[64];
+
+	sprintf(args, "%s, %s, %s, %s", getRegName(rd), getRegName(rn), getRegName(rm), getRegName(ra));
+
+	printInstr("mla", s, cc, args);
+}
+
+void Disassembler::onMul(CC cc, bool s, int rd, int rn, int rm)
+{
+	char args[64];
+
+	sprintf(args, "%s, %s, %s", getRegName(rd), getRegName(rn), getRegName(rm));
+
+	printInstr("mul", s, cc, args);
 }
 
 void Disassembler::onPld(int rn, uint32_t imm)
@@ -88,7 +109,7 @@ void Disassembler::onPld(int rn, uint32_t imm)
 
 	sprintf(args,"[%s, #0x%x]", getRegName(rn), imm);
 
-	printInstr("pld", args);
+	printInstr("pld", false, args);
 }
 
 }}} /*namespace remu::jitpp::arm*/
