@@ -6,6 +6,15 @@ using remu::jitpp::arm::Dissector;
 
 namespace {
 
+template<typename T, unsigned B>
+static inline T signExtend(const T x) {
+  struct {
+    T x:B;
+  } s;
+
+  return s.x = x;
+}
+
 Dissector::CC getCc(uint32_t instr)
 {
 	return (Dissector::CC)((instr >> 28) & 0xF);
@@ -29,6 +38,12 @@ int getReg3(uint32_t instr)
 int getReg4(uint32_t instr)
 {
 	return (instr >> 16) & 0xF;
+}
+
+uint64_t getBranchOffset(uint32_t instr, uint64_t addr)
+{
+	const int32_t offset = (signExtend<int32_t,24>(instr) * 4) + 8;
+	return addr + offset;
 }
 
 } /*anonymous namespace*/
@@ -75,6 +90,16 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		else {
 			onUnknownInstr(instr);
 		}
+	}
+	return;
+
+	case 0xA: {
+		onB(getCc(instr), getBranchOffset(instr, addr));
+	}
+	return;
+
+	case 0xB: {
+		onBl(getCc(instr), getBranchOffset(instr, addr));
 	}
 	return;
 

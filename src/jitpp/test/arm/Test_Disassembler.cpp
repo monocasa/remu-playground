@@ -22,6 +22,34 @@ TEST(ArmDisassembler, nop)
 	EXPECT_STREQ( "nop", buffer );
 }
 
+TEST(ArmDisassembler, b)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xEA0006F8, 0x0001001C, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "b        loc_11c04", buffer );
+
+	dis.disassemble(0xEAFFFFFE, 0x00010100, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "b        loc_10100", buffer );
+}
+
+TEST(ArmDisassembler, bl)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xEB0002E0, 0x0001000C, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "bl       loc_10b94", buffer );
+
+	dis.disassemble(0xEBFFF75D, 0x0001322C, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "bl       loc_10fa8", buffer );
+}
+
 TEST(ArmDisassembler, bx)
 {
 	char buffer[ BUFFER_SIZE ];

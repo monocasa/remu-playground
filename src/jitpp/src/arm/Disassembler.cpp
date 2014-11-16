@@ -98,6 +98,11 @@ void Disassembler::quadGprArgs(int reg0, int reg1, int reg2, int reg3)
 	           getRegName(reg3));
 }
 
+void Disassembler::branchTargetArg(uint64_t target)
+{
+	::snprintf(_args, ARGS_SIZE, "loc_%lx", target);
+}
+
 void Disassembler::onUnknownInstr(uint32_t instr)
 {
 	::snprintf(_buffer, _buffer_size, "UNKNOWN_INSTR<0x%08x>", instr);
@@ -106,6 +111,20 @@ void Disassembler::onUnknownInstr(uint32_t instr)
 void Disassembler::onNop()
 {
 	::snprintf(_buffer, _buffer_size, "nop");
+}
+
+void Disassembler::onB(CC cc, uint64_t target)
+{
+	branchTargetArg(target);
+
+	printInstr("b", false, cc);
+}
+
+void Disassembler::onBl(CC cc, uint64_t target)
+{
+	branchTargetArg(target);
+
+	printInstr("bl", false, cc);
 }
 
 void Disassembler::onBx(CC cc, int rm)

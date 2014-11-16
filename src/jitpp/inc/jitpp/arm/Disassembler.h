@@ -29,10 +29,14 @@ private:
 	void tripleGprArgs(int reg0, int reg1, int reg2);
 	void quadGprArgs(int reg0, int reg1, int reg2, int reg3);
 
+	void branchTargetArg(uint64_t target);
+
 	void onUnknownInstr(uint32_t instr) override final;
 
 	void onNop() override final;
 
+	void onB(CC cc, uint64_t target) override final;
+	void onBl(CC cc, uint64_t target) override final; 
 	void onBx(CC cc, int rm) override final;
 	void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) override final;
 	void onMul(CC cc, bool s, int rd, int rn, int rm) override final;
