@@ -1,6 +1,7 @@
 #include "jitpp/arm/Disassembler.h"
 
 #include <cstdio>
+#include <cstring>
 
 using remu::jitpp::arm::Dissector;
 
@@ -54,12 +55,12 @@ void Disassembler::disassemble(uint32_t instr, uint64_t addr, char *buffer, size
 	dissect(instr, addr);
 }
 
-void Disassembler::printInstr(const char *instr, bool s, const char *args)
+void Disassembler::printInstr(const char *instr, bool s)
 {
-	printInstr(instr, s, CC_AL, args);
+	printInstr(instr, s, CC_AL);
 }
 
-void Disassembler::printInstr(const char *instr, bool s, CC cc, const char *args)
+void Disassembler::printInstr(const char *instr, bool s, CC cc)
 {
 	char instr_name[8];
 	::snprintf(instr_name, 8, "%s%s%s", 
@@ -67,7 +68,34 @@ void Disassembler::printInstr(const char *instr, bool s, CC cc, const char *args
 	           s ? "s" : "",
 	           getCcName(cc) );
 
-	::snprintf(_buffer, _buffer_size, "%-8s %s", instr_name, args);
+	::snprintf(_buffer, _buffer_size, "%-8s %s", instr_name, _args);
+}
+
+void Disassembler::noArgs()
+{
+	::strcpy(_args, "");
+}
+
+void Disassembler::singleGprArgs(int reg)
+{
+	::snprintf(_args, ARGS_SIZE, "%s", getRegName(reg));
+}
+
+void Disassembler::tripleGprArgs(int reg0, int reg1, int reg2)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, %s, %s", 
+	           getRegName(reg0), 
+	           getRegName(reg1), 
+	           getRegName(reg2));
+}
+
+void Disassembler::quadGprArgs(int reg0, int reg1, int reg2, int reg3)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, %s, %s, %s", 
+	           getRegName(reg0), 
+	           getRegName(reg1), 
+	           getRegName(reg2), 
+	           getRegName(reg3));
 }
 
 void Disassembler::onUnknownInstr(uint32_t instr)
@@ -82,34 +110,30 @@ void Disassembler::onNop()
 
 void Disassembler::onBx(CC cc, int rm)
 {
-	printInstr("bx", false, cc, getRegName(rm));
+	singleGprArgs(rm);
+
+	printInstr("bx", false, cc);
 }
 
 void Disassembler::onMla(CC cc, bool s, int rd, int rn, int rm, int ra)
 {
-	char args[64];
+	quadGprArgs(rd, rn, rm, ra);
 
-	sprintf(args, "%s, %s, %s, %s", getRegName(rd), getRegName(rn), getRegName(rm), getRegName(ra));
-
-	printInstr("mla", s, cc, args);
+	printInstr("mla", s, cc);
 }
 
 void Disassembler::onMul(CC cc, bool s, int rd, int rn, int rm)
 {
-	char args[64];
+	tripleGprArgs(rd, rn, rm);
 
-	sprintf(args, "%s, %s, %s", getRegName(rd), getRegName(rn), getRegName(rm));
-
-	printInstr("mul", s, cc, args);
+	printInstr("mul", s, cc);
 }
 
 void Disassembler::onPld(int rn, uint32_t imm)
 {
-	char args[32];
+	::sprintf(_args,"[%s, #0x%x]", getRegName(rn), imm);
 
-	sprintf(args,"[%s, #0x%x]", getRegName(rn), imm);
-
-	printInstr("pld", false, args);
+	printInstr("pld", false);
 }
 
 }}} /*namespace remu::jitpp::arm*/

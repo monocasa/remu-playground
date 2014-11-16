@@ -14,11 +14,20 @@ public:
 	void disassemble(uint32_t instr, uint64_t addr, char *buffer, size_t buffer_size);
 
 private:
+	static const int ARGS_SIZE = 64;
+
 	char  *_buffer;
 	size_t _buffer_size;
+	char   _args[ARGS_SIZE];
 
-	void printInstr(const char *instr, bool s, const char *args);
-	void printInstr(const char *instr, bool s, Dissector::CC cc, const char *args);
+	void printInstr(const char *instr, bool s);
+	void printInstr(const char *instr, bool s, Dissector::CC cc);
+
+	void noArgs();
+
+	void singleGprArgs(int reg);
+	void tripleGprArgs(int reg0, int reg1, int reg2);
+	void quadGprArgs(int reg0, int reg1, int reg2, int reg3);
 
 	void onUnknownInstr(uint32_t instr) override final;
 
