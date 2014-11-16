@@ -1,6 +1,7 @@
-#include <os/Log.h>
 #include <os/MemoryManager.h>
 #include <os/Types.h>
+
+#include <cstdio>
 
 //Provided by linker
 extern uint64_t __boot_pml4[];
@@ -132,7 +133,7 @@ void initialize_contiguous_heap()
 		}
 	}
 
-	os::log("Heap size = 0x%08lx bytes\n", contig_heap_size);
+	printf("Heap size = 0x%08lx bytes\n", contig_heap_size);
 }
 
 } /*anonymous namespace*/
@@ -172,7 +173,7 @@ void set_lower_pml3(void *pml3, uint64_t virt_base)
 
 	pml4[ offset ] = phys_pml3_addr | 1;
 
-	os::log("adding pml3 @ virt:%p phys=0x%08lx to virt_base %08lx (offset = %lx)\n", 
+	printf("adding pml3 @ virt:%p phys=0x%08lx to virt_base %08lx (offset = %lx)\n", 
 	        pml3, phys_pml3_addr, virt_base, offset);
 
 	::invalidate_all_pages();

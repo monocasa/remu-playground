@@ -1,11 +1,9 @@
-#ifndef REMU_VMM_OS_VFNPRINTF_H
-#define REMU_VMM_OS_VFNPRINTF_H
+#ifndef REMU_VMM_LIB_VFNPRINTF_H
+#define REMU_VMM_LIB_VFNPRINTF_H
 
 #include <os/Types.h>
 
-namespace os {
-
-typedef void (*printf_putc_fn)(int, void*);
+namespace lib_helper {
 
 class ByteExporter
 {
@@ -16,7 +14,7 @@ public:
 int vfnprintf(char const *fmt, ByteExporter &exp, int radix, 
               va_list ap);
 
-} /*namespace os*/
+} /*namespace lib_helper*/
 
-#endif /*REMU_VMM_OS_VFNPRINTF_H*/
+#endif /*REMU_VMM_LIB_VFNPRINTF_H*/
 

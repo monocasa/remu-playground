@@ -1,6 +1,8 @@
 #ifndef REMU_VMM_OS_MEMORYMANAGER_H
 #define REMU_VMM_OS_MEMORYMANAGER_H
 
+#include <cstdint>
+
 namespace os { namespace mm {
 
 void init();

@@ -11,9 +11,7 @@ INCLUDE_DIRECTORIES( ../jitpp/inc )
 ADD_LIBRARY( vmm_os STATIC src/os/Board-kvmvmm.cpp
                            src/os/Boot.asm
                            src/os/Init.cpp
-                           src/os/Log.cpp
-                           src/os/MemoryManager.cpp
-                           src/os/Vfnprintf.cpp )
+                           src/os/MemoryManager.cpp )
 
 ADD_LIBRARY( vmm_app STATIC src/app/Main.cpp )
 
@@ -21,6 +19,7 @@ ADD_LIBRARY( vmm_lib STATIC src/lib/cstdio/printf.cpp
                             src/lib/cstdio/snprintf.cpp
                             src/lib/cstdio/sprintf.cpp
                             src/lib/cstring/strcpy.cpp
+                            src/lib/helper/vfnprintf.cpp
                             src/lib/CxxAbi.cpp )
 
 SET( VMMLIBS "${LIBRARY_OUTPUT_PATH}/libvmm_os.a" 

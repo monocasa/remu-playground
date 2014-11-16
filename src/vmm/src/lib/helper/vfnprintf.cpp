@@ -34,9 +34,10 @@
  *	@(#)subr_prf.c	8.3 (Berkeley) 1/21/94
  */
 
+#include <lib/vfnprintf.h>
+
 #include <os/Board.h>
 #include <os/Types.h>
-#include <os/Vfnprintf.h>
 
 namespace {
 
@@ -89,7 +90,7 @@ char* ksprintn(char *nbuf, uintmax_t num, int base, int *lenp, int upper)
 
 } /*anonymous namespace*/
 
-namespace os {
+namespace lib_helper {
 
 /*
  * Scaled down version of printf(3).
@@ -423,5 +424,5 @@ number:
 #undef PCHAR
 }
 
-} /*namespace os*/
+} /*namespace lib_helper*/
 

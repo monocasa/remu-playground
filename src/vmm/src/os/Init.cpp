@@ -1,6 +1,7 @@
 #include <os/Board.h>
-#include <os/Log.h>
 #include <os/MemoryManager.h>
+
+#include <cstdio>
 
 extern void appMain();
 
@@ -8,7 +9,7 @@ namespace os {
 
 void init()
 {
-	log("Hello VMM\n");
+	printf("Hello VMM\n");
 
 	os::mm::init();
 
