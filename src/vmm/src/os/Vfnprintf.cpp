@@ -117,11 +117,10 @@ namespace os {
  *		("%6D", ptr, ":")   -> XX:XX:XX:XX:XX:XX
  *		("%*D", len, ptr, " " -> XX XX XX XX ...
  */
-int vfnprintf(char const *fmt, printf_putc_fn func, void *arg, int radix, va_list ap)
+int vfnprintf(char const *fmt, ByteExporter &exp, int radix, va_list ap)
 {
-#define PCHAR(c) {int cc=(c); if (func) (*func)(cc,arg); else *d++ = cc; retval++; }
+#define PCHAR(c) {char cc=(c); exp.onByte(cc); retval++; }
 	char nbuf[MAXNBUF];
-	char *d;
 	const char *p, *percent, *q;
 	uint8_t *up;
 	int ch, n;
@@ -133,10 +132,6 @@ int vfnprintf(char const *fmt, printf_putc_fn func, void *arg, int radix, va_lis
 	int stop = 0, retval = 0;
 
 	num = 0;
-	if (!func)
-		d = (char *) arg;
-	else
-		d = nullptr;
 
 	if (fmt == nullptr)
 		fmt = "{fmt null}";

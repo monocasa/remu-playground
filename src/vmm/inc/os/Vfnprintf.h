@@ -7,7 +7,13 @@ namespace os {
 
 typedef void (*printf_putc_fn)(int, void*);
 
-int vfnprintf(char const *fmt, printf_putc_fn fn, void *arg, int radix, 
+class ByteExporter
+{
+public:
+	virtual void onByte( char c ) = 0;
+};
+
+int vfnprintf(char const *fmt, ByteExporter &exp, int radix, 
               va_list ap);
 
 } /*namespace os*/

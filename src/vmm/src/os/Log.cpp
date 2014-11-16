@@ -4,10 +4,13 @@
 
 namespace {
 
-void putchar(int c, void* UNUSED(arg))
+class LogByteExporter : public os::ByteExporter
 {
-	os::board::putc(c);
-}
+private:
+	void onByte(char c) override final {
+		os::board::putc(c);
+	}
+};
 
 } /*anonymous namespace*/
 
@@ -15,10 +18,12 @@ namespace os {
 
 void log(const char *format, ...)
 {
+	LogByteExporter exp;
+
 	va_list ap;
 
 	va_start(ap, format);
-	vfnprintf(format, putchar, nullptr, 10, ap);
+	vfnprintf(format, exp, 10, ap);
 	va_end(ap);
 }
 
