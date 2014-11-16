@@ -1,0 +1,11 @@
+#ifndef VMM_CSTDIO
+#define VMM_CSTDIO
+
+#include <os/Types.h>
+
+extern "C" int printf(const char *format, ...);
+extern "C" int sprintf(char *str, const char *format, ...);
+extern "C" int snprintf(char *str, size_t size, const char *format, ...);
+
+#endif /*VMM_CSTDIO*/
+

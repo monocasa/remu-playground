@@ -1,3 +1,5 @@
+#include "jitpp/arm/Disassembler.h"
+
 #include <os/Log.h>
 #include <os/MemoryManager.h>
 
@@ -5,6 +7,11 @@ uint64_t *emulation_pml2[4] =
 {
 	nullptr, nullptr, nullptr, nullptr,
 };
+
+extern "C" void __cxa_pure_virtual()
+{
+
+}
 
 uint64_t *emulation_pml3 = nullptr;
 
@@ -47,5 +54,18 @@ void appMain()
 	uint32_t *timer_low = reinterpret_cast<uint32_t*>(0x20003004);
 
 	os::log("bcm2835 TIMER_LOW(%p) = %08x\n", timer_low, *timer_low);
+
+	remu::jitpp::arm::Disassembler dis;
+
+	char buffer[64];
+
+	for( int ii = 0; ii < 10; ii++ ) {
+		const uint64_t cur_addr = 0x10000 + (sizeof(uint32_t) * ii);
+		const uint32_t instr = first_instr[ii];
+
+		dis.disassemble(instr, cur_addr, buffer, 64);
+
+		os::log("%08lx : %08x : %s\n", cur_addr, instr, buffer);
+	}
 }
 

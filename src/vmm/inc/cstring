@@ -1,0 +1,7 @@
+#ifndef VMM_CSTRING
+#define VMM_CSTRING
+
+extern "C" char* strcpy(char *dest, const char *src);
+
+#endif /*VMM_CSTRING*/
+
