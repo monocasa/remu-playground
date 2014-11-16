@@ -12,6 +12,8 @@ protected:
 
 	virtual void onUnknownInstr(uint32_t instr) = 0;
 
+	virtual void onNop() = 0;
+
 	virtual void onPld(int rn, uint32_t imm) = 0;
 
 private:

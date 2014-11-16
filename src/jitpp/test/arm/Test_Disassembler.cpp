@@ -12,6 +12,16 @@ const uint64_t DEFAULT_ADDR = 0;
 
 } /*anonymous namespace*/
 
+TEST(ArmDisassembler, Nop)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0x00000000, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "nop", buffer );
+}
+
 TEST(ArmDisassembler, Pld)
 {
 	char buffer[ BUFFER_SIZE ];

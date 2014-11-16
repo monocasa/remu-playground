@@ -17,6 +17,11 @@ void Disassembler::onUnknownInstr(uint32_t instr)
 	::snprintf(_buffer, _buffer_size, "UNKNOWN_INSTR<0x%08x>", instr);
 }
 
+void Disassembler::onNop()
+{
+	::snprintf(_buffer, _buffer_size, "nop");
+}
+
 void Disassembler::onPld(int rn, uint32_t imm)
 {
 	::snprintf(_buffer, _buffer_size, "%-8s [r%d, #0x%x]", "pld", rn, imm);

@@ -19,6 +19,8 @@ private:
 
 	void onUnknownInstr(uint32_t instr) override final;
 
+	void onNop() override final;
+
 	void onPld(int rn, uint32_t imm) override final;
 };
 

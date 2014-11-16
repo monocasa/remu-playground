@@ -17,6 +17,11 @@ namespace remu { namespace jitpp { namespace arm {
 
 void Dissector::dissect(uint32_t instr, uint64_t addr)
 {
+	if( instr == 0x00000000 ) {
+		onNop();
+		return;
+	}
+
 	if(COND_RSVD == getCond(instr)) {
 		onRsvdCondInstr(instr, addr);
 		return;
