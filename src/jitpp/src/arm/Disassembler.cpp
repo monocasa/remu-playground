@@ -155,6 +155,13 @@ void Disassembler::onPld(int rn, uint32_t imm)
 	printInstr("pld", false);
 }
 
+void Disassembler::onSvc(CC cc, uint32_t imm)
+{
+	::sprintf(_args, "#0x%x", imm);
+
+	printInstr("svc", false, cc);
+}
+
 void Disassembler::onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm)
 {
 	quadGprArgs(rdlo, rdhi, rn, rm);

@@ -41,6 +41,7 @@ protected:
 	virtual void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) = 0;
 	virtual void onMul(CC cc, bool s, int rd, int rn, int rm) = 0;
 	virtual void onPld(int rn, uint32_t imm) = 0;
+	virtual void onSvc(CC cc, uint32_t imm) = 0;
 	virtual void onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm) = 0;
 
 private:

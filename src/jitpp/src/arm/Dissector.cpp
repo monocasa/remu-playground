@@ -103,6 +103,11 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 	}
 	return;
 
+	case 0xF: {
+		onSvc(getCc(instr), instr & 0x00FFFFFF);
+	}
+	return;
+
 	default: {
 		onUnknownInstr(instr);
 	}
