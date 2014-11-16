@@ -1,6 +1,7 @@
 INCLUDE_DIRECTORIES( inc )
 
-ADD_LIBRARY( jitpp src/arm/Disassembler.cpp )
+ADD_LIBRARY( jitpp src/arm/Disassembler.cpp
+                   src/arm/Dissector.cpp )
 
 ADD_EXECUTABLE( test_jitpp test/arm/Test_Disassembler.cpp )
 
