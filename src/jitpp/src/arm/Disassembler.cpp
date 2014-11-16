@@ -62,8 +62,8 @@ void Disassembler::printInstr(const char *instr, bool s)
 
 void Disassembler::printInstr(const char *instr, bool s, CC cc)
 {
-	char instr_name[8];
-	::snprintf(instr_name, 8, "%s%s%s", 
+	char instr_name[9];
+	::snprintf(instr_name, 9, "%s%s%s", 
 	           instr,
 	           s ? "s" : "",
 	           getCcName(cc) );
@@ -134,6 +134,13 @@ void Disassembler::onPld(int rn, uint32_t imm)
 	::sprintf(_args,"[%s, #0x%x]", getRegName(rn), imm);
 
 	printInstr("pld", false);
+}
+
+void Disassembler::onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm)
+{
+	quadGprArgs(rdlo, rdhi, rn, rm);
+
+	printInstr("umull", s, cc);
 }
 
 }}} /*namespace remu::jitpp::arm*/

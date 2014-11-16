@@ -82,3 +82,23 @@ TEST(ArmDisassembler, pld)
 	EXPECT_STREQ( "pld      [r1, #0x100]", buffer );
 }
 
+TEST(ArmDisassembler, umull)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xB0821493, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "umulllt  r1, r2, r3, r4", buffer );
+}
+
+TEST(ArmDisassembler, umulls)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xB0921493, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "umullslt r1, r2, r3, r4", buffer );
+}
+
