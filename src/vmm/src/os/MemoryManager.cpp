@@ -173,9 +173,6 @@ void set_lower_pml3(void *pml3, uint64_t virt_base)
 
 	pml4[ offset ] = phys_pml3_addr | 1;
 
-	printf("adding pml3 @ virt:%p phys=0x%08lx to virt_base %08lx (offset = %lx)\n", 
-	        pml3, phys_pml3_addr, virt_base, offset);
-
 	::invalidate_all_pages();
 }
 

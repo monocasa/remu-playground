@@ -4,6 +4,8 @@
 
 #include <cstdio>
 
+namespace {
+
 uint64_t *emulation_pml2[4] = 
 {
 	nullptr, nullptr, nullptr, nullptr,
@@ -11,7 +13,7 @@ uint64_t *emulation_pml2[4] =
 
 uint64_t *emulation_pml3 = nullptr;
 
-void appMain()
+void mapArmPhysicalMem()
 {
 	emulation_pml2[0] = (uint64_t*)os::mm::allocate_page();
 	emulation_pml2[1] = (uint64_t*)os::mm::allocate_page();
@@ -42,6 +44,13 @@ void appMain()
 	}
 
 	os::mm::set_lower_pml3(emulation_pml3, 0);
+}
+
+} /*anonymous namespace*/
+
+void appMain()
+{
+	mapArmPhysicalMem();
 
 	remu::jitpp::arm::Disassembler dis;
 
