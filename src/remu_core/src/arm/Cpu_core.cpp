@@ -981,13 +981,14 @@ instr_branch(Cpu* cpu, op_branch_t* opcode)
 static inline void
 instr_branch_exchange(Cpu* cpu, op_branch_exchange_t* opcode)
 {
-  if (opcode->Rn & 0x1)
+  /* Write new PC value */
+  uint32_t pc = cpu->readRegister(opcode->Rn);
+
+  if (pc & 0x1)
   {
     throw EmulationException("Cannot switch to THUMB instruction set");
   }
 
-  /* Write new PC value */
-  uint32_t pc = cpu->readRegister(opcode->Rn);
   cpu->writeRegister(PC, pc);
 }
 
@@ -1599,10 +1600,9 @@ void Cpu::tick()
   instr = memory->readDwordLe(pc);
   r_usr.reg.pc = pc + 4;
 
-  /* Terminate on NOP */
+  /* Ignore on NOP */
   if (instr == 0x0)
   {
-    emu->terminate();
     return;
   }
 
