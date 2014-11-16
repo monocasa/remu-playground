@@ -27,13 +27,13 @@ SECTIONS
 
 	.text ALIGN(0x1000) : AT(ADDR(.text) - VIRT_BASE)
 	{
-		*(.text)
+		*(.text*)
 		*(.gnu.linkonce.t*)
 	}
 
 	.data ALIGN(0x1000) : AT(ADDR(.data) - VIRT_BASE)
 	{
-		*(.data)
+		*(.data*)
 		*(.gnu.linkonce.d*)
 	}
 
@@ -48,7 +48,7 @@ SECTIONS
 	.bss ALIGN(0x1000) : AT(ADDR(.bss) - VIRT_BASE)
 	{
 		*(COMMON)
-		*(.bss)
+		*(.bss*)
 		*(.gnu.linkonce.b*)
 	}
 
