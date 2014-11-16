@@ -17,6 +17,9 @@ private:
 	char  *_buffer;
 	size_t _buffer_size;
 
+	void printInstr(const char *instr, const char *args);
+	void printInstr(const char *instr, Dissector::CC cc, const char *args);
+
 	void onUnknownInstr(uint32_t instr) override final;
 
 	void onNop() override final;

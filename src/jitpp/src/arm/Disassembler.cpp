@@ -54,6 +54,19 @@ void Disassembler::disassemble(uint32_t instr, uint64_t addr, char *buffer, size
 	dissect(instr, addr);
 }
 
+void Disassembler::printInstr(const char *instr, const char *args)
+{
+	printInstr(instr, CC_AL, args);
+}
+
+void Disassembler::printInstr(const char *instr, CC cc, const char *args)
+{
+	char instr_name[8];
+	::snprintf(instr_name, 8, "%s%s", instr, getCcName(cc));
+
+	::snprintf(_buffer, _buffer_size, "%-8s %s", instr_name, args);
+}
+
 void Disassembler::onUnknownInstr(uint32_t instr)
 {
 	::snprintf(_buffer, _buffer_size, "UNKNOWN_INSTR<0x%08x>", instr);
@@ -66,16 +79,16 @@ void Disassembler::onNop()
 
 void Disassembler::onBx(CC cc, int rm)
 {
-	char name[8];
-
-	::sprintf(name, "bx%s", getCcName(cc));
-
-	::snprintf(_buffer, _buffer_size, "%-8s r%d", name, rm);
+	printInstr("bx", cc, getRegName(rm));
 }
 
 void Disassembler::onPld(int rn, uint32_t imm)
 {
-	::snprintf(_buffer, _buffer_size, "%-8s [%s, #0x%x]", "pld", getRegName(rn), imm);
+	char args[32];
+
+	sprintf(args,"[%s, #0x%x]", getRegName(rn), imm);
+
+	printInstr("pld", args);
 }
 
 }}} /*namespace remu::jitpp::arm*/
