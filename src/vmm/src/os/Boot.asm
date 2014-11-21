@@ -9,6 +9,7 @@ __entry_point:
 
 	push     0x08
 	push     .gdt32_ready
+	retf
 
 .gdt32_ready:
 	mov      eax, 0x10
