@@ -1,5 +1,5 @@
-#ifndef REMU_UTIL_FILE_H
-#define REMU_UTIL_FILE_H
+#ifndef REMU_HOST_FILE_H
+#define REMU_HOST_FILE_H
 
 #include "remu/util/BitOps.h"
 #include "remu/EmulationException.h"
@@ -7,7 +7,7 @@
 #include <cstdio>
 #include <string>
 
-namespace remu { namespace util {
+namespace remu { namespace host {
 
 class File
 {
@@ -56,7 +56,7 @@ public:
     }
 
     if (endian != SYS_ENDIAN) {
-      value = byteSwap<T>(value);
+      value = util::byteSwap<T>(value);
     }
 
     return value;
@@ -82,7 +82,7 @@ private:
   Endian endian;
 };
 
-}} /*namespace remu::util*/
+}} /*namespace remu::host*/
 
-#endif /*REMU_UTIL_FILE_H*/
+#endif /*REMU_HOST_FILE_H*/
 

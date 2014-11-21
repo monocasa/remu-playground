@@ -1,9 +1,9 @@
+#include "remu/host/File.h"
 #include "remu/loader/Loader.h"
-#include "remu/util/File.h"
 #include "remu/EmulationException.h"
 
+using remu::host::File;
 using remu::loader::Target;
-using remu::util::File;
 
 namespace {
 
