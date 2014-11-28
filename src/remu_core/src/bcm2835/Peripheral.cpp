@@ -90,6 +90,10 @@ void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
       }
       return;
     }
+    default:
+    {
+      throw EmulationException("remu::bmc2835::Peripheral write to unknown address (%08lx, 0x%lx, %d)", addr, data, size);
+    }
   }
 
   ui.error("Unsupported peripherial write: %08x", addr);
@@ -139,6 +143,10 @@ uint64_t Peripheral::readIo(uint64_t addr, unsigned int size)
         /* Always read 0 */
         return 0x00;
       }
+    }
+    default:
+    {
+      throw EmulationException("remu::bmc2835::Peripheral read from unknown address (%08lx, %d)", addr, size);
     }
   }
 
