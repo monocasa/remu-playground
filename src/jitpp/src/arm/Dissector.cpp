@@ -1,19 +1,14 @@
 #include "jitpp/arm/Dissector.h"
 
+#include "util/bitops.h"
+
 #include <cstdio>
 
 using remu::jitpp::arm::Dissector;
 
+using remu::util::bitops::signExtend;
+
 namespace {
-
-template<typename T, unsigned B>
-static inline T signExtend(const T x) {
-  struct {
-    T x:B;
-  } s;
-
-  return s.x = x;
-}
 
 Dissector::CC getCc(uint32_t instr)
 {
