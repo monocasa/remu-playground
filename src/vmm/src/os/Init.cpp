@@ -1,4 +1,5 @@
 #include <os/Board.h>
+#include <os/InterruptManager.h>
 #include <os/MemoryManager.h>
 
 #include <cstdio>
@@ -12,6 +13,7 @@ void init()
 	printf("Hello VMM\n");
 
 	os::mm::init();
+	os::intm::init();
 
 	appMain();
 

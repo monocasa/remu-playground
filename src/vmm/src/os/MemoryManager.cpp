@@ -1,3 +1,5 @@
+#include <os/Board.h>
+#include <os/InterruptManager.h>
 #include <os/MemoryManager.h>
 #include <os/Types.h>
 
@@ -166,7 +168,7 @@ void* allocate_page()
 	return nullptr;
 }
 
-void set_lower_pml3(void *pml3, uint64_t virt_base)
+void set_lower_pml3( void *pml3, uint64_t virt_base )
 {
 	uint64_t phys_pml3_addr = reinterpret_cast<uint64_t>(::vmm_virt_to_phys(pml3));
 	uint64_t offset = virt_base / 0x0000008000000000UL;
@@ -174,6 +176,15 @@ void set_lower_pml3(void *pml3, uint64_t virt_base)
 	pml4[ offset ] = phys_pml3_addr | 1;
 
 	::invalidate_all_pages();
+}
+
+void on_page_fault( os::intm::Context *ctx )
+{
+	printf( "Page fault!\n" );
+
+	ctx->print();
+
+	os::board::shutdown();
 }
 
 }} /*namespace os::mm*/

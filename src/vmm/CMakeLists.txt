@@ -11,6 +11,8 @@ INCLUDE_DIRECTORIES( ../jitpp/inc )
 ADD_LIBRARY( vmm_os STATIC src/os/Board-kvmvmm.cpp
                            src/os/Boot.asm
                            src/os/Init.cpp
+                           src/os/InterruptManager.cpp
+                           src/os/InterruptPrologues.asm
                            src/os/MemoryManager.cpp )
 
 ADD_LIBRARY( vmm_app STATIC src/app/Main.cpp )
