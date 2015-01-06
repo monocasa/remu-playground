@@ -54,12 +54,12 @@ void appMain()
 
 	remu::jitpp::arm::Disassembler dis;
 
-	uint32_t *first_instr = reinterpret_cast<uint32_t*>(0x00010000);
+	uint32_t *first_instr = reinterpret_cast<uint32_t*>(0x00008000);
 
 	char buffer[64];
 
 	for( int ii = 0; ii < 10; ii++ ) {
-		const uint64_t cur_addr = 0x10000 + (sizeof(uint32_t) * ii);
+		const uint64_t cur_addr = 0x8000 + (sizeof(uint32_t) * ii);
 		const uint32_t instr = first_instr[ii];
 
 		dis.disassemble(instr, cur_addr, buffer, 64);
