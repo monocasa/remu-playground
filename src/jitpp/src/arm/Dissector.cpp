@@ -7,6 +7,7 @@
 using remu::jitpp::arm::Dissector;
 
 using remu::util::bitops::signExtend;
+using remu::util::bitops::rotateRight;
 
 namespace {
 
@@ -39,6 +40,14 @@ uint64_t getBranchOffset(uint32_t instr, uint64_t addr)
 {
 	const int32_t offset = (signExtend<int32_t,24>(instr) * 4) + 8;
 	return addr + offset;
+}
+
+uint32_t getImm12(uint32_t instr)
+{
+	uint8_t base = instr & 0xFF;
+	uint8_t off = ((instr >> 8) & 0xF) * 2;
+
+	return rotateRight<uint32_t>( base, off );
 }
 
 } /*anonymous namespace*/
@@ -81,6 +90,9 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		}
 		else if( (instr & 0x0FF000F0) == 0x00900090 ) {
 			onUmull(getCc(instr), true, getReg3(instr), getReg4(instr), getReg0(instr), getReg2(instr));
+		}
+		else if( (instr & 0x0FF00000) == 0x03a00000 ) {
+			onMovImm(getCc(instr), false, getReg3(instr), getImm12(instr));
 		}
 		else {
 			onUnknownInstr(instr);

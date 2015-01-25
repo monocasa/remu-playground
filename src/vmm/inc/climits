@@ -1,0 +1,7 @@
+#ifndef VMM_CLIMITS
+#define CMM_CLIMITS
+
+#define CHAR_BIT (8)
+
+#endif /*VMM_CLIMITS*/
+

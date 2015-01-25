@@ -38,6 +38,7 @@ private:
 	void onB(CC cc, uint64_t target) override final;
 	void onBl(CC cc, uint64_t target) override final; 
 	void onBx(CC cc, int rm) override final;
+	void onMovImm(CC cc, bool s, int rd, uint32_t imm) override final;
 	void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) override final;
 	void onMul(CC cc, bool s, int rd, int rn, int rm) override final;
 	void onPld(int rn, uint32_t imm) override final;

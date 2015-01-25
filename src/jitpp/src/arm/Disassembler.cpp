@@ -141,6 +141,13 @@ void Disassembler::onMla(CC cc, bool s, int rd, int rn, int rm, int ra)
 	printInstr("mla", s, cc);
 }
 
+void Disassembler::onMovImm(CC cc, bool s, int rd, uint32_t imm)
+{
+	::sprintf(_args, "%s, #0x%x", getRegName(rd), imm);
+
+	printInstr("mov", s, cc);
+}
+
 void Disassembler::onMul(CC cc, bool s, int rd, int rn, int rm)
 {
 	tripleGprArgs(rd, rn, rm);

@@ -80,6 +80,16 @@ TEST(ArmDisassembler, mlas)
 	EXPECT_STREQ( "mlaslt   r1, r2, r3, r4", buffer );
 }
 
+TEST(ArmDisassembler, movimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xE3A0D902, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "mov      r13, #0x8000", buffer );
+}
+
 TEST(ArmDisassembler, mul)
 {
 	char buffer[ BUFFER_SIZE ];
