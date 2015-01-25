@@ -12,7 +12,7 @@ const char *reg_names[16]
 	"r0",  "r1",  "r2",  "r3",
 	"r4",  "r5",  "r6",  "r7",
 	"r8",  "r9",  "r10", "r11",
-	"r12", "r13", "r14", "r15",
+	"r12", "r13", "r14", "pc",
 };
 
 const char *getRegName(int reg)
@@ -134,6 +134,18 @@ void Disassembler::onBx(CC cc, int rm)
 	printInstr("bx", false, cc);
 }
 
+void Disassembler::onLdrImm(CC cc, int rt, int rn, int32_t off)
+{
+	if( off == 0 ) {
+		::sprintf(_args, "%s, [%s]", getRegName(rt), getRegName(rn));
+	}
+	else {
+		::sprintf(_args, "%s, [%s, #%d]", getRegName(rt), getRegName(rn), off);
+	}
+
+	printInstr("ldr", false, cc);
+}
+
 void Disassembler::onMla(CC cc, bool s, int rd, int rn, int rm, int ra)
 {
 	quadGprArgs(rd, rn, rm, ra);
@@ -168,7 +180,7 @@ void Disassembler::onStrImm(CC cc, int rt, int rn, int32_t off)
 		::sprintf(_args, "%s, [%s]", getRegName(rt), getRegName(rn));
 	}
 	else {
-		::sprintf(_args, "UNIMPLEMENTED_STR_IMM_OFF");
+		::sprintf(_args, "%s, [%s, #%d]", getRegName(rt), getRegName(rn), off);
 	}
 
 	printInstr("str", false, cc);

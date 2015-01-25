@@ -58,7 +58,7 @@ void appMain()
 
 	char buffer[64];
 
-	for( int ii = 0; ii < 10; ii++ ) {
+	for( int ii = 0; ii < 75; ii++ ) {
 		const uint64_t cur_addr = 0x8000 + (sizeof(uint32_t) * ii);
 		const uint32_t instr = first_instr[ii];
 

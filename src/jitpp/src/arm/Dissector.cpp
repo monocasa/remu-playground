@@ -104,6 +104,9 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		if( (instr & 0x0FF00000) == 0x05800000 ) {
 			onStrImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
 		}
+		else if( (instr & 0x0FF00000) == 0x05900000 ) {
+			onLdrImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
+		}
 		else {
 			onUnknownInstr(instr);
 		}

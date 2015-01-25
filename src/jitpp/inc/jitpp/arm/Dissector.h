@@ -38,6 +38,7 @@ protected:
 	virtual void onB(CC cc, uint64_t target) = 0;
 	virtual void onBl(CC cc, uint64_t target) = 0; 
 	virtual void onBx(CC cc, int rm) = 0;
+	virtual void onLdrImm(CC cc, int rt, int rn, int32_t off) = 0;
 	virtual void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) = 0;
 	virtual void onMovImm(CC cc, bool s, int rd, uint32_t imm) = 0;
 	virtual void onMul(CC cc, bool s, int rd, int rn, int rm) = 0;

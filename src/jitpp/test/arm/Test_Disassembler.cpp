@@ -60,6 +60,20 @@ TEST(ArmDisassembler, bx)
 	EXPECT_STREQ( "bxlt     r5", buffer );
 }
 
+TEST(ArmDisassembler, ldrimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xe5900000, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "ldr      r0, [r0]", buffer );
+
+	dis.disassemble(0xe59f00fc, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "ldr      r0, [pc, #252]", buffer );
+}
+
 TEST(ArmDisassembler, mla)
 {
 	char buffer[ BUFFER_SIZE ];
