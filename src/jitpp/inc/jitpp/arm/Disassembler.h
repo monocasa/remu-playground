@@ -42,6 +42,7 @@ private:
 	void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) override final;
 	void onMul(CC cc, bool s, int rd, int rn, int rm) override final;
 	void onPld(int rn, uint32_t imm) override final;
+	void onStrImm(CC cc, int rt, int rn, int32_t off) override final;
 	void onSvc(CC cc, uint32_t imm) override final;
 	void onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm) override final;
 };

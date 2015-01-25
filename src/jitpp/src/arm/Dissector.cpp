@@ -100,6 +100,16 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 	}
 	return;
 
+	case 0x5: {
+		if( (instr & 0x0FF00000) == 0x05800000 ) {
+			onStrImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
+		}
+		else {
+			onUnknownInstr(instr);
+		}
+	}
+	return;
+
 	case 0xA: {
 		onB(getCc(instr), getBranchOffset(instr, addr));
 	}

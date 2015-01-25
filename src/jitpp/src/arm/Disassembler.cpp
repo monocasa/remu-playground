@@ -162,6 +162,18 @@ void Disassembler::onPld(int rn, uint32_t imm)
 	printInstr("pld", false);
 }
 
+void Disassembler::onStrImm(CC cc, int rt, int rn, int32_t off)
+{
+	if( off == 0 ) {
+		::sprintf(_args, "%s, [%s]", getRegName(rt), getRegName(rn));
+	}
+	else {
+		::sprintf(_args, "UNIMPLEMENTED_STR_IMM_OFF");
+	}
+
+	printInstr("str", false, cc);
+}
+
 void Disassembler::onSvc(CC cc, uint32_t imm)
 {
 	::sprintf(_args, "#0x%x", imm);
