@@ -134,6 +134,16 @@ TEST(ArmDisassembler, muls)
 	EXPECT_STREQ( "mulslt   r1, r2, r3", buffer );
 }
 
+TEST(ArmDisassembler, orrimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xC3811A02, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "orrgt    r1, r1, #0x2000", buffer );
+}
+
 TEST(ArmDisassembler, pld)
 {
 	char buffer[ BUFFER_SIZE ];

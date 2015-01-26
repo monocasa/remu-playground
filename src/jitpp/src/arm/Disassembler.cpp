@@ -205,6 +205,13 @@ void Disassembler::onMul(CC cc, bool s, int rd, int rn, int rm)
 	printInstr("mul", s, cc);
 }
 
+void Disassembler::onOrrImm(CC cc, int rd, int rn, uint32_t imm)
+{
+	logicalImmArgs(rd, rn, imm);
+
+	printInstr("orr", false, cc);
+}
+
 void Disassembler::onPld(int rn, uint32_t imm)
 {
 	::sprintf(_args,"[%s, #0x%x]", getRegName(rn), imm);
