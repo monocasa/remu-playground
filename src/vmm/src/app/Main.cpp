@@ -66,8 +66,5 @@ void appMain()
 
 		printf("%08lx : %08x : %s\n", cur_addr, instr, buffer);
 	}
-
-	auto page_fault_ptr = reinterpret_cast<uint8_t*>(0x100000000UL);
-	*page_fault_ptr = 1;
 }
 
