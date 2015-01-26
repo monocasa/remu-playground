@@ -43,6 +43,29 @@ const char *getCcName(Dissector::CC cc)
 	}
 }
 
+void printRegList(char *buffer, uint16_t reg_list)
+{
+	bool first_written = false;
+
+	if( reg_list == 0 ) {
+		buffer[0] = '\0';
+		return;
+	}
+
+	for( int i = 0; i < 16; i++ ) {
+		if( reg_list & 1 ) {
+			if( !first_written ) {
+				buffer += sprintf(buffer, "%s", getRegName(i));
+				first_written = true;
+			}
+			else {
+				buffer += sprintf(buffer, ", %s", getRegName(i));
+			}
+		}
+		reg_list >>= 1;
+	}
+}
+
 } /*anonymous namespace*/
 
 namespace remu { namespace jitpp { namespace arm {
@@ -172,6 +195,24 @@ void Disassembler::onPld(int rn, uint32_t imm)
 	::sprintf(_args,"[%s, #0x%x]", getRegName(rn), imm);
 
 	printInstr("pld", false);
+}
+
+void Disassembler::onStmfd(CC cc, int rn, bool w, uint16_t reg_list)
+{
+	char reg_list_buffer[64];
+
+	printRegList(reg_list_buffer, reg_list);
+
+	if( w && rn == 13 ) {
+		::sprintf(_args, "{%s}", reg_list_buffer);
+
+		printInstr("push", false, cc);
+	}
+	else {
+		::sprintf(_args, "%s%s, {%s}", getRegName(rn), w ? "!" : "", reg_list_buffer);
+
+		printInstr("stmfd", false, cc);
+	}
 }
 
 void Disassembler::onStrImm(CC cc, int rt, int rn, int32_t off)

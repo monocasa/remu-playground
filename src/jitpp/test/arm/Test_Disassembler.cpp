@@ -134,6 +134,24 @@ TEST(ArmDisassembler, pld)
 	EXPECT_STREQ( "pld      [r1, #0x100]", buffer );
 }
 
+TEST(ArmDisassembler, stmfd)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0x192e4010, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "stmfdne  lr!, {r4, lr}", buffer );
+
+	dis.disassemble(0x192d4010, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "pushne   {r4, lr}", buffer );
+
+	dis.disassemble(0x190d4010, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "stmfdne  sp, {r4, lr}", buffer );
+}
+
 TEST(ArmDisassembler, strimm)
 {
 	char buffer[ BUFFER_SIZE ];

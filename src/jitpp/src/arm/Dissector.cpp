@@ -50,6 +50,11 @@ uint32_t getImm12(uint32_t instr)
 	return rotateRight<uint32_t>( base, off );
 }
 
+uint16_t getImm16(uint32_t instr)
+{
+	return (uint16_t)instr;
+}
+
 } /*anonymous namespace*/
 
 namespace remu { namespace jitpp { namespace arm {
@@ -106,6 +111,19 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		}
 		else if( (instr & 0x0FF00000) == 0x05900000 ) {
 			onLdrImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
+		}
+		else {
+			onUnknownInstr(instr);
+		}
+	}
+	return;
+
+	case 0x9: {
+		if( (instr & 0x0FF00000) == 0x09200000 ) {
+			onStmfd(getCc(instr), getReg4(instr), true, getImm16(instr));
+		}
+		else if( (instr & 0x0FF00000) == 0x09000000 ) {
+			onStmfd(getCc(instr), getReg4(instr), false, getImm16(instr));
 		}
 		else {
 			onUnknownInstr(instr);
