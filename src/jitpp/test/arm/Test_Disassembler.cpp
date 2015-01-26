@@ -101,7 +101,7 @@ TEST(ArmDisassembler, movimm)
 
 	dis.disassemble(0xE3A0D902, DEFAULT_ADDR, buffer, BUFFER_SIZE);
 
-	EXPECT_STREQ( "mov      r13, #0x8000", buffer );
+	EXPECT_STREQ( "mov      sp, #0x8000", buffer );
 }
 
 TEST(ArmDisassembler, mul)
