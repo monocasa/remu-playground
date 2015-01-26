@@ -19,6 +19,8 @@ Peripheral::Peripheral(Ui &ui, Memory &mem)
   , uart_enable(false)
   , uart_bits(7)
   , uart_dlab(0)
+  , uart_rts(false)
+  , uart_cntl_reg(0x00)
 {
   mem.addRegion(this);
 }
@@ -65,6 +67,11 @@ void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
       }
       return;
     }
+    case AUX_MU_IIR_REG:
+    {
+      /* We don't actually emulate the FIFOs so this is a nop */
+      return;
+    }
     case AUX_MU_LCR_REG:
     {
       /* TODO: implement other bits */
@@ -74,6 +81,16 @@ void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
     case AUX_MU_BAUD_REG:
     {
       uart_baud_rate_counter = data & 0xFF;
+      return;
+    }
+    case AUX_MU_CNTL_REG:
+    {
+      uart_cntl_reg = data;
+      return;
+    }
+    case AUX_MU_MCR_REG:
+    {
+      uart_rts = data & 0x02;
       return;
     }
     case AUX_MU_IO_REG:

@@ -82,6 +82,10 @@ private:
   int uart_baud_rate;
   /* UART DLAB */
   int uart_dlab;
+
+  bool uart_rts;
+
+  uint8_t uart_cntl_reg;
 };
 
 }} /*namespace remu::bcm2835*/
