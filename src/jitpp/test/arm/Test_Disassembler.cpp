@@ -115,7 +115,7 @@ TEST(ArmDisassembler, ldrimm)
 
 	dis.disassemble(0xe59f00fc, DEFAULT_ADDR, buffer, BUFFER_SIZE);
 
-	EXPECT_STREQ( "ldr      r0, [pc, #252]", buffer );
+	EXPECT_STREQ( "ldr      r0, [pc, #0xfc]", buffer );
 }
 
 TEST(ArmDisassembler, mla)

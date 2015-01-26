@@ -206,7 +206,7 @@ void Disassembler::onLdrImm(CC cc, int rt, int rn, int32_t off)
 		::sprintf(_args, "%s, [%s]", getRegName(rt), getRegName(rn));
 	}
 	else {
-		::sprintf(_args, "%s, [%s, #%d]", getRegName(rt), getRegName(rn), off);
+		::sprintf(_args, "%s, [%s, #0x%x]", getRegName(rt), getRegName(rn), off);
 	}
 
 	printInstr("ldr", false, cc);
@@ -278,7 +278,7 @@ void Disassembler::onStrImm(CC cc, int rt, int rn, int32_t off)
 		::sprintf(_args, "%s, [%s]", getRegName(rt), getRegName(rn));
 	}
 	else {
-		::sprintf(_args, "%s, [%s, #%d]", getRegName(rt), getRegName(rn), off);
+		::sprintf(_args, "%s, [%s, #0x%x]", getRegName(rt), getRegName(rn), off);
 	}
 
 	printInstr("str", false, cc);
