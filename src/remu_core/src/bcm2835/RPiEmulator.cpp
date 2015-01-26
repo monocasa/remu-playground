@@ -52,11 +52,6 @@ void RPiEmulator::load()
 void RPiEmulator::execute()
 {
   crossVmm.run();
-
-  while (isRunning())
-  {
-    tick();
-  }
 }
 
 /**
