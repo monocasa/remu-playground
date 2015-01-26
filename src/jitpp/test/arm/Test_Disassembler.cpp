@@ -84,6 +84,16 @@ TEST(ArmDisassembler, bx)
 	EXPECT_STREQ( "bxlt     r5", buffer );
 }
 
+TEST(ArmDisassembler, cmpimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xB3540096, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "cmplt    r4, #0x96", buffer );
+}
+
 TEST(ArmDisassembler, ldrimm)
 {
 	char buffer[ BUFFER_SIZE ];

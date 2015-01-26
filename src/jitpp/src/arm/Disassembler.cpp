@@ -186,6 +186,13 @@ void Disassembler::onBx(CC cc, int rm)
 	printInstr("bx", false, cc);
 }
 
+void Disassembler::onCmpImm(CC cc, int rn, uint32_t imm)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, #0x%x", getRegName(rn), imm);
+
+	printInstr("cmp", false, cc);
+}
+
 void Disassembler::onLdrImm(CC cc, int rt, int rn, int32_t off)
 {
 	if( off == 0 ) {

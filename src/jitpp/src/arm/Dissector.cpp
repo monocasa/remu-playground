@@ -108,6 +108,9 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		else if( (instr & 0x0FF00000) == 0x02900000 ) {
 			onAddImm(getCc(instr), true, getReg3(instr), getReg4(instr), getImm12(instr));
 		}
+		else if( (instr & 0x0FF00000) == 0x03500000 ) {
+			onCmpImm(getCc(instr), getReg4(instr), getImm12(instr));
+		}
 		else if( (instr & 0x0FF00000) == 0x03800000 ) {
 			onOrrImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
 		}

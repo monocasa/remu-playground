@@ -43,6 +43,7 @@ private:
 	void onBicImm(CC cc, int rd, int rn, uint32_t imm) override final;
 	void onBl(CC cc, uint64_t target) override final; 
 	void onBx(CC cc, int rm) override final;
+	void onCmpImm(CC cc, int rn, uint32_t imm) override final;
 	void onLdrImm(CC cc, int rt, int rn, int32_t off) override final;
 	void onMovImm(CC cc, bool s, int rd, uint32_t imm) override final;
 	void onMovReg(CC cc, bool s, int rd, int rm) override final;
