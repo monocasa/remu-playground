@@ -284,6 +284,13 @@ void Disassembler::onSvc(CC cc, uint32_t imm)
 	printInstr("svc", false, cc);
 }
 
+void Disassembler::onTstImm(CC cc, int rn, uint32_t imm)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, #0x%x", getRegName(rn), imm);
+
+	printInstr("tst", false, cc);
+}
+
 void Disassembler::onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm)
 {
 	quadGprArgs(rdlo, rdhi, rn, rm);

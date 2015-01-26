@@ -230,6 +230,16 @@ TEST(ArmDisassembler, svc)
 	EXPECT_STREQ( "svcge    #0x123456", buffer );
 }
 
+TEST(ArmDisassembler, tst)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xe3100020, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "tst      r0, #0x20", buffer );
+}
+
 TEST(ArmDisassembler, umull)
 {
 	char buffer[ BUFFER_SIZE ];

@@ -51,6 +51,7 @@ protected:
 	virtual void onStmfd(CC cc, int rn, bool w, uint16_t reg_list) = 0;
 	virtual void onStrImm(CC cc, int rt, int rn, int32_t off) = 0;
 	virtual void onSvc(CC cc, uint32_t imm) = 0;
+	virtual void onTstImm(CC cc, int rn, uint32_t imm) = 0;
 	virtual void onUmull(CC cc, bool s, int rdlo, int rdhi, int rn, int rm) = 0;
 
 private:
