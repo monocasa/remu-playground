@@ -22,6 +22,20 @@ TEST(ArmDisassembler, nop)
 	EXPECT_STREQ( "nop", buffer );
 }
 
+TEST(ArmDisassembler, addimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xe2844001, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "add      r4, r4, #0x1", buffer );
+
+	dis.disassemble(0xb295400F, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "addslt   r4, r5, #0xf", buffer );
+}
+
 TEST(ArmDisassembler, b)
 {
 	char buffer[ BUFFER_SIZE ];

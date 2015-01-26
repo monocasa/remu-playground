@@ -151,6 +151,13 @@ void Disassembler::onNop()
 	::snprintf(_buffer, _buffer_size, "nop");
 }
 
+void Disassembler::onAddImm(CC cc, bool s, int rd, int rn, uint32_t imm)
+{
+	logicalImmArgs(rd, rn, imm);
+
+	printInstr("add", s, cc);
+}
+
 void Disassembler::onB(CC cc, uint64_t target)
 {
 	branchTargetArg(target);

@@ -35,6 +35,7 @@ protected:
 
 	virtual void onNop() = 0;
 
+	virtual void onAddImm(CC cc, bool s, int rd, int rn, uint32_t imm) = 0;
 	virtual void onB(CC cc, uint64_t target) = 0;
 	virtual void onBicImm(CC cc, int rd, int rn, uint32_t imm) = 0;
 	virtual void onBl(CC cc, uint64_t target) = 0; 
