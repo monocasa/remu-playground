@@ -99,6 +99,9 @@ void Dissector::dissect(uint32_t instr, uint64_t addr)
 		else if( (instr & 0x0FF00000) == 0x03a00000 ) {
 			onMovImm(getCc(instr), false, getReg3(instr), getImm12(instr));
 		}
+		else if( (instr & 0x0FF00000) == 0x03C00000 ) {
+			onBicImm(getCc(instr), getReg3(instr), getReg4(instr), getImm12(instr));
+		}
 		else {
 			onUnknownInstr(instr);
 		}

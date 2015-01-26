@@ -29,6 +29,8 @@ private:
 	void tripleGprArgs(int reg0, int reg1, int reg2);
 	void quadGprArgs(int reg0, int reg1, int reg2, int reg3);
 
+	void logicalImmArgs(int rd, int rn, uint32_t imm);
+
 	void branchTargetArg(uint64_t target);
 
 	void onUnknownInstr(uint32_t instr) override final;
@@ -36,6 +38,7 @@ private:
 	void onNop() override final;
 
 	void onB(CC cc, uint64_t target) override final;
+	void onBicImm(CC cc, int rd, int rn, uint32_t imm) override final;
 	void onBl(CC cc, uint64_t target) override final; 
 	void onBx(CC cc, int rm) override final;
 	void onLdrImm(CC cc, int rt, int rn, int32_t off) override final;

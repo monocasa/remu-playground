@@ -36,6 +36,16 @@ TEST(ArmDisassembler, b)
 	EXPECT_STREQ( "b        loc_10100", buffer );
 }
 
+TEST(ArmDisassembler, bicimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xB3C01A07, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "biclt    r1, r0, #0x7000", buffer );
+}
+
 TEST(ArmDisassembler, bl)
 {
 	char buffer[ BUFFER_SIZE ];

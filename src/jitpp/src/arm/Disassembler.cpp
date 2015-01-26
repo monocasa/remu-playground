@@ -121,6 +121,14 @@ void Disassembler::quadGprArgs(int reg0, int reg1, int reg2, int reg3)
 	           getRegName(reg3));
 }
 
+void Disassembler::logicalImmArgs(int rd, int rn, uint32_t imm)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, %s, #0x%x",
+	           getRegName(rd),
+	           getRegName(rn),
+	           imm);
+}
+
 void Disassembler::branchTargetArg(uint64_t target)
 {
 	::snprintf(_args, ARGS_SIZE, "loc_%lx", target);
@@ -141,6 +149,13 @@ void Disassembler::onB(CC cc, uint64_t target)
 	branchTargetArg(target);
 
 	printInstr("b", false, cc);
+}
+
+void Disassembler::onBicImm(CC cc, int rd, int rn, uint32_t imm)
+{
+	logicalImmArgs(rd, rn, imm);
+
+	printInstr("bic", false, cc);
 }
 
 void Disassembler::onBl(CC cc, uint64_t target)

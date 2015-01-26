@@ -36,6 +36,7 @@ protected:
 	virtual void onNop() = 0;
 
 	virtual void onB(CC cc, uint64_t target) = 0;
+	virtual void onBicImm(CC cc, int rd, int rn, uint32_t imm) = 0;
 	virtual void onBl(CC cc, uint64_t target) = 0; 
 	virtual void onBx(CC cc, int rm) = 0;
 	virtual void onLdrImm(CC cc, int rt, int rn, int32_t off) = 0;
