@@ -104,6 +104,13 @@ void Disassembler::singleGprArgs(int reg)
 	::snprintf(_args, ARGS_SIZE, "%s", getRegName(reg));
 }
 
+void Disassembler::dualGprArgs(int reg0, int reg1)
+{
+	::snprintf(_args, ARGS_SIZE, "%s, %s",
+	           getRegName(reg0),
+	           getRegName(reg1));
+}
+
 void Disassembler::tripleGprArgs(int reg0, int reg1, int reg2)
 {
 	::snprintf(_args, ARGS_SIZE, "%s, %s, %s", 
@@ -194,6 +201,13 @@ void Disassembler::onMla(CC cc, bool s, int rd, int rn, int rm, int ra)
 void Disassembler::onMovImm(CC cc, bool s, int rd, uint32_t imm)
 {
 	::sprintf(_args, "%s, #0x%x", getRegName(rd), imm);
+
+	printInstr("mov", s, cc);
+}
+
+void Disassembler::onMovReg(CC cc, bool s, int rd, int rm)
+{
+	dualGprArgs(rd, rm);
 
 	printInstr("mov", s, cc);
 }

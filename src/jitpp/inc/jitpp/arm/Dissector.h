@@ -42,6 +42,7 @@ protected:
 	virtual void onLdrImm(CC cc, int rt, int rn, int32_t off) = 0;
 	virtual void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) = 0;
 	virtual void onMovImm(CC cc, bool s, int rd, uint32_t imm) = 0;
+	virtual void onMovReg(CC cc, bool s, int rd, int rm) = 0;
 	virtual void onMul(CC cc, bool s, int rd, int rn, int rm) = 0;
 	virtual void onOrrImm(CC cc, int rd, int rn, uint32_t imm) = 0;
 	virtual void onPld(int rn, uint32_t imm) = 0;

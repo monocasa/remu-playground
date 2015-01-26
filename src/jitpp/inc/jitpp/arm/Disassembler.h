@@ -26,6 +26,7 @@ private:
 	void noArgs();
 
 	void singleGprArgs(int reg);
+	void dualGprArgs(int reg0, int reg1);
 	void tripleGprArgs(int reg0, int reg1, int reg2);
 	void quadGprArgs(int reg0, int reg1, int reg2, int reg3);
 
@@ -43,6 +44,7 @@ private:
 	void onBx(CC cc, int rm) override final;
 	void onLdrImm(CC cc, int rt, int rn, int32_t off) override final;
 	void onMovImm(CC cc, bool s, int rd, uint32_t imm) override final;
+	void onMovReg(CC cc, bool s, int rd, int rm) override final;
 	void onMla(CC cc, bool s, int rd, int rn, int rm, int ra) override final;
 	void onMul(CC cc, bool s, int rd, int rn, int rm) override final;
 	void onOrrImm(CC cc, int rd, int rn, uint32_t imm) override final;

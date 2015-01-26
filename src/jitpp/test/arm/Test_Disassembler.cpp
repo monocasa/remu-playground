@@ -114,6 +114,20 @@ TEST(ArmDisassembler, movimm)
 	EXPECT_STREQ( "mov      sp, #0x8000", buffer );
 }
 
+TEST(ArmDisassembler, movreg)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xE1A0D002, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "mov      sp, r2", buffer );
+
+	dis.disassemble(0xE1B0D002, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "movs     sp, r2", buffer );
+}
+
 TEST(ArmDisassembler, mul)
 {
 	char buffer[ BUFFER_SIZE ];
