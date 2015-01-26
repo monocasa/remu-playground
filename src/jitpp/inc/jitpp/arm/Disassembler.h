@@ -39,6 +39,7 @@ private:
 	void onNop() override final;
 
 	void onAddImm(CC cc, bool s, int rd, int rn, uint32_t imm) override final;
+	void onAndImm(CC cc, bool s, int rd, int rn, uint32_t imm) override final;
 	void onB(CC cc, uint64_t target) override final;
 	void onBicImm(CC cc, int rd, int rn, uint32_t imm) override final;
 	void onBl(CC cc, uint64_t target) override final; 

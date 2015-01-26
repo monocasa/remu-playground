@@ -158,6 +158,13 @@ void Disassembler::onAddImm(CC cc, bool s, int rd, int rn, uint32_t imm)
 	printInstr("add", s, cc);
 }
 
+void Disassembler::onAndImm(CC cc, bool s, int rd, int rn, uint32_t imm)
+{
+	logicalImmArgs(rd, rn, imm);
+
+	printInstr("and", s, cc);
+}
+
 void Disassembler::onB(CC cc, uint64_t target)
 {
 	branchTargetArg(target);

@@ -36,6 +36,16 @@ TEST(ArmDisassembler, addimm)
 	EXPECT_STREQ( "addslt   r4, r5, #0xf", buffer );
 }
 
+TEST(ArmDisassembler, andimm)
+{
+	char buffer[ BUFFER_SIZE ];
+	Disassembler dis;
+
+	dis.disassemble(0xe2041007, DEFAULT_ADDR, buffer, BUFFER_SIZE);
+
+	EXPECT_STREQ( "and      r1, r4, #0x7", buffer );
+}
+
 TEST(ArmDisassembler, b)
 {
 	char buffer[ BUFFER_SIZE ];
