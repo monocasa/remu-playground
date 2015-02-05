@@ -19,6 +19,8 @@ void set_lower_pml3(void *pml3, uint64_t virt_base);
 
 void on_page_fault( os::intm::Context *ctx );
 
+void *sbrk(intptr_t);
+
 }} /*namespace os::mm*/
 
 #endif /*REMU_VMM_OS_MEMORYMANAGER_H*/

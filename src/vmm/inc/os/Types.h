@@ -28,5 +28,7 @@ static_assert(sizeof(int64_t) == 8, "sizeof(int64_t) != 8");
 typedef unsigned long size_t;
 typedef signed long   ssize_t; 
 
+typedef unsigned long intptr_t;
+
 #endif /*REMU_VMM_OS_TYPES_H*/
 

@@ -17,9 +17,16 @@ struct Page {
 	uint8_t data[4096];
 };
 
+enum State {
+	RESERVED    = 0,
+	UNALLOCATED = 1,
+	PAGE_MEM    = 2,
+	SBRK_MEM    = 3,
+};
+
 struct HeapPageInfo {
-	uint8_t allocated : 1;
-	uint8_t RSVD      : 7;
+	uint8_t state : 2;
+	uint8_t RSVD  : 6;
 };
 
 static const int KIB = 1024;
@@ -50,6 +57,9 @@ uint64_t contig_num_pages;
 
 HeapPageInfo *contig_heap_info;
 uint64_t contig_heap_num_info_pages;
+
+int sbrk_page;
+size_t sbrk_size;
 
 void invalidate_page( uint64_t addr )
 {
@@ -126,12 +136,18 @@ void initialize_contiguous_heap()
 	contig_heap_num_info_pages &= 0xFFFFFFFFFFFFF000UL;
 	contig_heap_num_info_pages /= 4096;
 
+	bool prev_was_reserved = true;
 	for( uint64_t page = 0; page < contig_num_pages; page++ ) {
 		if( page < contig_heap_num_info_pages ) {
-			contig_heap_info[ page ].allocated = true;
+			contig_heap_info[ page ].state = RESERVED;
 		}
 		else {
-			contig_heap_info[ page ].allocated = false;
+			contig_heap_info[ page ].state = UNALLOCATED;
+			if( prev_was_reserved ) {
+				sbrk_page = page;
+				sbrk_size = 0;
+				prev_was_reserved = false;
+			}
 		}
 	}
 
@@ -158,8 +174,8 @@ void init()
 void* allocate_page()
 {
 	for( int i = (::contig_num_pages - 1); i > 0; i-- ) {
-		if( !::contig_heap_info[i].allocated ) {
-			::contig_heap_info[i].allocated = true;
+		if( ::contig_heap_info[i].state == ::UNALLOCATED ) {
+			::contig_heap_info[i].state = PAGE_MEM;
 			auto page = &::contig_heap[i];
 			return page;
 		}
@@ -185,6 +201,30 @@ void on_page_fault( os::intm::Context *ctx )
 	ctx->print();
 
 	os::board::shutdown();
+}
+
+void* sbrk(intptr_t increment)
+{
+	int cur_page = ::sbrk_size / sizeof(Page);
+	size_t cur_offset = ::sbrk_size % sizeof(Page);
+
+	uint8_t *cur_break = &::contig_heap[cur_page].data[cur_offset];
+
+	size_t next_offset = cur_offset + increment;
+	int next_page = (next_offset / sizeof(Page)) + cur_page;
+	next_offset %= sizeof(Page);
+
+	for( int page = (cur_page + ::sbrk_page); page <= (next_page + ::sbrk_page); page++ ) {
+		if( ::contig_heap_info[page].state != ::SBRK_MEM &&
+		    ::contig_heap_info[page].state != ::UNALLOCATED ) {
+			printf("Out of memory to sbrk:  page=%d state=%d\n", page, ::contig_heap_info[page].state);
+			os::board::shutdown();
+		}
+		::contig_heap_info[page].state = ::SBRK_MEM;
+	}
+	::sbrk_size = (next_page * sizeof(Page)) + next_offset;
+
+	return cur_break;
 }
 
 }} /*namespace os::mm*/

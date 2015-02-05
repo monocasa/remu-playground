@@ -66,5 +66,13 @@ void appMain()
 
 		printf("%08lx : %08x : %s\n", cur_addr, instr, buffer);
 	}
+
+	printf("%p\n", os::mm::sbrk(0) );
+	printf("%p\n", os::mm::sbrk(8) );
+	printf("%p\n", os::mm::sbrk(16) );
+	printf("%p\n", os::mm::sbrk(4096) );
+	printf("%p\n", os::mm::sbrk(1 * 1024 * 1024) );
+	printf("%p\n", os::mm::sbrk(3) );
+	printf("%p\n", os::mm::sbrk(0) );
 }
 
