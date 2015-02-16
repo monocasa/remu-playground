@@ -67,12 +67,13 @@ void appMain()
 		printf("%08lx : %08x : %s\n", cur_addr, instr, buffer);
 	}
 
-	printf("%p\n", os::mm::sbrk(0) );
-	printf("%p\n", os::mm::sbrk(8) );
-	printf("%p\n", os::mm::sbrk(16) );
-	printf("%p\n", os::mm::sbrk(4096) );
-	printf("%p\n", os::mm::sbrk(1 * 1024 * 1024) );
-	printf("%p\n", os::mm::sbrk(3) );
-	printf("%p\n", os::mm::sbrk(0) );
+	void *ptr1 = malloc(1 * 1024 * 1024);
+	printf("ptr1 = %p\n", ptr1);
+	void *ptr2 = malloc(1 * 1024 * 1024);
+	printf("ptr2 = %p\n", ptr2);
+	free(ptr1);
+	printf("free(ptr1)\n");
+	ptr1 = malloc(1024);
+	printf("ptr1 = %p\n", ptr1);
 }
 

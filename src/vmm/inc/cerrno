@@ -1,0 +1,13 @@
+#ifndef VMM_CERRNO
+#define VMM_CERRNO
+
+int errno;
+
+const int ENOERROR = 0;
+const int EDOM     = 1;
+const int ERANGE   = 2;
+const int EILSEQ   = 3;
+const int ENOMEM   = 4;
+
+#endif /*VMM_CERRNO*/
+

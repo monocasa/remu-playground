@@ -118,6 +118,18 @@ void unmap_boot_lower()
 	invalidate_all_pages();
 }
 
+void print_page_map(int depth)
+{
+	printf("~~PAGE MAP~~\n");
+	for( uint64_t i = 0; i < contig_num_pages; i++ ) {
+		printf( "{%p:%ld:%d}\n", &contig_heap[i], i, contig_heap_info[i].state );
+		if( (depth != -1) && (((uint64_t)depth) == i) ) {
+			break;
+		}
+	}
+	printf("\n");
+}
+
 void initialize_contiguous_heap()
 {
 	uint64_t heap_end_addr = reinterpret_cast<uint64_t>( phys_to_vmm_virt( &__bss_end[0] ) );
@@ -208,7 +220,7 @@ void* sbrk(intptr_t increment)
 	int cur_page = ::sbrk_size / sizeof(Page);
 	size_t cur_offset = ::sbrk_size % sizeof(Page);
 
-	uint8_t *cur_break = &::contig_heap[cur_page].data[cur_offset];
+	uint8_t *cur_break = &::contig_heap[cur_page + ::sbrk_page].data[cur_offset];
 
 	size_t next_offset = cur_offset + increment;
 	int next_page = (next_offset / sizeof(Page)) + cur_page;
@@ -218,12 +230,12 @@ void* sbrk(intptr_t increment)
 		if( ::contig_heap_info[page].state != ::SBRK_MEM &&
 		    ::contig_heap_info[page].state != ::UNALLOCATED ) {
 			printf("Out of memory to sbrk:  page=%d state=%d\n", page, ::contig_heap_info[page].state);
+			::print_page_map(-1);
 			os::board::shutdown();
 		}
 		::contig_heap_info[page].state = ::SBRK_MEM;
 	}
 	::sbrk_size = (next_page * sizeof(Page)) + next_offset;
-
 	return cur_break;
 }
 

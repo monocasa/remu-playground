@@ -20,7 +20,11 @@ ADD_LIBRARY( vmm_app STATIC src/app/Main.cpp )
 ADD_LIBRARY( vmm_lib STATIC src/lib/cstdio/printf.cpp
                             src/lib/cstdio/snprintf.cpp
                             src/lib/cstdio/sprintf.cpp
+                            src/lib/cstdlib/malloc.cpp
+                            src/lib/cstring/memcpy.cpp
+                            src/lib/cstring/memset.cpp
                             src/lib/cstring/strcpy.cpp
+                            src/lib/unistd/sbrk.cpp
                             src/lib/helper/vfnprintf.cpp
                             src/lib/CxxAbi.cpp )
 

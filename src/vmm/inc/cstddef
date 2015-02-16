@@ -1,0 +1,7 @@
+#ifndef VMM_CSTDDEF
+#define VMM_CSTDDEF
+
+#include <os/Types.h>
+
+#endif /*VMM_CSTDDEF*/
+

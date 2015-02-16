@@ -3,5 +3,8 @@
 
 #include <os/Types.h>
 
+extern "C" void free( void *ptr );
+extern "C" void *malloc( size_t size );
+
 #endif /*VMM_CSTDLIB*/
 
