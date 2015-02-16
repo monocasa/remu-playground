@@ -67,13 +67,13 @@ void appMain()
 		printf("%08lx : %08x : %s\n", cur_addr, instr, buffer);
 	}
 
-	void *ptr1 = malloc(1 * 1024 * 1024);
+	char* ptr1 = new char[1 * 1024 * 1024];
 	printf("ptr1 = %p\n", ptr1);
-	void *ptr2 = malloc(1 * 1024 * 1024);
+	char* ptr2 = new char[1 * 1024 * 1024];
 	printf("ptr2 = %p\n", ptr2);
-	free(ptr1);
+	delete ptr1;
 	printf("free(ptr1)\n");
-	ptr1 = malloc(1024);
+	ptr1 = new char[10];
 	printf("ptr1 = %p\n", ptr1);
 }
 
