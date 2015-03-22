@@ -36,5 +36,12 @@ void shutdown()
 	hypercall(HypercallType::EXIT);
 }
 
+uint64_t high_performance_timer()
+{
+	uint64_t a, d;
+	asm volatile ( "rdtsc" : "=a"(a), "=d"(d) );
+	return (d << 32) | a;
+}
+
 }} /*namespace os::board*/
 

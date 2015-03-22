@@ -1,5 +1,8 @@
 #include "jitpp/arm/Disassembler.h"
+#include "jitpp/ACState.h"
+#include "jitpp/CodeCache.h"
 
+#include <os/Board.h>
 #include <os/MemoryManager.h>
 
 #include <cstdio>
@@ -46,6 +49,14 @@ void mapArmPhysicalMem()
 	os::mm::set_lower_pml3(emulation_pml3, 0);
 }
 
+class VMMCodeCacheRandomStrategy
+{
+protected:
+	static int get_rand_way( int ways ) {
+		return os::board::high_performance_timer() % ways;
+	}
+};
+
 } /*anonymous namespace*/
 
 void appMain()
@@ -53,8 +64,17 @@ void appMain()
 	mapArmPhysicalMem();
 
 	remu::jitpp::arm::Disassembler dis;
+	remu::jitpp::ACState cpu_state;
+	remu::jitpp::CodeCache<4,16,4096,VMMCodeCacheRandomStrategy> code_cache;
 
-	uint32_t *first_instr = reinterpret_cast<uint32_t*>(0x00008000);
+	cpu_state.clear();
+	cpu_state.ip.program_counter = 0x00008000;
+
+	auto code_page = code_cache.getPageForFarPointer( cpu_state.ip );
+
+	printf( "code_page=%p\n", code_page );
+
+	uint32_t *first_instr = reinterpret_cast<uint32_t*>(cpu_state.ip.program_counter);
 
 	char buffer[64];
 
