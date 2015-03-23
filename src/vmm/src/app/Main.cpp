@@ -57,6 +57,14 @@ protected:
 	}
 };
 
+class DeletionEvictionPolicy
+{
+protected:
+	static void on_item_evicted( remu::jitpp::CodePage<4096> **evicted ) {
+		delete *evicted;
+	}
+};
+
 } /*anonymous namespace*/
 
 void appMain()
@@ -65,7 +73,9 @@ void appMain()
 
 	remu::jitpp::arm::Disassembler dis;
 	remu::jitpp::ACState cpu_state;
-	remu::jitpp::CodeCache<4,16,4096,VMMCodeCacheRandomStrategy> code_cache;
+	remu::jitpp::CodeCache<4,16,4096,
+	                       VMMCodeCacheRandomStrategy,
+	                       DeletionEvictionPolicy> code_cache;
 
 	cpu_state.clear();
 	cpu_state.ip.program_counter = 0x00008000;

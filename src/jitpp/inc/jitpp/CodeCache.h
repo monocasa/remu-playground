@@ -6,10 +6,14 @@
 
 namespace remu { namespace jitpp {
 
-template<int WAYS, int ITEMS, size_t ITEM_SIZE, class RandomStrategy>
-class CodeCache : private RandomStrategy
+template<int WAYS, int ITEMS, size_t ITEM_SIZE, 
+         class RandomStrategy, 
+         class EvictionPolicy>
+class CodeCache : public RandomStrategy
+                , public EvictionPolicy
 {
 	using RandomStrategy::get_rand_way;
+	using EvictionPolicy::on_item_evicted;
 
 public:
 	static const int SETS = ITEMS / WAYS;
@@ -25,7 +29,7 @@ public:
 		const int way = findReplacementWay( set );
 
 		if( valid[set][way] ) {
-			delete cache[set][way];
+			on_item_evicted( &cache[set][way] );
 		}
 		else {
 			valid[set][way] = true;
