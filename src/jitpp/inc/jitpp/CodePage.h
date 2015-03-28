@@ -17,6 +17,11 @@ public:
 		return base;
 	}
 
+	bool execute( ACState &cpu_state ) {
+		(void)cpu_state;
+		return false;
+	}
+
 private:
 	ACFarPointer base;
 

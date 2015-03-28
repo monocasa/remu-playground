@@ -82,9 +82,12 @@ void appMain()
 	cpu_state.clear();
 	cpu_state.ip.program_counter = 0x00008000;
 
-	auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
+	bool running = true;
 
-	printf( "code_page=%p\n", code_page );
+	while( running ) {
+		auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
+		running = code_page->execute( cpu_state );
+	}
 
 	uint32_t *first_instr = reinterpret_cast<uint32_t*>(cpu_state.ip.program_counter);
 
