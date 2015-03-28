@@ -65,6 +65,10 @@ protected:
 	}
 };
 
+using Arm11CpuCodeCache = remu::jitpp::CodeCache<4,1024,4096,
+                                                 VMMCodeCacheRandomStrategy,
+                                                 DeletionEvictionPolicy>;
+
 } /*anonymous namespace*/
 
 void appMain()
@@ -73,14 +77,12 @@ void appMain()
 
 	remu::jitpp::arm::Disassembler dis;
 	remu::jitpp::ACState cpu_state;
-	remu::jitpp::CodeCache<4,16,4096,
-	                       VMMCodeCacheRandomStrategy,
-	                       DeletionEvictionPolicy> code_cache;
+	Arm11CpuCodeCache *code_cache = new Arm11CpuCodeCache();
 
 	cpu_state.clear();
 	cpu_state.ip.program_counter = 0x00008000;
 
-	auto code_page = code_cache.getPageForFarPointer( cpu_state.ip );
+	auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
 
 	printf( "code_page=%p\n", code_page );
 
