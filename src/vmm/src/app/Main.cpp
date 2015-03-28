@@ -1,4 +1,3 @@
-#include "jitpp/arm/Disassembler.h"
 #include "jitpp/arm/ArmTranslatorFactory.h"
 #include "jitpp/arm/ArmTranslator.h"
 #include "jitpp/ACState.h"
@@ -88,7 +87,6 @@ void appMain()
 {
 	mapArmPhysicalMem();
 
-	remu::jitpp::arm::Disassembler dis;
 	remu::jitpp::ACState cpu_state;
 	Arm11CpuCodeCache *code_cache = new Arm11CpuCodeCache();
 
@@ -104,27 +102,5 @@ void appMain()
 		running = code_page->execute( cpu_state );
 		running = false;
 	}
-
-	uint32_t *first_instr = reinterpret_cast<uint32_t*>(cpu_state.ip.program_counter);
-
-	char buffer[64];
-
-	for( int ii = 0; ii < 75; ii++ ) {
-		const uint64_t cur_addr = 0x8000 + (sizeof(uint32_t) * ii);
-		const uint32_t instr = first_instr[ii];
-
-		dis.disassemble(instr, cur_addr, buffer, 64);
-
-		printf("%08lx : %08x : %s\n", cur_addr, instr, buffer);
-	}
-
-	char* ptr1 = new char[1 * 1024 * 1024];
-	printf("ptr1 = %p\n", ptr1);
-	char* ptr2 = new char[1 * 1024 * 1024];
-	printf("ptr2 = %p\n", ptr2);
-	delete ptr1;
-	printf("free(ptr1)\n");
-	ptr1 = new char[10];
-	printf("ptr1 = %p\n", ptr1);
 }
 
