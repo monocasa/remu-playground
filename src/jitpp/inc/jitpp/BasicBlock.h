@@ -5,6 +5,7 @@ namespace remu { namespace jitpp {
 
 struct BasicBlock
 {
+	uint64_t base;
 };
 
 }} /*namespace remu::jitpp*/
