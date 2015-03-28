@@ -39,7 +39,7 @@ public:
 		const int pc_in_page = cpu_state.ip.program_counter % SIZE;
 		auto block = basic_blocks[pc_in_page];
 		if( !block ) {
-			block = translator.generate_basic_block(cpu_state.ip.program_counter, nullptr);
+			block = translator.generate_basic_block(cpu_state.ip.program_counter, host_base);
 			if( !block ) {
 				return false;
 			}

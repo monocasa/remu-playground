@@ -18,8 +18,6 @@ uint64_t *emulation_pml2[4] =
 
 uint64_t *emulation_pml3 = nullptr;
 
-uint8_t *GUEST_PHYS_BASE = (uint8_t*)0x0000000100000000ULL;
-
 void mapArmPhysicalMem()
 {
 	emulation_pml2[0] = (uint64_t*)os::mm::allocate_page();
@@ -73,7 +71,7 @@ class NoMmuHostPageSelectionStrategy
 {
 protected:
 	static void* get_host_page( const remu::jitpp::ACFarPointer& ip ) {
-		return &GUEST_PHYS_BASE[ ip.program_counter & ~4095 ];
+		return reinterpret_cast<void*>( ip.program_counter & ~4095 );
 	}
 };
 
@@ -104,6 +102,7 @@ void appMain()
 		printf("code_page:  %p (host_page=%p guest_page=%0lx:%lx)\n", code_page, code_page->getHostBase(),
 		       cpu_state.ip.code_segment, cpu_state.ip.program_counter );
 		running = code_page->execute( cpu_state );
+		running = false;
 	}
 
 	uint32_t *first_instr = reinterpret_cast<uint32_t*>(cpu_state.ip.program_counter);
