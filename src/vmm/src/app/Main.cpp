@@ -1,4 +1,6 @@
 #include "jitpp/arm/Disassembler.h"
+#include "jitpp/arm/ArmTranslatorFactory.h"
+#include "jitpp/arm/ArmTranslator.h"
 #include "jitpp/ACState.h"
 #include "jitpp/CodeCache.h"
 
@@ -15,6 +17,8 @@ uint64_t *emulation_pml2[4] =
 };
 
 uint64_t *emulation_pml3 = nullptr;
+
+uint8_t *GUEST_PHYS_BASE = (uint8_t*)0x0000000100000000ULL;
 
 void mapArmPhysicalMem()
 {
@@ -60,14 +64,25 @@ protected:
 class DeletionEvictionPolicy
 {
 protected:
-	static void on_item_evicted( remu::jitpp::CodePage<4096> **evicted ) {
+	static void on_item_evicted( remu::jitpp::CodePage<4096, remu::jitpp::arm::ArmTranslator> **evicted ) {
 		delete *evicted;
+	}
+};
+
+class NoMmuHostPageSelectionStrategy
+{
+protected:
+	static void* get_host_page( const remu::jitpp::ACFarPointer& ip ) {
+		return &GUEST_PHYS_BASE[ ip.program_counter & ~4095 ];
 	}
 };
 
 using Arm11CpuCodeCache = remu::jitpp::CodeCache<4,1024,4096,
                                                  VMMCodeCacheRandomStrategy,
-                                                 DeletionEvictionPolicy>;
+                                                 DeletionEvictionPolicy,
+                                                 remu::jitpp::arm::ArmTranslatorFactory,
+                                                 remu::jitpp::arm::ArmTranslator,
+                                                 NoMmuHostPageSelectionStrategy>;
 
 } /*anonymous namespace*/
 
@@ -86,6 +101,8 @@ void appMain()
 
 	while( running ) {
 		auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
+		printf("code_page:  %p (host_page=%p guest_page=%0lx:%lx)\n", code_page, code_page->getHostBase(),
+		       cpu_state.ip.code_segment, cpu_state.ip.program_counter );
 		running = code_page->execute( cpu_state );
 	}
 

@@ -8,17 +8,22 @@ namespace remu { namespace jitpp {
 
 template<int WAYS, int ITEMS, size_t ITEM_SIZE, 
          class RandomStrategy, 
-         class EvictionPolicy>
+         class EvictionPolicy,
+         class TranslatorFactory,
+         class Translator,
+         class HostPageSelectionStrategy>
 class CodeCache : public RandomStrategy
                 , public EvictionPolicy
+                , private HostPageSelectionStrategy
 {
 	using RandomStrategy::get_rand_way;
 	using EvictionPolicy::on_item_evicted;
+	using HostPageSelectionStrategy::get_host_page;
 
 public:
 	static const int SETS = ITEMS / WAYS;
 
-	CodePage<ITEM_SIZE>* getPageForFarPointer( ACFarPointer &far_pointer ) {
+	CodePage<ITEM_SIZE, Translator>* getPageForFarPointer( ACFarPointer &far_pointer ) {
 		auto page = lookup( far_pointer );
 
 		if( page ) {
@@ -35,7 +40,9 @@ public:
 			valid[set][way] = true;
 		}
 
-		cache[set][way] = page = new CodePage<ITEM_SIZE>( far_pointer );
+		cache[set][way] = page = new CodePage<ITEM_SIZE, Translator>( far_pointer,
+		                                      translator_factory.translator_for_code_segment(far_pointer.code_segment),
+		                                      get_host_page(far_pointer) );
 
 		return page;
 	}
@@ -55,7 +62,7 @@ private:
 		return get_rand_way( WAYS );
 	}
 
-	CodePage<ITEM_SIZE>* lookup( ACFarPointer &far_pointer ) {
+	CodePage<ITEM_SIZE, Translator>* lookup( ACFarPointer &far_pointer ) {
 		const int set = calcSet( far_pointer );
 		for( int ii = 0; ii < WAYS; ii++ ) {
 			if( valid[set][ii] && tags[set][ii] == far_pointer ) {
@@ -67,7 +74,8 @@ private:
 
 	ACFarPointer tags[SETS][WAYS];
 	bool valid[SETS][WAYS];
-	CodePage<ITEM_SIZE>* cache[SETS][WAYS];
+	CodePage<ITEM_SIZE, Translator>* cache[SETS][WAYS];
+	TranslatorFactory translator_factory;
 };
 
 }} /*namespace remu::jitpp*/
