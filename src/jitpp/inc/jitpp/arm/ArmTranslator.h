@@ -21,7 +21,7 @@ public:
 		BasicBlock *basic_block = new BasicBlock;
 
 		while( continue_block ) {
-			uint32_t instr = page_instrs[page_offset];
+			uint32_t instr = page_instrs[page_offset / sizeof(uint32_t)];
 
 			dissect(instr, page_base + page_offset);
 
