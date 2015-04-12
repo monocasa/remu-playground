@@ -101,7 +101,6 @@ void appMain()
 		printf("code_page:  %p (host_page=%p guest_page=%0lx:%lx)\n", code_page, code_page->getHostBase(),
 		       cpu_state.ip.code_segment, cpu_state.ip.program_counter );
 		running = code_page->execute( cpu_state );
-		running = false;
 	}
 
 	remu::jitpp::arm::ArmStatePrinter::print( cpu_state );
