@@ -1,0 +1,72 @@
+#ifndef VMM_VECTOR_H
+#define VMM_VECTOR_H
+
+namespace std {
+
+template<class T /*, class Allocator = std::allocator<T>*/>
+class vector
+{
+public:
+    typedef T value_type;
+
+	typedef value_type* iterator;
+	typedef const value_type* const_iterator;
+
+    typedef size_t size_type;
+
+    explicit vector()
+      : _backing_array( new T[10] )
+      , _size( 0 )
+      , _capacity( 10 )
+    { }
+
+    size_type capacity() const noexcept {
+        return _capacity;
+    }
+
+	iterator begin() {
+		return &_backing_array[0];
+	}
+
+	const_iterator begin() const {
+		return &_backing_array[0];
+	}
+
+	const_iterator cbegin() const {
+		return &_backing_array[0];
+	}
+
+	iterator end() {
+		return &_backing_array[_size];
+	}
+
+	const_iterator end() const {
+		return &_backing_array[_size];
+	}
+
+	const_iterator cend() const {
+		return &_backing_array[_size];
+	}
+
+	void push_back( const T& value ) {
+		if( _size != _capacity ) {
+			_backing_array[ _size ] = value;
+			_size++;
+		}
+		else {
+			//TODO:  need to realloc
+		}
+	}
+
+private:
+    static const int DEFAULT_BACKING_ARRAY_SIZE = 10;
+
+    T* _backing_array;
+    size_type _size;
+    size_type _capacity;
+};
+
+} /*namespace std*/
+
+#endif /*VMM_VECTOR_H*/
+
