@@ -2,6 +2,7 @@
 #define REMU_JITPP_CODEPAGE_H
 
 #include "jitpp/ACState.h"
+#include "jitpp/BasicBlockInterpreter.h"
 
 namespace remu { namespace jitpp {
 
@@ -40,12 +41,14 @@ public:
 		auto block = basic_blocks[pc_in_page];
 		if( !block ) {
 			block = translator.generate_basic_block(cpu_state.ip.program_counter, host_base);
+			basic_blocks[pc_in_page] = block;
 			if( !block ) {
 				return false;
 			}
 		}
-		
-		return true;
+
+		BasicBlockInterpreter interp;
+		return interp.execute_block( *block, cpu_state );
 	}
 
 private:

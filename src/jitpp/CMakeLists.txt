@@ -2,7 +2,8 @@ INCLUDE_DIRECTORIES( inc )
 
 SET( JITPP_SOURCES src/arm/ArmTranslator.cpp
                    src/arm/Disassembler.cpp
-                   src/arm/Dissector.cpp )
+                   src/arm/Dissector.cpp
+                   src/BasicBlockInterpreter.cpp )
 
 ADD_LIBRARY( jitpp STATIC ${JITPP_SOURCES} )
 
