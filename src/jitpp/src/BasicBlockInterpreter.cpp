@@ -6,8 +6,10 @@ namespace remu { namespace jitpp {
 
 bool BasicBlockInterpreter::execute_block( const BasicBlock &block, ACState &cpu_state )
 {
-	(void)block;
-	(void)cpu_state;
+	if( block.instrs.size() == 0 ) {
+		printf("instrs.siz() == 0\n");
+		return false;
+	}
 
 	for( auto& instr : block.instrs ) {
 		switch( instr.type ) {
