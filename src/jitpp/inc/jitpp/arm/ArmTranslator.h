@@ -18,11 +18,12 @@ public:
 
 		continue_block = true;
 
-		BasicBlock *basic_block = new BasicBlock;
+		cur_basic_block = new BasicBlock;
 
 		while( continue_block ) {
 			uint32_t instr = page_instrs[page_offset / sizeof(uint32_t)];
 
+			cur_pc = page_offset + page_base;
 			dissect(instr, page_base + page_offset);
 
 			page_offset += 4;
@@ -32,13 +33,15 @@ public:
 			}
 		}
 
-		return basic_block;
+		return cur_basic_block;
 	}
 
 private:
 	static const int PAGE_SIZE = 4096;
 
 	bool continue_block;
+	BasicBlock *cur_basic_block;
+	uint64_t cur_pc;
 
 	void onUnknownInstr(uint32_t instr) override final;
 

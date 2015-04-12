@@ -36,9 +36,15 @@ void ArmTranslator::onBicImm(Dissector::CC cc, int rd, int rn, uint32_t imm)
 
 void ArmTranslator::onBl(Dissector::CC cc, uint64_t target)
 {
-	printf("Bl(cc=%x, target=%lx)\n", cc, target);
+	if( cc != Dissector::CC_AL ) {
+		cur_basic_block->instrs.push_back( ACInstr::emitUnimplemented() );
+	}
+	else {
+		cur_basic_block->instrs.push_back( ACInstr::emitLdrImmU32(ACOpType::L, 14, cur_pc + 4) );
+		cur_basic_block->instrs.push_back( ACInstr::emitB32(target) );
+	}
 	continue_block = false;
-} 
+}
 
 void ArmTranslator::onBx(Dissector::CC cc, int rm)
 {
@@ -58,7 +64,12 @@ void ArmTranslator::onLdrImm(Dissector::CC cc, int rt, int rn, int32_t off)
 
 void ArmTranslator::onMovImm(Dissector::CC cc, bool s, int rd, uint32_t imm)
 {
-	printf("MovImm(cc=%x, s=%d, rd=%d, imm=0x%x)\n", cc, s, rd, imm);
+	if( cc != Dissector::CC_AL || s ) {
+		cur_basic_block->instrs.push_back( ACInstr::emitUnimplemented() );
+	}
+	else {
+		cur_basic_block->instrs.push_back( ACInstr::emitLdrImmU32(ACOpType::L, rd, imm) );
+	}
 }
 
 void ArmTranslator::onMovReg(Dissector::CC cc, bool s, int rd, int rm)
