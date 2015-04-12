@@ -59,7 +59,7 @@ void ArmTranslator::onCmpImm(Dissector::CC cc, int rn, uint32_t imm)
 
 void ArmTranslator::onLdrImm(Dissector::CC cc, int rt, int rn, int32_t off)
 {
-	printf("LdrImm(cc=%x, rt=%d, rn=%d, off=%d\n", cc, rt, rn, off);
+	printf("LdrImm(cc=%x, rt=%d, rn=%d, off=%d)\n", cc, rt, rn, off);
 }
 
 void ArmTranslator::onMovImm(Dissector::CC cc, bool s, int rd, uint32_t imm)
@@ -99,7 +99,7 @@ void ArmTranslator::onPld(int rn, uint32_t imm)
 
 void ArmTranslator::onStmfd(Dissector::CC cc, int rn, bool w, uint16_t reg_list)
 {
-	printf("Stmfd(cc=%x, rn=%d, w=%d, reg_list=%04x", cc, rn, w, reg_list);
+	printf("Stmfd(cc=%x, rn=%d, w=%d, reg_list=%04x)\n", cc, rn, w, reg_list);
 }
 
 void ArmTranslator::onStrImm(Dissector::CC cc, int rt, int rn, int32_t off)
