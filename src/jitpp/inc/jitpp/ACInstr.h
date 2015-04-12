@@ -81,6 +81,7 @@ struct ACOperand
 
 enum class ACInstrType
 {
+	UNKNOWN,
 	UNIMPLEMENTED,
 
 	LDR_ADDR,
@@ -107,11 +108,22 @@ struct ACInstr
 	int pred_num;
 	ACOperand op[2];
 
+	ACInstr()
+	  : type( ACInstrType::UNKNOWN )
+	  , pred_type( ACPredType::ALWAYS )
+	  , pred_num( 0 )
+	{ }
+
 	ACInstr( ACInstrType type )
 	  : type( type )
 	  , pred_type( ACPredType::ALWAYS )
 	  , pred_num( 0 )
 	{ }
+
+	static ACInstr emitUnimplemented() {
+		ACInstr instr( ACInstrType::UNIMPLEMENTED );
+		return instr;
+	}
 
 	static ACInstr emitLdrImmU32(ACOpType regType, int reg, uint32_t value) {
 		ACInstr instr( ACInstrType::LDR_IMM );
