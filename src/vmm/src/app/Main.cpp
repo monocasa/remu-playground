@@ -1,3 +1,4 @@
+#include "jitpp/arm/ArmStatePrinter.h"
 #include "jitpp/arm/ArmTranslatorFactory.h"
 #include "jitpp/arm/ArmTranslator.h"
 #include "jitpp/ACState.h"
@@ -102,5 +103,7 @@ void appMain()
 		running = code_page->execute( cpu_state );
 		running = false;
 	}
+
+	remu::jitpp::arm::ArmStatePrinter::print( cpu_state );
 }
 
