@@ -26,6 +26,8 @@ public:
 			cur_pc = page_offset + page_base;
 			dissect(instr, page_base + page_offset);
 
+			printf("cur_pc = %lx\n", cur_pc);
+
 			page_offset += 4;
 
 			if( page_offset >= PAGE_SIZE ) {

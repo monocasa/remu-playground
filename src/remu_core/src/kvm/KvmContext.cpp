@@ -222,22 +222,23 @@ void KvmContext::Cpu::run()
 
       case KVM_EXIT_MMIO:
       {
-        if( kvmRun->mmio.is_write )
-        {
-          throw EmulationException("KVM_EXIT_MMIO writes not implemented");
-        }
-
         switch (kvmRun->mmio.len)
         {
           case 4:
           {
-            mmioHandler.onRead(kvmRun->mmio.len, kvmRun->mmio.phys_addr, kvmRun->mmio.data);
+            if( kvmRun->mmio.is_write ) {
+              mmioHandler.onWrite(kvmRun->mmio.len, kvmRun->mmio.phys_addr, kvmRun->mmio.data);
+            }
+            else {
+              mmioHandler.onRead(kvmRun->mmio.len, kvmRun->mmio.phys_addr, kvmRun->mmio.data);
+            }
             break;
           }
 
           default:
           {
-            throw EmulationException("KVM_EXIT_MMIO read of size %d not implemented", kvmRun->mmio.len);
+            throw EmulationException("KVM_EXIT_MMIO %s of size %d not implemented", 
+			                         (kvmRun->mmio.is_write) ? "write" : "read", kvmRun->mmio.len);
           }
         }
         break;

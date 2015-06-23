@@ -76,6 +76,31 @@ void CrossVmm::onOut(int size, uint16_t port, uint64_t data)
   }
 }
 
+void CrossVmm::onWrite(int size, uint64_t addr, uint8_t *data)
+{
+  if( addr < EMU_BASE )
+  {
+    throw EmulationException("MMIO Write below EMU_BASE:  addr=%08lx", addr);
+  }
+
+  addr -= EMU_BASE;
+
+  switch( size )
+  {
+    case 4:
+    {
+      uint32_t *data_ptr = (uint32_t*)data;
+      emuPhysMem.writeDwordLe(addr, *data_ptr);
+      break;
+    }
+
+    default:
+    {
+      throw EmulationException("Unknown size in CrossVmm.onWrite( size=%d )", size);
+    }
+  }
+}
+
 void CrossVmm::onRead(int size, uint64_t addr, uint8_t *data)
 {
   if( addr < EMU_BASE )

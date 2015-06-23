@@ -102,6 +102,7 @@ public:
     class MmioHandler
     {
     public:
+      virtual void onWrite(int size, uint64_t addr, uint8_t *data) = 0;
       virtual void onRead(int size, uint64_t addr, uint8_t *data) = 0;
     };
 

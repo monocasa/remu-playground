@@ -4,6 +4,8 @@
 #include "jitpp/ACState.h"
 #include "jitpp/CodePage.h"
 
+#include <cstdio>
+
 namespace remu { namespace jitpp {
 
 template<int WAYS, int ITEMS, size_t ITEM_SIZE, 
@@ -43,6 +45,7 @@ public:
 		cache[set][way] = page = new CodePage<ITEM_SIZE, Translator>( far_pointer,
 		                                      translator_factory.translator_for_code_segment(far_pointer.code_segment),
 		                                      get_host_page(far_pointer) );
+		tags[set][way] = getPageFarPointer( far_pointer );
 
 		return page;
 	}
@@ -62,14 +65,25 @@ private:
 		return get_rand_way( WAYS );
 	}
 
-	CodePage<ITEM_SIZE, Translator>* lookup( ACFarPointer &far_pointer ) {
-		const int set = calcSet( far_pointer );
+	CodePage<ITEM_SIZE, Translator>* lookup( const ACFarPointer &far_pointer ) const {
+		const auto page_far_pointer = getPageFarPointer( far_pointer );
+		const int set = calcSet( page_far_pointer );
+
 		for( int ii = 0; ii < WAYS; ii++ ) {
-			if( valid[set][ii] && tags[set][ii] == far_pointer ) {
+			if( valid[set][ii] && tags[set][ii] == page_far_pointer ) {
 				return cache[set][ii];
 			}
 		}
 		return nullptr;
+	}
+
+	ACFarPointer getPageFarPointer( const ACFarPointer &non_aligned ) const {
+		ACFarPointer page_far_pointer = { 
+			(non_aligned.program_counter / ITEM_SIZE) * ITEM_SIZE,
+			non_aligned.code_segment
+		};
+
+		return page_far_pointer;
 	}
 
 	ACFarPointer tags[SETS][WAYS];

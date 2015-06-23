@@ -48,6 +48,7 @@ private:
 
   void onOut(int size, uint16_t port, uint64_t data) override final;
 
+  void onWrite(int size, uint64_t addr, uint8_t *data) override final;
   void onRead(int size, uint64_t addr, uint8_t *data) override final;
 };
 

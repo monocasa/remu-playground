@@ -11,11 +11,11 @@ struct ACFarPointer
 	uint64_t program_counter;
 	uint64_t code_segment;
 
-	inline bool operator==( const ACFarPointer& other ) {
+	inline bool operator==( const ACFarPointer& other ) const {
 		return (this->program_counter == other.program_counter) && (this->code_segment == other.code_segment);
 	}
 
-	inline bool operator!=( const ACFarPointer& other ) {
+	inline bool operator!=( const ACFarPointer& other ) const {
 		return !(*this == other);
 	}
 };
