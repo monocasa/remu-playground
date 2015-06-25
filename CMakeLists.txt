@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES( "${PROJECT_SOURCE_DIR}/src/remu_core/inc"
                      "${PROJECT_SOURCE_DIR}/src/util/inc"
                      ${SDL_INCLUDE_DIRS} )
 
+ADD_SUBDIRECTORY( src/binary )
 ADD_SUBDIRECTORY( src/jitpp )
 ADD_SUBDIRECTORY( src/jitpp_tools )
 ADD_SUBDIRECTORY( src/remu_cli )
