@@ -18,15 +18,15 @@ public:
 		LITTLE
 	};
 
-	File(const std::string &path)
-	  : path(path)
-	  , file(fopen(path.c_str(), "rb"))
-	  , endian(SYS_ENDIAN)
+	File( const std::string &path )
+	  : path( path )
+	  , file( fopen(path.c_str(), "rb") )
+	  , endian( SYS_ENDIAN )
 	{ }
 
 	~File() {
-		if (file) {
-			fclose(file);
+		if( file ) {
+			fclose( file );
 		}
 	}
 
@@ -34,17 +34,17 @@ public:
 		return (nullptr != file);
 	}
 
-	void setEndian(Endian endian) {
+	void setEndian( Endian endian ) {
 		this->endian = endian;
 	}
 
-	void seek(uint64_t offset) {
+	void seek( uint64_t offset ) {
 		fseek(file, offset, SEEK_SET);
 	}
 
-	void readBuffer(uint8_t *buffer, const size_t size) {
-		if (1 != fread(buffer, size, 1, file)) {
-			throw oshal::Exception("Attempting to read beyond end of file:	%s", path.c_str());
+	void readBuffer( uint8_t *buffer, const size_t size ) {
+		if( 1 != fread(buffer, size, 1, file) ) {
+			throw oshal::Exception( "Attempting to read beyond end of file:	%s", path.c_str() );
 		}
 	}
 
@@ -52,25 +52,25 @@ public:
 	T read() {
 		T value;
 
-		if (1 != fread(&value, sizeof(T), 1, file)) {
-			throw oshal::Exception("Attempting to read beyond end of file:	%s", path.c_str());
+		if( 1 != fread(&value, sizeof(T), 1, file) ) {
+			throw oshal::Exception( "Attempting to read beyond end of file:	%s", path.c_str() );
 		}
 
-		if (endian != SYS_ENDIAN) {
-			value = util::bitops::byteSwap<T>(value);
+		if( endian != SYS_ENDIAN ) {
+			value = util::bitops::byteSwap<T>( value );
 		}
 
 		return value;
 	}
 
 	size_t size() {
-		long current = ftell(file);
+		long current = ftell( file );
 
-		fseek(file, 0, SEEK_END);
+		fseek( file, 0, SEEK_END );
 
-		long last = ftell(file);
+		long last = ftell( file );
 
-		fseek(file, current, SEEK_SET);
+		fseek( file, current, SEEK_SET );
 
 		return last;
 	}
