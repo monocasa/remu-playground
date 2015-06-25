@@ -1,7 +1,8 @@
 #include "remu/bcm2835/Peripheral.h"
-#include "remu/EmulationException.h"
 #include "remu/Memory.h"
 #include "remu/Ui.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -39,7 +40,7 @@ void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
 {
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Unknown peripheral write to addr %08lx:%dB <- %lx", addr, size, data);
+    throw oshal::Exception("Unknown peripheral write to addr %08lx:%dB <- %lx", addr, size, data);
   }
 
   switch (addr)
@@ -109,7 +110,7 @@ void Peripheral::writeIo(uint64_t addr, uint64_t data, unsigned int size)
     }
     default:
     {
-      throw EmulationException("remu::bmc2835::Peripheral write to unknown address (%08lx, 0x%lx, %d)", addr, data, size);
+      throw oshal::Exception("remu::bmc2835::Peripheral write to unknown address (%08lx, 0x%lx, %d)", addr, data, size);
     }
   }
 
@@ -125,7 +126,7 @@ uint64_t Peripheral::readIo(uint64_t addr, unsigned int size)
 {
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Unknown peripheral read from %08lx:%dB", addr, size);
+    throw oshal::Exception("Unknown peripheral read from %08lx:%dB", addr, size);
   }
 
   switch (addr)
@@ -163,7 +164,7 @@ uint64_t Peripheral::readIo(uint64_t addr, unsigned int size)
     }
     default:
     {
-      throw EmulationException("remu::bmc2835::Peripheral read from unknown address (%08lx, %d)", addr, size);
+      throw oshal::Exception("remu::bmc2835::Peripheral read from unknown address (%08lx, %d)", addr, size);
     }
   }
 

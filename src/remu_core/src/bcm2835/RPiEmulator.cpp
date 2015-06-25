@@ -1,5 +1,6 @@
 #include "remu/bcm2835/RPiEmulator.h"
-#include "remu/EmulationException.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -37,7 +38,7 @@ void RPiEmulator::load()
   /* Check for buffer overflow */
   if(opt.start_addr + file_size > opt.mem_size)
   {
-    throw EmulationException("Not enough memory for kernel");
+    throw oshal::Exception("Not enough memory for kernel");
   }
 
   /* Copy instructions into memory and error if incomplete */

@@ -1,7 +1,8 @@
 #include "remu/arm/Cpu.h"
-#include "remu/EmulationException.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
+
+#include "oshal/Exception.h"
 
 #include "util/compiler.h"
 
@@ -38,7 +39,7 @@ check_cond(const Cpu* cpu, int cc)
     case CC_AL: return 1; // Always executed
     default:
     {
-      return 0;//throw EmulationException("Invalid condition code: 0xF");
+      return 0;//throw oshal::Exception("Invalid condition code: 0xF");
     }
   }
 }
@@ -84,7 +85,7 @@ uint32_t Cpu::readRegister(int reg) const
         case MODE_ABT: return r_abt.r[reg - 13];
         case MODE_UND: return r_und.r[reg - 13];
       }
-      throw EmulationException("Invalid mode");
+      throw oshal::Exception("Invalid mode");
     }
     case PC:
     {
@@ -207,7 +208,7 @@ change_mode(Cpu* cpu, armMode_t mode)
     }
     default:
     {
-      throw EmulationException("Invalid mode");
+      throw oshal::Exception("Invalid mode");
       return;
     }
   }
@@ -342,7 +343,7 @@ instr_mrs(Cpu* cpu, op_mrs_t* opcode)
     }
     else
     {
-      throw EmulationException("Cannot read from SPSR in user mode");
+      throw oshal::Exception("Cannot read from SPSR in user mode");
     }
   }
 }
@@ -376,7 +377,7 @@ write_psr(Cpu* cpu, uint32_t Pd, uint32_t value, uint32_t flags)
     {
       if (cpu->cpsr.b.m == MODE_USR)
       {
-        throw EmulationException("Cannot write to SPSR in user mode");
+        throw oshal::Exception("Cannot write to SPSR in user mode");
       }
       else
       {
@@ -451,7 +452,7 @@ compute_offset_operand2(Cpu *cpu, uint32_t imm, uint8_t s)
     /* PC must not be specified as the register offset(rm) */
     if (rs == PC)
     {
-      throw EmulationException("PC cannot be used as offset");
+      throw oshal::Exception("PC cannot be used as offset");
     }
 
     shift_amount = cpu->readRegister(rs) & 0x000000FF;
@@ -846,13 +847,13 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
   /* The register list can't be empty */
   if (opcode->rl == 0)
   {
-    throw EmulationException("The register list cannot be empty");
+    throw oshal::Exception("The register list cannot be empty");
   }
 
   /* The base register should never be PC */
   if (opcode->rn == PC)
   {
-    throw EmulationException("Base register cannot be PC");
+    throw oshal::Exception("Base register cannot be PC");
   }
 
   /* Assert the s bit is only set in privileged user mode */
@@ -860,7 +861,7 @@ instr_block_data_transfer(Cpu* cpu, op_block_data_trans_t* opcode)
   {
     if (cpu->cpsr.b.m == MODE_USR || cpu->cpsr.b.m == MODE_SYS)
     {
-      throw EmulationException("Force user mode set in non-priveleged mode");
+      throw oshal::Exception("Force user mode set in non-priveleged mode");
     }
   }
 
@@ -987,7 +988,7 @@ instr_branch_exchange(Cpu* cpu, op_branch_exchange_t* opcode)
 
   if (pc & 0x1)
   {
-    throw EmulationException("Cannot switch to THUMB instruction set");
+    throw oshal::Exception("Cannot switch to THUMB instruction set");
   }
 
   cpu->writeRegister(PC, pc);
@@ -1062,7 +1063,7 @@ instr_single_data_trans(Cpu* cpu, op_single_data_trans_t* opcode)
     /* w must not be set if PC is specified as the base register */
     if (opcode->rn == PC)
     {
-      throw EmulationException("Writeback to PC not allowed");
+      throw oshal::Exception("Writeback to PC not allowed");
     }
 
     cpu->writeRegister(opcode->rn, rn);
@@ -1082,7 +1083,7 @@ instr_single_data_swap(Cpu* cpu, op_single_data_swap_t* opcode)
 
   if (opcode->rd == PC || opcode->rn == PC || opcode->rm == PC)
   {
-    throw EmulationException("PC cannot be used as an operand (Rd, Rn or Rm) in a SWAP instruction");
+    throw oshal::Exception("PC cannot be used as an operand (Rd, Rn or Rm) in a SWAP instruction");
     return;
   }
 
@@ -1155,7 +1156,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
       }
       else
       {
-        throw EmulationException("l bit can't be 0, when signed operations have been selected");
+        throw oshal::Exception("l bit can't be 0, when signed operations have been selected");
       }
       break;
     }
@@ -1174,7 +1175,7 @@ hw_sd_transfer_fun_sel(Cpu* cpu, op_hw_sd_trans_t* op, uint32_t address)
       }
       else
       {
-        throw EmulationException("l but can't be 0, when signed operaitons have been selected");
+        throw oshal::Exception("l but can't be 0, when signed operaitons have been selected");
       }
       break;
     }
@@ -1206,7 +1207,7 @@ instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
   {
     if (op->rm_ln == PC)
     {
-      throw EmulationException("PC used as offset");
+      throw oshal::Exception("PC used as offset");
       return;
     }
 
@@ -1249,7 +1250,7 @@ instr_hw_sd_transfer(Cpu* cpu, op_hw_sd_trans_t* op)
   {
     if (op->rn == PC)
     {
-      throw EmulationException("Cannot write back to PC");
+      throw oshal::Exception("Cannot write back to PC");
       return;
     }
     cpu->writeRegister(op->rn, base);
@@ -1280,7 +1281,7 @@ instr_coproc_data_proc(Cpu* cpu, op_coproc_data_proc_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      throw EmulationException("Double-precision VFP unsupported");
+      throw oshal::Exception("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1290,7 +1291,7 @@ instr_coproc_data_proc(Cpu* cpu, op_coproc_data_proc_t* opcode)
     }
     default:
     {
-      throw EmulationException("Unimplemented coprocessor CP%u", coproc);
+      throw oshal::Exception("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }
@@ -1319,7 +1320,7 @@ instr_coproc_data_transfer(Cpu* cpu, op_coproc_data_transfer_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      throw EmulationException("Double-precision VFP unsupported");
+      throw oshal::Exception("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1329,7 +1330,7 @@ instr_coproc_data_transfer(Cpu* cpu, op_coproc_data_transfer_t* opcode)
     }
     default:
     {
-      throw EmulationException("Unimplemented coprocessor CP%u", coproc);
+      throw oshal::Exception("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }
@@ -1358,7 +1359,7 @@ instr_coproc_reg_transfer(Cpu* cpu, op_coproc_reg_transfer_t* opcode)
     case 11:
     {
       /* VFP double precision coprocessor - unsupported */
-      throw EmulationException("Double-precision VFP unsupported");
+      throw oshal::Exception("Double-precision VFP unsupported");
       break;
     }
     case 15:
@@ -1368,7 +1369,7 @@ instr_coproc_reg_transfer(Cpu* cpu, op_coproc_reg_transfer_t* opcode)
     }
     default:
     {
-      throw EmulationException("Unimplemented coprocessor CP%u", coproc);
+      throw oshal::Exception("Unimplemented coprocessor CP%u", coproc);
     }
   }
 }

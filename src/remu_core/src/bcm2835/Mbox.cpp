@@ -1,7 +1,8 @@
 #include "remu/bcm2835/Mbox.h"
-#include "remu/EmulationException.h"
 #include "remu/Memory.h"
 #include "remu/Ui.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -31,14 +32,14 @@ void Mbox::addChannel(Channel *channel)
 {
   if (!channel)
   {
-    throw EmulationException("Attempt to add null channel to Mbox");
+    throw oshal::Exception("Attempt to add null channel to Mbox");
   }
 
   const int channelNum = channel->getChannelNum();
 
   if (channels[channelNum])
   {
-    throw EmulationException("Attempt to double add a channel to Mbox:  channelNum=%d", 
+    throw oshal::Exception("Attempt to double add a channel to Mbox:  channelNum=%d", 
                              channelNum);
   }
 
@@ -49,14 +50,14 @@ void Mbox::removeChannel(Channel *channel)
 {
   if (!channel)
   {
-    throw EmulationException("Attempt to remove null channel from Mbox");
+    throw oshal::Exception("Attempt to remove null channel from Mbox");
   }
 
   const int channelNum = channel->getChannelNum();
 
   if (!channels[channelNum])
   {
-    throw EmulationException("Attempt to remove a null channel from Mbox:  channelNum=%d", 
+    throw oshal::Exception("Attempt to remove a null channel from Mbox:  channelNum=%d", 
                              channelNum);
   }
 
@@ -67,7 +68,7 @@ uint64_t Mbox::readIo(uint64_t addr, unsigned int size)
 {
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Unknown mbox read from addr %08lx:%dB", addr, size);
+    throw oshal::Exception("Unknown mbox read from addr %08lx:%dB", addr, size);
   }
 
   /* Check which port is being read */
@@ -110,7 +111,7 @@ void Mbox::writeIo(uint64_t addr, uint64_t val, unsigned int size)
 
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Unknown peripheral write to addr %08lx:%dB <- %lx", addr, size, val);
+    throw oshal::Exception("Unknown peripheral write to addr %08lx:%dB <- %lx", addr, size, val);
   }
 
   /* Retrieve data & channel */

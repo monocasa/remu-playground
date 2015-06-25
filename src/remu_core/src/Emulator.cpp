@@ -1,5 +1,6 @@
-#include "remu/EmulationException.h"
 #include "remu/Emulator.h"
+
+#include "oshal/Exception.h"
 
 #include <sys/time.h>
 

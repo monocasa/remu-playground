@@ -1,7 +1,8 @@
 #include "remu/arm/Cpu.h"
-#include "remu/EmulationException.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
+
+#include "oshal/Exception.h"
 
 #include "util/compiler.h"
 
@@ -256,7 +257,7 @@ void Cpu::vfpDataProc(op_coproc_data_proc_t* instr)
     }
     default:
     {
-      throw EmulationException("Undefined VFP data proc instruction");
+      throw oshal::Exception("Undefined VFP data proc instruction");
     }
   }
 
@@ -393,7 +394,7 @@ void Cpu::vfpDataTransfer(op_coproc_data_transfer_t* instr)
     }
     default:
     {
-      throw EmulationException("Unimplemented VFP data transfer instruction");
+      throw oshal::Exception("Unimplemented VFP data transfer instruction");
     }
   }
 }
@@ -443,7 +444,7 @@ rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        throw EmulationException("Unrecognised VFP system register");
+        throw oshal::Exception("Unrecognised VFP system register");
       }
     }
 
@@ -457,7 +458,7 @@ rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       else
       {
-        throw EmulationException("Cannot copy to r15");
+        throw oshal::Exception("Cannot copy to r15");
       }
     }
     else
@@ -494,7 +495,7 @@ rt_status_reg_transfer(Cpu *cpu, uint32_t Fn, uint32_t Rd, uint32_t l)
       }
       default:
       {
-        throw EmulationException("Unrecognised VFP system register");
+        throw oshal::Exception("Unrecognised VFP system register");
       }
     }
   }
@@ -540,7 +541,7 @@ void Cpu::vfpRegTransfer(op_coproc_reg_transfer_t* instr)
     }
     default:
     {
-      throw EmulationException("Unimplemented VFP reg transfer instruction");
+      throw oshal::Exception("Unimplemented VFP reg transfer instruction");
     }
   }
 }

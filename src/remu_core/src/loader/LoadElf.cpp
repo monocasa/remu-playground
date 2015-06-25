@@ -1,6 +1,7 @@
 #include "remu/host/File.h"
 #include "remu/loader/Loader.h"
-#include "remu/EmulationException.h"
+
+#include "oshal/Exception.h"
 
 using remu::host::File;
 using remu::loader::Target;
@@ -21,7 +22,7 @@ public:
 
     if (is32Bit())
     {
-      throw remu::EmulationException("32Bit read not implemented for ELF Header");
+      throw remu::oshal::Exception("32Bit read not implemented for ELF Header");
     }
     else
     {
@@ -42,7 +43,7 @@ public:
 
     if (type != ET_EXEC)
     {
-      throw remu::EmulationException("ELF Type was not ET_EXEC:  %d", type);
+      throw remu::oshal::Exception("ELF Type was not ET_EXEC:  %d", type);
     }
   }
 
@@ -55,7 +56,7 @@ public:
       file.seek(phoff + (ii * phentsize));
       if (is32Bit())
       {
-        throw remu::EmulationException("32Bit read not implemented for ELF PHeader");
+        throw remu::oshal::Exception("32Bit read not implemented for ELF PHeader");
       }
       else
       {
@@ -75,7 +76,7 @@ public:
 
         if (!buffer)
         {
-          throw remu::EmulationException("No buffer given for ELF segment %d:  base=%08lx size=%08lx",
+          throw remu::oshal::Exception("No buffer given for ELF segment %d:  base=%08lx size=%08lx",
                                          ii, phdr.paddr, phdr.memsz);
         }
 
@@ -148,23 +149,23 @@ private:
     if (ident[0] != 0x7F || ident[1] != 0x45 || 
         ident[2] != 0x4c || ident[3] != 0x46)
     {
-       throw remu::EmulationException("ELF Magic invalid:  %02x %02x %02x %02x",
+       throw remu::oshal::Exception("ELF Magic invalid:  %02x %02x %02x %02x",
                                       ident[0], ident[1], ident[2], ident[3]);
     }
 
     if ((ident[EI_CLASS] != ELFCLASS32) && (ident[EI_CLASS] != ELFCLASS64))
     {
-      throw remu::EmulationException("Unknown ELFCLASS %02x", ident[EI_CLASS]);
+      throw remu::oshal::Exception("Unknown ELFCLASS %02x", ident[EI_CLASS]);
     }
 
     if ((ident[EI_DATA] != ELFDATA2LSB) && (ident[EI_DATA] != ELFDATA2MSB))
     {
-      throw remu::EmulationException("Unknown ELFDATA %02x", ident[EI_DATA]);
+      throw remu::oshal::Exception("Unknown ELFDATA %02x", ident[EI_DATA]);
     }
 
     if (ident[EI_VERSION] != EV_CURRENT)
     {
-      throw remu::EmulationException("Unknown ELFVERSION %02x", ident[EI_VERSION]);
+      throw remu::oshal::Exception("Unknown ELFVERSION %02x", ident[EI_VERSION]);
     }
   }
 };
@@ -179,7 +180,7 @@ void loadElf(Target &target, const std::string &filename, uint64_t &entry)
 
   if (!file.isOpen())
   {
-    throw EmulationException("Unable to open ELF file:  %s", filename.c_str());
+    throw oshal::Exception("Unable to open ELF file:  %s", filename.c_str());
   }
 
   ElfFile elf(file);

@@ -1,5 +1,6 @@
 #include "remu/kvm/KvmContext.h"
-#include "remu/EmulationException.h"
+
+#include "oshal/Exception.h"
 
 #include <linux/kvm.h>
 
@@ -33,7 +34,7 @@ bool KvmContext::FdWrapper::callIoctl(int request, void *value, int &ret)
 {
   if (-1 == fd)
   {
-    throw EmulationException("Trying to ioctl closed fd");
+    throw oshal::Exception("Trying to ioctl closed fd");
   }
 
   ret = ioctl(fd, request, value);
@@ -52,7 +53,7 @@ int KvmContext::DeviceFile::openVmFile()
 
   if (!callIoctl(KVM_CREATE_VM, nullptr, vmFd))
   {
-    throw EmulationException("Unable to KVM_CREATE_VM");
+    throw oshal::Exception("Unable to KVM_CREATE_VM");
   }
 
   return vmFd;
@@ -64,7 +65,7 @@ int KvmContext::DeviceFile::readVcpuMmapSize()
 
   if (!callIoctl(KVM_GET_VCPU_MMAP_SIZE, nullptr, mmapSize))
   {
-    throw EmulationException("Unable to kvm_run size");
+    throw oshal::Exception("Unable to kvm_run size");
   }
 
   return mmapSize;
@@ -78,7 +79,7 @@ void KvmContext::VmFile::setTssLocation(uintptr_t tssLocation)
 {
   if (!callIoctl(KVM_SET_TSS_ADDR, (void*)tssLocation))
   {
-    throw EmulationException("Error setting TSS base for VM");
+    throw oshal::Exception("Error setting TSS base for VM");
   }
 }
 
@@ -88,7 +89,7 @@ int KvmContext::VmFile::allocateVcpu()
 
   if (!callIoctl(KVM_CREATE_VCPU, nullptr, vcpuFd))
   {
-    throw EmulationException("Error creating  vcpu");
+    throw oshal::Exception("Error creating  vcpu");
   }
 
   return vcpuFd;
@@ -106,7 +107,7 @@ void KvmContext::VmFile::setMemRegion(int slot, uint64_t guestBase, size_t memSi
 
   if (!callIoctl(KVM_SET_USER_MEMORY_REGION, &region))
   {
-    throw EmulationException("Unable to map kvm memory region");
+    throw oshal::Exception("Unable to map kvm memory region");
   }
 }
 
@@ -129,7 +130,7 @@ void KvmContext::Cpu::setGdt(uint64_t guestAddr, int len)
 
   if (!callIoctl(KVM_GET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_GET_SREGS");
+    throw oshal::Exception("Couldn't KVM_GET_SREGS");
   }
 
   sregs.gdt.base = guestAddr;
@@ -137,7 +138,7 @@ void KvmContext::Cpu::setGdt(uint64_t guestAddr, int len)
 
   if (!callIoctl(KVM_SET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_SET_SREGS");
+    throw oshal::Exception("Couldn't KVM_SET_SREGS");
   }
 }
 
@@ -147,7 +148,7 @@ void KvmContext::Cpu::setIdt(uint64_t guestAddr, int len)
 
   if (!callIoctl(KVM_GET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_GET_SREGS");
+    throw oshal::Exception("Couldn't KVM_GET_SREGS");
   }
 
   sregs.idt.base = guestAddr;
@@ -155,7 +156,7 @@ void KvmContext::Cpu::setIdt(uint64_t guestAddr, int len)
 
   if (!callIoctl(KVM_SET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_SET_SREGS");
+    throw oshal::Exception("Couldn't KVM_SET_SREGS");
   }
 }
 
@@ -165,14 +166,14 @@ void KvmContext::Cpu::setPc(uint64_t pc)
 
   if (!callIoctl(KVM_GET_REGS, &regs))
   {
-    throw EmulationException("Couldn't KVM_GET_REGS");
+    throw oshal::Exception("Couldn't KVM_GET_REGS");
   }
 
   regs.rip = pc;
 
   if (!callIoctl(KVM_SET_REGS, &regs))
   {
-    throw EmulationException("Couldn't KVM_SET_REGS");
+    throw oshal::Exception("Couldn't KVM_SET_REGS");
   }
 }
 
@@ -184,7 +185,7 @@ void KvmContext::Cpu::run()
   {
     if (!callIoctl(KVM_RUN, nullptr))
     {
-      throw EmulationException("Can't KVM_RUN (%d)", kvmRun->exit_reason);
+      throw oshal::Exception("Can't KVM_RUN (%d)", kvmRun->exit_reason);
     }
 
     switch (kvmRun->exit_reason)
@@ -193,12 +194,12 @@ void KvmContext::Cpu::run()
       {
         if (kvmRun->io.count != 1)
         {
-          throw EmulationException("Write to I/O port count not 1:  count=%d", kvmRun->io.count);
+          throw oshal::Exception("Write to I/O port count not 1:  count=%d", kvmRun->io.count);
         }
 
         if (KVM_EXIT_IO_IN == kvmRun->io.direction)
         {
-          throw EmulationException("IO Port In not implemented");
+          throw oshal::Exception("IO Port In not implemented");
         }
         else
         {
@@ -212,7 +213,7 @@ void KvmContext::Cpu::run()
 
             default:
             {
-              throw EmulationException("Unimplemented IO Out size:  %d", kvmRun->io.size);
+              throw oshal::Exception("Unimplemented IO Out size:  %d", kvmRun->io.size);
             }
           }
           portHandler.onOut(kvmRun->io.size, kvmRun->io.port, data);
@@ -237,7 +238,7 @@ void KvmContext::Cpu::run()
 
           default:
           {
-            throw EmulationException("KVM_EXIT_MMIO %s of size %d not implemented", 
+            throw oshal::Exception("KVM_EXIT_MMIO %s of size %d not implemented", 
 			                         (kvmRun->mmio.is_write) ? "write" : "read", kvmRun->mmio.len);
           }
         }
@@ -247,7 +248,7 @@ void KvmContext::Cpu::run()
       default:
       {
         dump();
-        throw EmulationException("other reason (%d)", kvmRun->exit_reason);
+        throw oshal::Exception("other reason (%d)", kvmRun->exit_reason);
       }
     }
   }
@@ -264,7 +265,7 @@ struct kvm_run* KvmContext::Cpu::mmapKvmRun(size_t kvmRunSize)
 
   if (MAP_FAILED == addr)
   {
-    throw EmulationException("Unable to mmap kvm_run");
+    throw oshal::Exception("Unable to mmap kvm_run");
   }
 
   return reinterpret_cast<struct kvm_run*>(addr);
@@ -276,7 +277,7 @@ void KvmContext::Cpu::setupRegisters()
 
   if (!callIoctl(KVM_GET_REGS, &regs))
   {
-    throw EmulationException("Couldn't KVM_GET_REGS");
+    throw oshal::Exception("Couldn't KVM_GET_REGS");
   }
 
   regs.rax = 0x00000000;
@@ -293,7 +294,7 @@ void KvmContext::Cpu::setupRegisters()
 
   if (!callIoctl(KVM_SET_REGS, &regs))
   {
-    throw EmulationException("Couldn't KVM_SET_REGS");
+    throw oshal::Exception("Couldn't KVM_SET_REGS");
   }
 }
 
@@ -303,7 +304,7 @@ void KvmContext::Cpu::setupSpecialRegisters()
 
   if (!callIoctl(KVM_GET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_GET_SREGS");
+    throw oshal::Exception("Couldn't KVM_GET_SREGS");
   }
 
   sregs.cr0 = 0x60000011;
@@ -330,7 +331,7 @@ void KvmContext::Cpu::setupSpecialRegisters()
 
   if (!callIoctl(KVM_SET_SREGS, &sregs))
   {
-    throw EmulationException("Couldn't KVM_SET_SREGS");
+    throw oshal::Exception("Couldn't KVM_SET_SREGS");
   }
 }
 
@@ -361,7 +362,7 @@ void KvmContext::Cpu::dump()
 
   if (!callIoctl(KVM_GET_REGS, &regs))
   {
-    throw EmulationException("Couldn't KVM_GET_REGS");
+    throw oshal::Exception("Couldn't KVM_GET_REGS");
   }
 
   printf("rip:  %08llx\n", regs.rip);
@@ -373,7 +374,7 @@ int KvmContext::openDeviceFile()
 
   if (-1 == fd )
   {
-    throw EmulationException("Unable to open kvm device file:  %s", strerror(errno));
+    throw oshal::Exception("Unable to open kvm device file:  %s", strerror(errno));
   }
 
   return fd;

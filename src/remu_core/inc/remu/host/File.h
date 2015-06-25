@@ -1,7 +1,7 @@
 #ifndef REMU_HOST_FILE_H
 #define REMU_HOST_FILE_H
 
-#include "remu/EmulationException.h"
+#include "oshal/Exception.h"
 
 #include "util/bitops.h"
 
@@ -44,7 +44,7 @@ public:
 
   void readBuffer(uint8_t *buffer, const size_t size) {
     if (1 != fread(buffer, size, 1, file)) {
-      throw EmulationException("Attempting to read beyond end of file:  %s", path.c_str());
+      throw oshal::Exception("Attempting to read beyond end of file:  %s", path.c_str());
     }
   }
 
@@ -53,7 +53,7 @@ public:
     T value;
 
     if (1 != fread(&value, sizeof(T), 1, file)) {
-      throw EmulationException("Attempting to read beyond end of file:  %s", path.c_str());
+      throw oshal::Exception("Attempting to read beyond end of file:  %s", path.c_str());
     }
 
     if (endian != SYS_ENDIAN) {

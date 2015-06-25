@@ -1,5 +1,6 @@
 #include "remu/host/Mem.h"
-#include "remu/EmulationException.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace host {
 
@@ -18,13 +19,13 @@ void* allocatePageMem(size_t size)
       return memptr;
 
     case EINVAL:
-      throw EmulationException("Page size of 4096 is somehow not a valid alignment of posix_memalign");
+      throw oshal::Exception("Page size of 4096 is somehow not a valid alignment of posix_memalign");
 
     case ENOMEM:
-      throw EmulationException("No memory left for remu::host::allocatePageMem(size=%ld)", size);
+      throw oshal::Exception("No memory left for remu::host::allocatePageMem(size=%ld)", size);
 
     default:
-      throw EmulationException("Unknown status %d throw by posix_memalign in remu::host::allocatePageMem(size=%ld)", status, size);
+      throw oshal::Exception("Unknown status %d throw by posix_memalign in remu::host::allocatePageMem(size=%ld)", status, size);
   }
 }
 

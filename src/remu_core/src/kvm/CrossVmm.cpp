@@ -1,7 +1,8 @@
 #include "remu/kvm/CrossVmm.h"
 #include "remu/loader/Loader.h"
-#include "remu/EmulationException.h"
 #include "remu/Memory.h"
+
+#include "oshal/Exception.h"
 
 #include <cstring>
 
@@ -71,7 +72,7 @@ void CrossVmm::onOut(int size, uint16_t port, uint64_t data)
 
     default:
     {
-      throw EmulationException("CrossVmm::onOut(size=%d, port=0x%x, data=0x%lx)", size, port, data);
+      throw oshal::Exception("CrossVmm::onOut(size=%d, port=0x%x, data=0x%lx)", size, port, data);
     }
   }
 }
@@ -80,7 +81,7 @@ void CrossVmm::onWrite(int size, uint64_t addr, uint8_t *data)
 {
   if( addr < EMU_BASE )
   {
-    throw EmulationException("MMIO Write below EMU_BASE:  addr=%08lx", addr);
+    throw oshal::Exception("MMIO Write below EMU_BASE:  addr=%08lx", addr);
   }
 
   addr -= EMU_BASE;
@@ -96,7 +97,7 @@ void CrossVmm::onWrite(int size, uint64_t addr, uint8_t *data)
 
     default:
     {
-      throw EmulationException("Unknown size in CrossVmm.onWrite( size=%d )", size);
+      throw oshal::Exception("Unknown size in CrossVmm.onWrite( size=%d )", size);
     }
   }
 }
@@ -105,7 +106,7 @@ void CrossVmm::onRead(int size, uint64_t addr, uint8_t *data)
 {
   if( addr < EMU_BASE )
   {
-    throw EmulationException("MMIO Write below EMU_BASE:  addr=%08lx", addr);
+    throw oshal::Exception("MMIO Write below EMU_BASE:  addr=%08lx", addr);
   }
 
   addr -= EMU_BASE;
@@ -121,7 +122,7 @@ void CrossVmm::onRead(int size, uint64_t addr, uint8_t *data)
 
     default:
     {
-      throw EmulationException("Unknown size in CrossVmm.onRead( size=%d )", size);
+      throw oshal::Exception("Unknown size in CrossVmm.onRead( size=%d )", size);
     }
   }
 }

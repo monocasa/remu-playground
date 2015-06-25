@@ -1,7 +1,8 @@
 #include "remu/bcm2835/Framebuffer.h"
-#include "remu/EmulationException.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
+
+#include "oshal/Exception.h"
 
 #include <cassert>
 
@@ -326,7 +327,7 @@ void Framebuffer::request(uint32_t addr)
 
 uint64_t Framebuffer::readIo(uint64_t addr, unsigned int size)
 {
-  throw EmulationException("Read unimplemented for framebuffer @ %08llx:%xB", addr, size);
+  throw oshal::Exception("Read unimplemented for framebuffer @ %08llx:%xB", addr, size);
 }
 
 void Framebuffer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
@@ -347,7 +348,7 @@ void Framebuffer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
     }
 
     default: {
-      throw EmulationException("Write unimplemented for framebuffer @ %08lx:%xB <- %lx", addr, size, val);
+      throw oshal::Exception("Write unimplemented for framebuffer @ %08lx:%xB <- %lx", addr, size, val);
     }
   }
 }

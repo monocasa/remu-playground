@@ -1,7 +1,8 @@
 #include "remu/bcm2835/Gpio.h"
-#include "remu/EmulationException.h"
 #include "remu/Memory.h"
 #include "remu/Ui.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -40,7 +41,7 @@ uint64_t Gpio::readIo(uint64_t address, unsigned int size)
 
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Gpio has only implemented 32 bit reads:  addr=%08lx size=%d", address, size);
+    throw oshal::Exception("Gpio has only implemented 32 bit reads:  addr=%08lx size=%d", address, size);
   }
 
   switch (address)
@@ -98,7 +99,7 @@ void Gpio::writeIo(uint64_t address, uint64_t val, unsigned int size)
 
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Gpio has only implemented 32 bit writes:  addr=%08lx val=%lx size=%d", address, val, size);
+    throw oshal::Exception("Gpio has only implemented 32 bit writes:  addr=%08lx val=%lx size=%d", address, val, size);
   }
 
   switch (address)

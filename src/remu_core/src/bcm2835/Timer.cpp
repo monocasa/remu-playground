@@ -1,7 +1,8 @@
 #include "remu/bcm2835/Timer.h"
-#include "remu/EmulationException.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
+
+#include "oshal/Exception.h"
 
 namespace remu { namespace bcm2835 {
 
@@ -22,7 +23,7 @@ uint64_t Timer::readIo(uint64_t addr, unsigned int size)
 {
   if (size != sizeof(uint32_t))
   {
-    throw EmulationException("Only 32 bit Timer reads are supported:  addr=%08lx size=%d", addr, size);
+    throw oshal::Exception("Only 32 bit Timer reads are supported:  addr=%08lx size=%d", addr, size);
   }
 
   switch (addr)
@@ -49,7 +50,7 @@ uint64_t Timer::readIo(uint64_t addr, unsigned int size)
 
 void Timer::writeIo(uint64_t addr, uint64_t val, unsigned int size)
 {
-  throw EmulationException("Timer writes not implemented:  addr=%08lx val=%lx, size=%d", addr, val, size);
+  throw oshal::Exception("Timer writes not implemented:  addr=%08lx val=%lx, size=%d", addr, val, size);
 }
 
 }} /*namespace remu::bcm2835*/

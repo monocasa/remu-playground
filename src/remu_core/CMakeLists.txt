@@ -1,3 +1,5 @@
+INCLUDE_DIRECTORIES( ../oshal/inc )
+
 ADD_LIBRARY( remu_core src/arm/Cpu_core.cpp
                        src/arm/Cpu_vfp.cpp
                        src/bcm2835/Framebuffer.cpp
@@ -17,7 +19,7 @@ ADD_LIBRARY( remu_core src/arm/Cpu_core.cpp
                        src/KeyDispatcher.cpp
                        src/Memory.cpp )
 
-TARGET_LINK_LIBRARIES( remu_core ${SDL_LIBRARY} )
+TARGET_LINK_LIBRARIES( remu_core oshal ${SDL_LIBRARY} )
 
 ADD_SUBDIRECTORY( test )
 
