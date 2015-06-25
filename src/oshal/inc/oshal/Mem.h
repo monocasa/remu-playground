@@ -5,8 +5,8 @@
 
 namespace remu { namespace oshal {
 
-void* allocatePageMem(size_t size);
-void freePageMem(void *pageMem);
+void* allocatePageMem( size_t size );
+void freePageMem( void *pageMem );
 
 }} /*namespace remu::oshal*/
 
