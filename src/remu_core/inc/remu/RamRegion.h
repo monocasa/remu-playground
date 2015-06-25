@@ -1,7 +1,7 @@
 #ifndef REMU_RAMREGION_H
 #define REMU_RAMREGION_H
 
-#include "remu/host/Mem.h"
+#include "oshal/Mem.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -16,7 +16,7 @@ public:
     , base(base)
     , readOnly(readOnly)
     , wasAllocatedHere(true)
-    , buffer(remu::host::allocatePageMem(size))
+    , buffer(oshal::allocatePageMem(size))
   { }
 
   RamRegion(size_t size, uint64_t base, bool readOnly, void *buffer)
@@ -31,7 +31,7 @@ public:
   {
     if (wasAllocatedHere)
     {
-      remu::host::freePageMem(buffer);
+      oshal::freePageMem(buffer);
     }
   }
 

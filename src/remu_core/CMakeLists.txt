@@ -10,7 +10,6 @@ ADD_LIBRARY( remu_core src/arm/Cpu_core.cpp
                        src/bcm2835/Timer.cpp
                        src/bitbang/Button.cpp
                        src/bitbang/Nes.cpp
-                       src/host/linux/Mem.cpp
                        src/kvm/CrossVmm.cpp
                        src/kvm/KvmContext.cpp
                        src/loader/LoadElf.cpp

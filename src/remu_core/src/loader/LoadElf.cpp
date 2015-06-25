@@ -1,9 +1,9 @@
-#include "remu/host/File.h"
 #include "remu/loader/Loader.h"
 
 #include "oshal/Exception.h"
+#include "oshal/File.h"
 
-using remu::host::File;
+using remu::oshal::File;
 using remu::loader::Target;
 
 namespace {
