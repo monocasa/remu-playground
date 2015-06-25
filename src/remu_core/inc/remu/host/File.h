@@ -1,8 +1,9 @@
 #ifndef REMU_HOST_FILE_H
 #define REMU_HOST_FILE_H
 
-#include "remu/util/BitOps.h"
 #include "remu/EmulationException.h"
+
+#include "util/bitops.h"
 
 #include <cstdio>
 #include <string>
@@ -56,7 +57,7 @@ public:
     }
 
     if (endian != SYS_ENDIAN) {
-      value = util::byteSwap<T>(value);
+      value = util::bitops::byteSwap<T>(value);
     }
 
     return value;

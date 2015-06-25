@@ -1,8 +1,9 @@
 #include "remu/arm/Cpu.h"
-#include "remu/util/Compiler.h"
 #include "remu/EmulationException.h"
 #include "remu/Emulator.h"
 #include "remu/Memory.h"
+
+#include "util/compiler.h"
 
 #include <cassert>
 
