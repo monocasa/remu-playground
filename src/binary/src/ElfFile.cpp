@@ -20,7 +20,19 @@ ElfFile::ElfFile( oshal::File& file, const BinaryOptions& options )
 	file.setEndian( isLittleEndian() ? oshal::File::LITTLE : oshal::File::BIG );
 
 	if( is32Bit() ) {
-		throw oshal::Exception("32Bit read not implemented for ELF Header");
+		_type      = file.read<uint16_t>();
+		_machine   = file.read<uint16_t>();
+		_version   = file.read<uint32_t>();
+		_entry     = file.read<uint32_t>();
+		_phoff     = file.read<uint32_t>();
+		_shoff     = file.read<uint32_t>();
+		_flags     = file.read<uint32_t>();
+		_ehsize    = file.read<uint16_t>();
+		_phentsize = file.read<uint16_t>();
+		_phnum     = file.read<uint16_t>();
+		_shentsize = file.read<uint16_t>();
+		_shnum     = file.read<uint16_t>();
+		_shstrndx  = file.read<uint16_t>();
 	}
 	else {
 		_type      = file.read<uint16_t>();
@@ -44,7 +56,16 @@ ElfFile::ElfFile( oshal::File& file, const BinaryOptions& options )
 		ElfShdr shdr;
 
 		if( is32Bit() ) {
-			throw oshal::Exception( "32 bit read not implemented for ELF Shdr" );
+			shdr.name_offset = file.read<uint32_t>();
+			shdr.type        = file.read<uint32_t>();
+			shdr.flags       = file.read<uint32_t>();
+			shdr.addr        = file.read<uint32_t>();
+			shdr.offset      = file.read<uint32_t>();
+			shdr.size        = file.read<uint32_t>();
+			shdr.link        = file.read<uint32_t>();
+			shdr.info        = file.read<uint32_t>();
+			shdr.addralign   = file.read<uint32_t>();
+			shdr.entsize     = file.read<uint32_t>();
 		}
 		else {
 			shdr.name_offset = file.read<uint32_t>();
@@ -69,6 +90,7 @@ ElfFile::ElfFile( oshal::File& file, const BinaryOptions& options )
 		Segment seg;
 		seg.num = ii;
 		seg.name = readString( _shstrndx, _shdrs[ii].name_offset );
+
 		seg.base = _shdrs[ii].addr;
 		seg.size = _shdrs[ii].size;
 		seg.executable = _shdrs[ii].flags & SHF_EXECINSTR;
@@ -85,7 +107,12 @@ ElfFile::ElfFile( oshal::File& file, const BinaryOptions& options )
 				ElfSym sym;
 
 				if( is32Bit() ) {
-					throw oshal::Exception( "32 bit read not implements for ELF Sym" );
+					sym.name  = file.read<uint32_t>();
+					sym.value = file.read<uint32_t>();
+					sym.size  = file.read<uint32_t>();
+					sym.info  = file.read<uint8_t>();
+					sym.other = file.read<uint8_t>();
+					sym.shndx = file.read<uint8_t>();
 				}
 				else {
 					sym.name  = file.read<uint32_t>();

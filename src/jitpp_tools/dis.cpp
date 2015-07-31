@@ -1,3 +1,4 @@
+#include "jitpp/arm/Disassembler.h"
 #include "jitpp/ppc/Disassembler.h"
 
 #include "binary/Binary.h"
@@ -186,8 +187,7 @@ int main( int argc, char **argv )
 		break;
 
 		case remu::binary::MachineType::ARM: {
-			fprintf( stderr, "Error: Unimplemented: Need to construct ARM disassembler\n" );
-			exit( 1 );
+			disassembler = std::unique_ptr<remu::jitpp::Disassembler>( new remu::jitpp::arm::Disassembler() );
 		}
 		break;
 	}

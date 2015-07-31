@@ -78,6 +78,29 @@ void Disassembler::disassemble(uint32_t instr, uint64_t addr, char *buffer, size
 	dissect(instr, addr);
 }
 
+size_t Disassembler::disassemble(const util::memslice &slice, 
+	                             uint64_t addr, 
+	                             char *buffer, 
+	                             size_t buffer_size)
+{
+	if( slice.size == 0 ) {
+		return 0;
+	}
+	if( (slice.size < sizeof(uint32_t)) || ((addr & 3) != 0) ) {
+		sprintf( buffer, ".byte 0x%x", slice.data[0] );
+		return 1;
+	}
+
+	uint32_t instr = (slice.data[3] << 24) | (slice.data[2] << 16) | (slice.data[1] << 8) | (slice.data[0] << 0);
+
+	_buffer = buffer;
+	_buffer_size = buffer_size;
+
+	dissect(instr, addr);
+
+	return 4;
+}
+
 void Disassembler::printInstr(const char *instr, bool s)
 {
 	printInstr(instr, s, CC_AL);
