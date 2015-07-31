@@ -177,6 +177,34 @@ void KvmContext::Cpu::setPc(uint64_t pc)
   }
 }
 
+void KvmContext::Cpu::getGprs( GprSet &gprs )
+{
+  struct kvm_regs regs;
+
+  if (!callIoctl(KVM_GET_REGS, &regs))
+  {
+    throw oshal::Exception("Couldn't KVM_GET_REGS");
+  }
+
+  gprs.rip = regs.rip;
+  gprs.rax = regs.rax;
+  gprs.rbx = regs.rbx;
+  gprs.rcx = regs.rcx;
+  gprs.rdx = regs.rdx;
+  gprs.rbp = regs.rbp;
+  gprs.rdi = regs.rdi;
+  gprs.rsi = regs.rsi;
+  gprs.rsp = regs.rsp;
+  gprs.r8  = regs.r8;
+  gprs.r9  = regs.r9;
+  gprs.r10 = regs.r10;
+  gprs.r11 = regs.r11;
+  gprs.r12 = regs.r12;
+  gprs.r13 = regs.r13;
+  gprs.r14 = regs.r14;
+  gprs.r15 = regs.r15;
+}
+
 void KvmContext::Cpu::run()
 {
   running = true;
@@ -216,7 +244,7 @@ void KvmContext::Cpu::run()
               throw oshal::Exception("Unimplemented IO Out size:  %d", kvmRun->io.size);
             }
           }
-          portHandler.onOut(kvmRun->io.size, kvmRun->io.port, data);
+          portHandler.onOut(*this, kvmRun->io.size, kvmRun->io.port, data);
         }
         break;
       }

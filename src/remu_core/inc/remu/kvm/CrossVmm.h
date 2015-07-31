@@ -46,7 +46,7 @@ private:
 
   uint8_t* bufferForRegion(uint64_t base_addr, size_t size) override final;
 
-  void onOut(int size, uint16_t port, uint64_t data) override final;
+  void onOut(KvmContext::Cpu &cpu, int size, uint16_t port, uint64_t data) override final;
 
   void onWrite(int size, uint64_t addr, uint8_t *data) override final;
   void onRead(int size, uint64_t addr, uint8_t *data) override final;

@@ -96,7 +96,7 @@ public:
     class IoPortHandler
     {
     public:
-      virtual void onOut(int size, uint16_t port, uint64_t data) = 0;
+      virtual void onOut(Cpu &cpu, int size, uint16_t port, uint64_t data) = 0;
     };
 
     class MmioHandler
@@ -104,6 +104,27 @@ public:
     public:
       virtual void onWrite(int size, uint64_t addr, uint8_t *data) = 0;
       virtual void onRead(int size, uint64_t addr, uint8_t *data) = 0;
+    };
+
+    struct GprSet
+    {
+        uint64_t rip;
+        uint64_t rax;
+        uint64_t rbx;
+        uint64_t rcx;
+        uint64_t rdx;
+        uint64_t rbp;
+        uint64_t rdi;
+        uint64_t rsp;
+        uint64_t rsi;
+        uint64_t r8;
+        uint64_t r9;
+        uint64_t r10;
+        uint64_t r11;
+        uint64_t r12;
+        uint64_t r13;
+        uint64_t r14;
+        uint64_t r15;
     };
 
     Cpu(int fd, const KvmContext &kvmContext, IoPortHandler &portHandler,
@@ -114,6 +135,8 @@ public:
     void setGdt(uint64_t guestAddr, int size);
     void setIdt(uint64_t guestAddr, int size);
     void setPc(uint64_t pc);
+
+    void getGprs( GprSet& gprs );
 
     void run();
 

@@ -52,29 +52,38 @@ uint8_t* CrossVmm::bufferForRegion(uint64_t base_addr, size_t size)
   return ((uint8_t*)wram.getBuffer()) + base_addr;
 }
 
-void CrossVmm::onOut(int size, uint16_t port, uint64_t data)
+void CrossVmm::onOut(KvmContext::Cpu &cpu, int size, uint16_t port, uint64_t data)
 {
-  switch (port)
+  (void)size;
+  (void)data;
+
+  if (port != 0) {
+    throw oshal::Exception("CrossVmm::onOut(size=%d, port=0x%x, data=0x%lx)", size, port, data);
+  }
+
+  KvmContext::Cpu::GprSet gprs;
+
+  cpu.getGprs( gprs );
+
+  switch( gprs.rdi )
   {
-    /* exit */
-    case 0:
-    {
-      vcpu.stop();
-      break;
+    /* Exit */
+    case 0: {
+      cpu.stop();
     }
+    break;
 
-    /* putc */
-    case 1:
-    {
-      printf("%c", (uint8_t)data);
-      break;
+    /* Putc */
+    case 1: {
+      printf("%c", (uint8_t)gprs.rsi);
     }
+    break;
 
-    default:
-    {
-      throw oshal::Exception("CrossVmm::onOut(size=%d, port=0x%x, data=0x%lx)", size, port, data);
+    default: {
+      throw oshal::Exception("Got here rdi:0x%lx rsi:0x%lx \n", gprs.rdi, gprs.rsi);
     }
   }
+
 }
 
 void CrossVmm::onWrite(int size, uint64_t addr, uint8_t *data)
