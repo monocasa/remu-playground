@@ -30,8 +30,12 @@ public:
 		}
 	}
 
-	bool isOpen() {
+	bool isOpen() const {
 		return (nullptr != file);
+	}
+
+	const std::string& name() const {
+		return path;
 	}
 
 	void setEndian( Endian endian ) {

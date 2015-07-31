@@ -3,6 +3,7 @@ INCLUDE_DIRECTORIES( inc )
 SET( JITPP_SOURCES src/arm/ArmTranslator.cpp
                    src/arm/Disassembler.cpp
                    src/arm/Dissector.cpp
+                   src/ppc/Disassembler.cpp
                    src/ppc/Dissector.cpp
                    src/BasicBlockInterpreter.cpp )
 

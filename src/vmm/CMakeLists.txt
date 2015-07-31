@@ -24,6 +24,7 @@ ADD_LIBRARY( vmm_lib STATIC src/lib/cstdio/printf.cpp
                             src/lib/cstring/memcpy.cpp
                             src/lib/cstring/memset.cpp
                             src/lib/cstring/strcpy.cpp
+                            src/lib/cstring/strlen.cpp
                             src/lib/unistd/sbrk.cpp
                             src/lib/helper/vfnprintf.cpp
                             src/lib/CxxAbi.cpp )

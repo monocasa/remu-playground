@@ -1,5 +1,7 @@
 #include "jitpp/ppc/Dissector.h"
 
+#include <cstdio>
+
 namespace remu { namespace jitpp { namespace ppc {
 
 void Dissector::dissectVectorOp4(ppc_op op)
@@ -9,22 +11,156 @@ void Dissector::dissectVectorOp4(ppc_op op)
 
 void Dissector::dissectCr(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( op.x_xo() ) {
+	case 16:  onBlr();               break;
+
+	case 18:  onRfid();              break;
+
+	case 150: onIsync();             break;
+
+	case 528: onBctr();              break;
+
+	default:  onUnknownInstr(op.op); break;
+	}
 }
 
 void Dissector::dissectTable2(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( (op.op >> 1) & 7 ) {
+	case 0:
+	case 1: onRldicl(op.md_ra(), op.md_rs(), op.md_sh(), op.md_mb(), op.rc()); break;
+
+	case 2:
+	case 3: onRldicr(op.md_ra(), op.md_rs(), op.md_sh(), op.md_me(), op.rc()); break;
+
+	case 6:
+	case 7: onRldimi(op.md_ra(), op.md_rs(), op.md_sh(), op.md_mb(), op.rc()); break;
+
+	default: onUnknownInstr(op.op); break;
+	}
 }
 
 void Dissector::dissectSpecial(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( op.x_xo() ) {
+
+	case 0:   onCmp(op.x_bf(), op.x_l_cmp(), op.x_ra(), op.x_rb());        break;
+
+	case 19: {
+		if( (op.op >> 20 & 1) == 0 ) {
+			onMfcr(op.xfx_rt());
+		}
+		else {
+			onUnknownInstr(op.op);
+		}
+	}
+	break;
+
+	case 23:  onLwzx(op.x_rt(), op.x_ra(), op.x_rb());                     break;
+	case 24:  onSlw(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());             break;
+
+	case 27:  onSld(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());             break;
+	case 28:  onAnd(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());             break;
+
+	case 32:  onCmpl(op.x_bf(), op.x_l_cmp(), op.x_ra(), op.x_rb());       break;
+
+	case 40:  onSubf(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc());  break;
+
+	case 54:  onDcbst(op.x_ra(), op.x_rb());                               break;
+
+	case 60:  onAndc(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());            break;
+
+	case 83:  onMfmsr(op.x_rt());                                          break;
+
+	case 86:  onDcbf(op.x_ra(), op.x_rb());                                break;
+	case 87:  onLbzx(op.x_rt(), op.x_ra(), op.x_rb());                     break;
+
+	case 104: onNeg(op.xo_rt(), op.xo_ra(), false, op.rc());               break;
+
+	case 124: onNor(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());             break;
+
+	case 136: onSubfe(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
+
+	case 144: {
+		if( (op.op >> 20 & 1) == 1 ) {
+			onMtocrf(op.xfx_fxm(), op.xfx_rs());
+		}
+		else {
+			onUnknownInstr(op.op);
+		}
+	}
+	break;
+
+	case 178: onMtmsrd(op.x_rs(), op.x_l_mtmsrd());                        break;
+
+	case 200: onSubfze(op.xo_rt(), op.xo_ra(), false, op.rc());            break;
+
+	case 215: onStbx(op.x_rs(), op.x_ra(), op.x_rb());                     break;
+
+	case 233: onMulld(op.x_rt(), op.x_ra(), op.x_rb(), false, op.rc());    break;
+
+	case 266: onAdd(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc());   break;
+
+	case 274: onTlbiel(op.x_rb(), op.x_l_tlbiel());                        break;
+
+	case 279: onLhzx(op.x_rt(), op.x_ra(), op.x_rb());                     break;
+
+	case 339: onMfspr(op.xfx_rt(), op.xfx_spr());                          break;
+
+	case 343: onLhax(op.x_rt(), op.x_ra(), op.x_rb());                     break;
+
+	case 371: onMftb(op.xfx_rt(), op.xfx_tbr());                           break;
+
+	case 407: onSthx(op.x_rs(), op.x_ra(), op.x_rb());                     break;
+
+	case 444: onOr(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());              break;
+
+	case 457: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
+
+	case 467: onMtspr(op.xfx_spr(), op.xfx_rs());                          break;
+
+	case 552: onSubf(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());   break;
+
+	case 598: onSync(op.x_l_sync());                                       break;
+
+	case 616: onNeg(op.xo_rt(), op.xo_ra(), true, op.rc());                break;
+
+	case 648: onSubfe(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;
+
+	case 712: onSubfze(op.xo_rt(), op.xo_ra(), true, op.rc());             break;
+
+	case 745: onMulld(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
+
+	case 778: onAdd(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());    break;
+
+	case 794: onSrad(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());            break;
+
+	case 824: onSrawi(op.x_ra(), op.x_rs(), op.x_sh(), op.rc());           break;
+
+	//Doubled up because the 6th shift bit is shard with x_xo
+	case 826: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
+	case 827: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
+
+	case 922: onExtsh(op.x_ra(), op.x_rs(), op.rc());                      break;
+
+	case 969: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;
+
+	case 982: onIcbi(op.x_ra(), op.x_rb());                                break;
+
+	case 986: onExtsw(op.x_ra(), op.x_rs(), op.rc());                      break;
+
+	default:  onUnknownInstr(op.op);                                       break;
+	}
 }
 
 void Dissector::dissectTable3(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( op.op & 3 ) {
+	case 0: onLd(op.ds_rt(), op.ds_ds(), op.ds_ra());  break;
+	case 1: onLdu(op.ds_rt(), op.ds_ds(), op.ds_ra()); break;
+	case 2: onLwa(op.ds_rt(), op.ds_ds(), op.ds_ra()); break;
+	default: onIllegalInstr(op.op);                    break;
+	}
 }
 
 void Dissector::dissectTable13(ppc_op op)
@@ -34,7 +170,21 @@ void Dissector::dissectTable13(ppc_op op)
 
 void Dissector::dissectTable4(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( op.op & 3 ) {
+	case 0: onStd(op.ds_rs(), op.ds_ds(), op.ds_ra()); break;
+	case 1: onStdu(op.ds_rs(), op.ds_ds(), op.ds_ra()); break;
+	case 2: {
+		if( op.ds_rs() % 2 ) {
+			onIllegalInstr(op.op);
+		}
+		else {
+			onStq(op.ds_rs(), op.ds_ds(), op.ds_ra());
+		}
+	}
+	break;
+
+	default: onIllegalInstr(op.op);
+	}
 }
 
 void Dissector::dissectTable14(ppc_op op)

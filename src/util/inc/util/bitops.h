@@ -9,6 +9,12 @@ namespace remu { namespace util { namespace bitops {
 template<typename T> static inline T byteSwap(T value);
 
 template<>
+uint8_t byteSwap<uint8_t>(uint8_t value)
+{
+	return value;
+}
+
+template<>
 uint16_t byteSwap<uint16_t>(uint16_t value)
 {
   return (value >> 8) | (value << 8);

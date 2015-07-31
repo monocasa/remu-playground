@@ -1,41 +1,30 @@
+#include "jitpp/ppc/Disassembler.h"
+
+#include "binary/Binary.h"
+
 #include <getopt.h>
 
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <string>
+#include <vector>
 
 const char *binary_type_str = nullptr;
 const char *machine_type_str = nullptr;
 
 const char *binary_name = nullptr;
 
-enum MachineType
-{
-	TYPE_PPC,
-	TYPE_ARM,
+std::vector<std::string> symbol_files;
+
+remu::binary::BinaryOptions binary_options = {
+	.load_addr   = remu::binary::UNKNOWN_LOAD_ADDR,
+	.entry_point = remu::binary::UNKNOWN_ENTRY_POINT,
+	.machine     = remu::binary::MachineType::UNKNOWN,
 };
 
-enum PpcFlags
-{
-};
-
-enum ArmFlags
-{
-};
-
-struct MachineOption
-{
-	const char *short_name;
-	const char *long_name;
-	int machine;
-	uint64_t flags;
-};
-
-const MachineOption predefined_options[] = {
-	"ppc", "PowerPC", TYPE_PPC, 0,
-	"arm", "ARM",     TYPE_ARM, 0,
-};
+std::unique_ptr<remu::jitpp::Disassembler> disassembler;
 
 static void parse_args( int argc, char **argv )
 {
@@ -44,6 +33,7 @@ static void parse_args( int argc, char **argv )
 	static struct option long_options[] = {
 		{ "binary-type",  required_argument, 0, 'b' },
 		{ "machine-type", required_argument, 0, 'm' },
+		{ "symbol-file",  required_argument, 0, 's' },
 	};
 
 	while( true ) {
@@ -54,8 +44,9 @@ static void parse_args( int argc, char **argv )
 		}
 
 		switch( c ) {
-		case 'b': binary_type_str = optarg;  break;
-		case 'm': machine_type_str = optarg; break;
+		case 'b': binary_type_str = optarg;       break;
+		case 'm': machine_type_str = optarg;      break;
+		case 's': symbol_files.push_back(optarg); break;
 
 		case '?': exit( 1 );
 		default:  exit( 1 );
@@ -73,23 +64,87 @@ static void parse_args( int argc, char **argv )
 	}
 }
 
-const MachineOption* find_machine_option_for_str( const char *str )
+static void print_header( remu::binary::Binary* binary )
 {
-	const int num_machine_types = sizeof(predefined_options) / sizeof(MachineOption);
-	for( int ii = 0; ii < num_machine_types; ii++ ) {
-		if( strcmp(str, predefined_options[ii].short_name) == 0 ) {
-			return &predefined_options[ii];
-		}
-	}
-
-	return nullptr;
+	printf( "\n" );
+	printf( "%s:     file format %s\n", binary_name, binary->formatName().c_str() );
+	printf( "\n" );	
 }
 
-void print_possible_machines()
+static size_t count_zeros( const remu::util::memslice& slice )
 {
-	const int num_machine_types = sizeof(predefined_options) / sizeof(MachineOption);
-	for( int ii = 0; ii < num_machine_types; ii++ ) {
-		printf( "%10s - %s\n", predefined_options[ii].short_name, predefined_options[ii].long_name );
+	size_t num_zeros = 0;
+
+	while( (num_zeros < slice.size) && (slice.data[num_zeros] == 0) ) {
+		num_zeros++;
+	}
+
+	return num_zeros;
+}
+
+static void disassemble_file( remu::binary::Binary* binary )
+{
+	print_header( binary );
+
+	auto segment_list = binary->getSectionSegments();
+
+	auto symbol_db = binary->getSymbolDB();
+
+	char dis[64];
+
+	for( const auto& segment : segment_list ) {
+		if( !segment.executable ) {
+			continue;
+		}
+
+		printf( "\n" );
+		printf( "Disassembly of section %s:\n", segment.name.c_str() );
+
+		uint64_t cur_off = segment.base;
+		const uint64_t end = segment.base + segment.size;
+		std::vector<uint8_t> cur_section = binary->readSegment( segment );
+		remu::util::memslice slice = { cur_section.data(), cur_section.size() };
+
+		while( cur_off < end ) {
+			const auto num_zeros = count_zeros( slice );
+
+			if( count_zeros(slice) >= 8 ) {
+				printf( "\t...\n" );
+				const auto bytes_to_consume = num_zeros - (num_zeros % 4);
+
+				cur_off += bytes_to_consume;
+
+				slice.data += bytes_to_consume;
+				slice.size -= bytes_to_consume;
+			}
+			else {
+				const auto symbol = symbol_db.getSymbolExact( cur_off );
+				if( symbol ) {
+					printf( "\n" );
+					printf( "%lx <%s>:\n", cur_off, symbol->name.c_str() );
+				}
+				else if( cur_off == segment.base ) {
+					printf( "\n" );
+					printf( "%lx <%s>:\n", cur_off, segment.name.c_str() );
+				}
+
+				size_t instr_size = disassembler->disassemble( slice, cur_off, dis, 64 );
+				printf( "%lx:\t", cur_off );
+				size_t ii = 0;
+				for( ; ii < instr_size; ii++ ) {
+					printf( "%02x ", slice.data[ii] );
+				}
+				for( ; ii < 4; ii++ ) {
+					printf( "   " );
+				}
+				printf( "\t%s\n", dis );
+
+				cur_off += instr_size;
+
+				slice.data += instr_size;
+				slice.size -= instr_size;
+			}
+		}
 	}
 }
 
@@ -97,29 +152,47 @@ int main( int argc, char **argv )
 {
 	parse_args( argc, argv );
 
-	if( machine_type_str == nullptr ) {
-		fprintf( stderr, "Error:  No machine type specified\n" );
-		exit( 1 );
-	}
-
-	if( strcmp(machine_type_str, "?") == 0 ) {
-		print_possible_machines();
-		exit( 0 );
-	}
-
-	auto machine = find_machine_option_for_str( machine_type_str );
-
-	if( nullptr == machine ) {
-		fprintf( stderr, "Error:  Unknown machine type \"%s\"\n", machine_type_str );
-		exit( 1 );
-	}
-
 	if( nullptr == binary_name ) {
 		fprintf( stderr, "Error:  No binary specified\n" );
 		exit( 1 );
 	}
 
-	printf( "Binary:  %s\n", binary_name );
+	remu::oshal::File file( binary_name );
+	if( !file.isOpen() ) {
+		fprintf( stderr, "Error:  Unable to open file \"%s\"\n", binary_name );
+		exit( 1 );
+	}
+
+	auto binary = remu::binary::binaryForFile( file, binary_options );
+
+	if( !binary ) {
+		fprintf( stderr, "Error:  Unable to divine filetype for file \"%s\"\n", binary_name );
+		exit( 1 );
+	}
+
+	if( binary->machineType() == remu::binary::MachineType::UNKNOWN ) {
+	}
+
+	switch( binary->machineType() ) {
+		case remu::binary::MachineType::UNKNOWN: {
+			fprintf( stderr, "Error: Unknown machine type in file \"%s\"\n", binary_name );
+			exit( 1 );
+		}
+		break;
+
+		case remu::binary::MachineType::PPC: {
+			disassembler = std::unique_ptr<remu::jitpp::Disassembler>( new remu::jitpp::ppc::Disassembler() );
+		}
+		break;
+
+		case remu::binary::MachineType::ARM: {
+			fprintf( stderr, "Error: Unimplemented: Need to construct ARM disassembler\n" );
+			exit( 1 );
+		}
+		break;
+	}
+
+	disassemble_file( binary.get() );
 
 	return 0;
 }
