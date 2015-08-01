@@ -487,32 +487,22 @@ void Disassembler::onMfmsr(int rt)
 
 void Disassembler::onMfspr(int rt, int spr)
 {
-	const char *op_name = "UNKNOWN_MTSPR_VARIANT";
-	int imm = -1;
-	bool use_ri = false;
 	switch( spr ) {
-		case 1:   op_name = "mfxer"; break;
+		case 1:   print_r("mfxer", rt); break;
 
-		case 8:   op_name = "mflr";  break;
-		case 9:   op_name = "mfctr"; break;
+		case 8:   print_r("mflr", rt);  break;
+		case 9:   print_r("mfctr", rt); break;
 
-		case 272: op_name = "mfsprg"; imm = 0; use_ri = true; break;
-		case 273: op_name = "mfsprg"; imm = 1; use_ri = true; break;
-		case 274: op_name = "mfsprg"; imm = 2; use_ri = true; break;
-		case 275: op_name = "mfsprg"; imm = 3; use_ri = true; break;
+		case 272: print_ri("mfsprg", rt, 0, false); break;
+		case 273: print_ri("mfsprg", rt, 1, false); break;
+		case 274: print_ri("mfsprg", rt, 2, false); break;
+		case 275: print_ri("mfsprg", rt, 3, false); break;
 
-		case 287: op_name = "mfpvr"; break;
+		case 287: print_r("mfpvr", rt); break;
 
-		default:  op_name = "mfspr"; imm = spr; use_ri = true; break;
+		default:  print_ri("mfspr", rt, spr, false); break;
 	}
 
-	if( use_ri ) {
-		print_ri( op_name, rt, imm, false );
-	}
-	else {
-		sprintf( instr_name, "%s", op_name );
-		sprintf( instr_args, "r%d", rt );
-	}
 }
 
 void Disassembler::onMftb(int rt, int tbr)
@@ -540,29 +530,21 @@ void Disassembler::onMtmsrd(int rs, bool l)
 
 void Disassembler::onMtspr(int spr, int rs)
 {
-	const char *op_name = "UNKNOWN_MTSPR_VARIANT";
 	switch( spr ) {
-		case 1:    op_name = "mtxer";  break;
+		case 1:    print_r("mtxer", rs);  break;
 
-		case 8:    op_name = "mtlr";   break;
-		case 9:    op_name = "mtctr";  break;
+		case 8:    print_r("mtlr", rs);   break;
+		case 9:    print_r("mtctr", rs);  break;
 
-		case 26:   op_name = "mtsrr0"; break;
-		case 27:   op_name = "mtsrr1"; break;
+		case 26:   print_r("mtsrr0", rs); break;
+		case 27:   print_r("mtsrr1", rs); break;
 
-		case 152:  op_name = "mtcmpe"; break;
+		case 152:  print_r("mtcmpe", rs); break;
 
-		case 1017: op_name = "mtl2cr"; break;
+		case 1017: print_r("mtl2cr", rs); break;
 
-		default: {
-			sprintf( instr_name, "mtspr" );
-			sprintf( instr_args, "%d,r%d", spr, rs );
-			return;
-		}
+		default:   print_ir("mtspr", spr, rs); break;
 	}
-
-	sprintf( instr_name, "%s", op_name );
-	sprintf( instr_args, "r%d", rs );
 }
 
 void Disassembler::onMulld(int rt, int ra, int rb, bool oe, bool rc)
