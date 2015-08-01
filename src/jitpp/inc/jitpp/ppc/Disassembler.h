@@ -21,6 +21,7 @@ private:
 	uint64_t branch_target(int32_t li, bool aa) const;
 
 	void print_mem_args(const char *op, int r, int16_t d, int ra);
+	void print_mem_args_float(const char* op, int fr, int16_t d, int ra);
 	void print_ir(const char *op, int imm, int r);
 	void print_r(const char *op, int r);
 	void print_ri(const char *op, int r0, int imm, bool rc);

@@ -54,6 +54,12 @@ void Disassembler::print_mem_args(const char* op, int r, int16_t d, int ra)
 	sprintf( instr_args, "r%d,%d(r%d)", r, d, ra );
 }
 
+void Disassembler::print_mem_args_float(const char* op, int fr, int16_t d, int ra)
+{
+	sprintf( instr_name, "%s", op );
+	sprintf( instr_args, "f%d,%d(r%d)", fr, d, ra );
+}
+
 void Disassembler::print_ir(const char *op, int imm, int r)
 {
 	sprintf( instr_name, "%s", op );
@@ -389,22 +395,22 @@ void Disassembler::onLdu(int rt, int16_t ds, int ra)
 
 void Disassembler::onLfd(int frt, int16_t d, int ra)
 {
-	print_mem_args( "lfd", frt, d, ra );
+	print_mem_args_float( "lfd", frt, d, ra );
 }
 
 void Disassembler::onLfdu(int frt, int16_t d, int ra)
 {
-	print_mem_args( "lfdu", frt, d, ra );
+	print_mem_args_float( "lfdu", frt, d, ra );
 }
 
 void Disassembler::onLfs(int frt, int16_t d, int ra)
 {
-	print_mem_args( "lfs", frt, d, ra );
+	print_mem_args_float( "lfs", frt, d, ra );
 }
 
 void Disassembler::onLfsu(int frt, int16_t d, int ra)
 {
-	print_mem_args( "lfsu", frt, d, ra );
+	print_mem_args_float( "lfsu", frt, d, ra );
 }
 
 void Disassembler::onLq(int rt, int16_t dq, int ra)
@@ -750,22 +756,22 @@ void Disassembler::onStdu(int rs, int16_t ds, int ra)
 
 void Disassembler::onStfd(int frs, int16_t d, int ra)
 {
-	print_mem_args( "stfd", frs, d, ra );
+	print_mem_args_float( "stfd", frs, d, ra );
 }
 
 void Disassembler::onStfdu(int frs, int16_t d, int ra)
 {
-	print_mem_args( "stfdu", frs, d, ra );
+	print_mem_args_float( "stfdu", frs, d, ra );
 }
 
 void Disassembler::onStfs(int frs, int16_t d, int ra)
 {
-	print_mem_args( "stfs", frs, d, ra );
+	print_mem_args_float( "stfs", frs, d, ra );
 }
 
 void Disassembler::onStfsu(int frs, int16_t d, int ra)
 {
-	print_mem_args( "stfsu", frs, d, ra );
+	print_mem_args_float( "stfsu", frs, d, ra );
 }
 
 void Disassembler::onSth(int rs, int16_t d, int ra)
