@@ -488,10 +488,16 @@ void Disassembler::onMfmsr(int rt)
 void Disassembler::onMfspr(int rt, int spr)
 {
 	switch( spr ) {
-		case 1:   print_r("mfxer", rt); break;
+		case 1:   print_r("mfxer", rt);   break;
 
-		case 8:   print_r("mflr", rt);  break;
-		case 9:   print_r("mfctr", rt); break;
+		case 8:   print_r("mflr", rt);    break;
+		case 9:   print_r("mfctr", rt);   break;
+
+		case 18:  print_r("mfdsisr", rt); break;
+		case 19:  print_r("mfdar", rt);   break;
+
+		case 26:  print_r("mfsrr0", rt);  break;
+		case 27:  print_r("mfsrr1", rt);  break;
 
 		case 272: print_ri("mfsprg", rt, 0, false); break;
 		case 273: print_ri("mfsprg", rt, 1, false); break;
@@ -540,6 +546,11 @@ void Disassembler::onMtspr(int spr, int rs)
 		case 27:   print_r("mtsrr1", rs); break;
 
 		case 152:  print_r("mtcmpe", rs); break;
+
+		case 272:  print_ir("mtsprg", 0, rs); break;
+		case 273:  print_ir("mtsprg", 1, rs); break;
+		case 274:  print_ir("mtsprg", 2, rs); break;
+		case 275:  print_ir("mtsprg", 3, rs); break;
 
 		case 1017: print_r("mtl2cr", rs); break;
 
