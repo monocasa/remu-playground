@@ -109,6 +109,16 @@ static void disassemble_file( remu::binary::Binary* binary )
 		while( cur_off < end ) {
 			const auto num_zeros = count_zeros( slice );
 
+			const auto symbol = symbol_db.getSymbolExact( cur_off );
+			if( symbol ) {
+				printf( "\n" );
+				printf( "%08lx <%s>:\n", cur_off, symbol->name.c_str() );
+			}
+			else if( cur_off == segment.base ) {
+				printf( "\n" );
+				printf( "%08lx <%s>:\n", cur_off, segment.name.c_str() );
+			}
+
 			if( count_zeros(slice) >= 8 ) {
 				printf( "\t...\n" );
 				const auto bytes_to_consume = num_zeros - (num_zeros % 4);
@@ -119,18 +129,9 @@ static void disassemble_file( remu::binary::Binary* binary )
 				slice.size -= bytes_to_consume;
 			}
 			else {
-				const auto symbol = symbol_db.getSymbolExact( cur_off );
-				if( symbol ) {
-					printf( "\n" );
-					printf( "%lx <%s>:\n", cur_off, symbol->name.c_str() );
-				}
-				else if( cur_off == segment.base ) {
-					printf( "\n" );
-					printf( "%lx <%s>:\n", cur_off, segment.name.c_str() );
-				}
 
 				size_t instr_size = disassembler->disassemble( slice, cur_off, dis, 64 );
-				printf( "%lx:\t", cur_off );
+				printf( "%8lx:\t", cur_off );
 				size_t ii = 0;
 				for( ; ii < instr_size; ii++ ) {
 					printf( "%02x ", slice.data[ii] );
