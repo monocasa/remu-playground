@@ -529,6 +529,16 @@ void Disassembler::onMtocrf(int fxm, int rs)
 	print_ir( "mtocrf", fxm, rs );
 }
 
+void Disassembler::onMtmsr(int rs, bool l)
+{
+	if( l ) {
+		print_ri( "mtmsr", rs, l, false );
+	}
+	else {
+		print_r("mtmsr", rs);
+	}
+}
+
 void Disassembler::onMtmsrd(int rs, bool l)
 {
 	print_ri( "mtmsrd", rs, l, false );

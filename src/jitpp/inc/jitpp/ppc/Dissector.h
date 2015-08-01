@@ -73,6 +73,7 @@ private:
 		//X Form
 		int  x_bf()       { return (op >> 23) & 0x7; }
 		bool x_l_cmp()    { return (op >> 21) & 0x1; }
+		bool x_l_mtmsr()  { return (op >> 16) & 0x1; }
 		bool x_l_mtmsrd() { return (op >> 16) & 0x1; }
 		int  x_l_sync()   { return (op >> 21) & 0x3; }
 		int  x_l_tlbiel() { return (op >> 21) & 0x1F; }
@@ -164,6 +165,7 @@ protected:
 	virtual void onMfmsr(int rt) = 0;
 	virtual void onMfspr(int rt, int spr) = 0;
 	virtual void onMftb(int rt, int tbr) = 0;
+	virtual void onMtmsr(int rs, bool l) = 0;
 	virtual void onMtmsrd(int rs, bool l) = 0;
 	virtual void onMtocrf(int fxm, int rs) = 0;
 	virtual void onMtspr(int spr, int rs) = 0;

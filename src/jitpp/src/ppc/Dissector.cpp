@@ -91,6 +91,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	}
 	break;
 
+	case 146: onMtmsr(op.x_rs(), op.x_l_mtmsr());                          break;
+
 	case 178: onMtmsrd(op.x_rs(), op.x_l_mtmsrd());                        break;
 
 	case 200: onSubfze(op.xo_rt(), op.xo_ra(), false, op.rc());            break;

@@ -84,6 +84,7 @@ private:
 	void onMfspr(int rt, int spr) override final;
 	void onMftb(int rt, int tbr) override final;
 	void onMtocrf(int fxm, int rs) override final;
+	void onMtmsr(int rs, bool l) override final;
 	void onMtmsrd(int rs, bool l) override final;
 	void onMtspr(int spr, int rs) override final;
 	void onMulld(int rt, int ra, int rb, bool oe, bool rc) override final;
