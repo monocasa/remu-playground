@@ -50,6 +50,9 @@ private:
 
   void onWrite(int size, uint64_t addr, uint8_t *data) override final;
   void onRead(int size, uint64_t addr, uint8_t *data) override final;
+
+  bool readGuestStr(uint64_t guest_addr, char* host_str, size_t size);
+  int64_t readBlobHypercall(uint64_t name_ptr, uint64_t buffer_ptr, uint64_t buffer_size);
 };
 
 }} /*namespace remu::kvm*/

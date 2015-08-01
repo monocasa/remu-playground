@@ -14,9 +14,9 @@ _ZN2os5board6kvmvmm13hypercall_v_iENS1_13HypercallTypeEi:
 [GLOBAL _ZN2os5board6kvmvmm13hypercall_v_vENS1_13HypercallTypeE]
 _ZN2os5board6kvmvmm13hypercall_v_vENS1_13HypercallTypeE:
 
-; extern ssize_t hypercall_S(HypercallType call, const char *str, void *buffer, size_t size);
-[GLOBAL _ZN2os5board6kvmvmm11hypercall_SENS1_13HypercallTypeEPKcPvm]
-_ZN2os5board6kvmvmm11hypercall_SENS1_13HypercallTypeEPKcPvm:
+; extern ssize_t hypercall_S_uuu(HypercallType call, uint64_t arg0, uint64_t arg1, uint64_t arg2);
+[GLOBAL _ZN2os5board6kvmvmm15hypercall_S_uuuENS1_13HypercallTypeEmmm]
+_ZN2os5board6kvmvmm15hypercall_S_uuuENS1_13HypercallTypeEmmm:
 
 	out    0, eax
 	ret

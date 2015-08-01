@@ -1,4 +1,5 @@
 #include <os/Board.h>
+#include <os/MemoryManager.h>
 #include <os/Types.h>
 
 namespace os { namespace board {
@@ -16,7 +17,7 @@ extern void hypercall_v_i(HypercallType call, int arg);
 
 extern void hypercall_v_v(HypercallType call);
 
-extern ssize_t hypercall_S(HypercallType call, const char *str, void *buffer, size_t size);
+extern ssize_t hypercall_S_uuu(HypercallType call, uint64_t arg0, uint64_t arg1, uint64_t arg2);
 
 } /*namespace kvmvmm (in os::board)*/
 
@@ -41,7 +42,10 @@ uint64_t high_performance_timer()
 
 ssize_t read_env_blob(const char *argname, void *buffer, size_t size)
 {
-	return hypercall_S(HypercallType::READ_ENV_BLOB, argname, buffer, size);
+	return hypercall_S_uuu(HypercallType::READ_ENV_BLOB,
+	                       os::mm::phys_for_virt(argname),
+	                       os::mm::phys_for_virt(buffer),
+	                       size);
 }
 
 }} /*namespace os::board*/

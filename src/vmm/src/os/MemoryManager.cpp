@@ -75,7 +75,7 @@ void invalidate_all_pages()
 	asm volatile( "movq %rax, %cr3" );
 }
 
-void* vmm_virt_to_phys( void *virt )
+void* vmm_virt_to_phys( const void *virt )
 {
 	uint64_t addr = reinterpret_cast<uint64_t>( virt );
 	if( addr >= 0xFFFFFFFFA0000000UL ) {
@@ -237,6 +237,11 @@ void* sbrk(intptr_t increment)
 	}
 	::sbrk_size = (next_page * sizeof(Page)) + next_offset;
 	return cur_break;
+}
+
+uint64_t phys_for_virt( const void *virt )
+{
+	return (uint64_t)vmm_virt_to_phys( virt );
 }
 
 }} /*namespace os::mm*/

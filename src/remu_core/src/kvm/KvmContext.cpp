@@ -205,6 +205,39 @@ void KvmContext::Cpu::getGprs( GprSet &gprs )
   gprs.r15 = regs.r15;
 }
 
+void KvmContext::Cpu::setGprs( GprSet &gprs )
+{
+  struct kvm_regs regs;
+
+  if (!callIoctl(KVM_GET_REGS, &regs))
+  {
+    throw oshal::Exception("Couldn't KVM_GET_REGS");
+  }
+
+  regs.rip = gprs.rip;
+  regs.rax = gprs.rax;
+  regs.rbx = gprs.rbx;
+  regs.rcx = gprs.rcx;
+  regs.rdx = gprs.rdx;
+  regs.rbp = gprs.rbp;
+  regs.rdi = gprs.rdi;
+  regs.rsi = gprs.rsi;
+  regs.rsp = gprs.rsp;
+  regs.r8  = gprs.r8;
+  regs.r9  = gprs.r9;
+  regs.r10 = gprs.r10;
+  regs.r11 = gprs.r11;
+  regs.r12 = gprs.r12;
+  regs.r13 = gprs.r13;
+  regs.r14 = gprs.r14;
+  regs.r15 = gprs.r15;
+
+  if (!callIoctl(KVM_SET_REGS, &regs))
+  {
+    throw oshal::Exception("Couldn't KVM_SET_REGS");
+  }
+}
+
 void KvmContext::Cpu::run()
 {
   running = true;

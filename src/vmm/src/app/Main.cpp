@@ -8,6 +8,7 @@
 #include <os/MemoryManager.h>
 
 #include <cstdio>
+#include <cstring>
 
 namespace {
 
@@ -86,22 +87,45 @@ using Arm11CpuCodeCache = remu::jitpp::CodeCache<4,1024,4096,
 
 void appMain()
 {
-	mapArmPhysicalMem();
+	char app_name[128];
+	const char *blob_name = "core0_cmd_line";
 
-	remu::jitpp::ACState cpu_state;
-	Arm11CpuCodeCache *code_cache = new Arm11CpuCodeCache();
+	auto blob_len = os::board::read_env_blob( blob_name, app_name, sizeof(app_name) );
 
-	cpu_state.clear();
-	cpu_state.ip.program_counter = 0x00008000;
+	if( blob_len <= 0 ) {
+		printf( "unable to read blob:  \"%s\"\n", blob_name );
+		os::board::shutdown();
+	}
 
-	bool running = true;
+	if( blob_len > 128 ) {
+		app_name[127] ='\0';
+	}
+	else {
+		app_name[blob_len] = '\0';
+	}
 
-	while( running ) {
-		auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
-		printf("code_page:  %p (host_page=%p guest_pc=%0lx:%lx)\n", code_page, code_page->getHostBase(),
-		       cpu_state.ip.code_segment, cpu_state.ip.program_counter );
-		running = code_page->execute( cpu_state );
-		remu::jitpp::arm::ArmStatePrinter::print( cpu_state );
+	if( strcmp(app_name, "arm1176") == 0 ) {
+		mapArmPhysicalMem();
+
+		remu::jitpp::ACState cpu_state;
+		Arm11CpuCodeCache *code_cache = new Arm11CpuCodeCache();
+
+		cpu_state.clear();
+		cpu_state.ip.program_counter = 0x00008000;
+
+		bool running = true;
+
+		while( running ) {
+			auto code_page = code_cache->getPageForFarPointer( cpu_state.ip );
+			printf("code_page:  %p (host_page=%p guest_pc=%0lx:%lx)\n", code_page, code_page->getHostBase(),
+			       cpu_state.ip.code_segment, cpu_state.ip.program_counter );
+			running = code_page->execute( cpu_state );
+			remu::jitpp::arm::ArmStatePrinter::print( cpu_state );
+		}
+	}
+	else {
+		printf("Unknown app name:  \"%s\"\n", app_name);
+		os::board::shutdown();
 	}
 }
 

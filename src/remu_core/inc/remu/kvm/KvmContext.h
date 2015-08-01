@@ -137,6 +137,7 @@ public:
     void setPc(uint64_t pc);
 
     void getGprs( GprSet& gprs );
+    void setGprs( GprSet& gprs );
 
     void run();
 

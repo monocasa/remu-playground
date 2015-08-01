@@ -79,6 +79,13 @@ void CrossVmm::onOut(KvmContext::Cpu &cpu, int size, uint16_t port, uint64_t dat
     }
     break;
 
+    /* Read Env Blob */
+    case 2: {
+      gprs.rcx = readBlobHypercall(gprs.rsi, gprs.rdx, gprs.rcx);
+      cpu.setGprs( gprs );
+	}
+	break;
+
     default: {
       throw oshal::Exception("Got here rdi:0x%lx rsi:0x%lx \n", gprs.rdi, gprs.rsi);
     }
@@ -133,6 +140,47 @@ void CrossVmm::onRead(int size, uint64_t addr, uint8_t *data)
     {
       throw oshal::Exception("Unknown size in CrossVmm.onRead( size=%d )", size);
     }
+  }
+}
+
+bool CrossVmm::readGuestStr(uint64_t guest_addr, char* host_str, size_t size)
+{
+  for( size_t ii = 0; ii < size; ii++ ) {
+    auto ptr_to_guest = bufferForRegion(guest_addr + ii, 1);
+    if( !ptr_to_guest ) {
+      return false;
+    }
+    host_str[ii] = *ptr_to_guest;
+    if( host_str[ii] == '\0' ) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+int64_t CrossVmm::readBlobHypercall(uint64_t name_ptr, uint64_t buffer_ptr, uint64_t buffer_size)
+{
+  char name_buffer[64];
+
+  if( !readGuestStr(name_ptr, name_buffer, sizeof(name_buffer) ) ) {
+    printf("Guest gave the host an invalid buffer for readBlob\n" );
+    return -1;
+  }
+
+  auto buffer = bufferForRegion(buffer_ptr, buffer_size);
+  if( !buffer ) {
+    printf("Guest gave the host an invalid buffer for readBlob\n");
+    return -1;
+  }
+
+  if( strcmp(name_buffer, "core0_cmd_line") == 0 ) {
+    strncpy((char*)buffer, "arm1176", buffer_size);
+    return strlen("arm1176") + 1;
+  }
+  else {
+    printf("Guest tried to receive an unknown blob:  \"%s\"\n", name_buffer);
+    return -1;
   }
 }
 

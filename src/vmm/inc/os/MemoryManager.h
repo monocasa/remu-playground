@@ -21,6 +21,8 @@ void on_page_fault( os::intm::Context *ctx );
 
 void *sbrk(intptr_t);
 
+uint64_t phys_for_virt( const void *virt );
+
 }} /*namespace os::mm*/
 
 #endif /*REMU_VMM_OS_MEMORYMANAGER_H*/
