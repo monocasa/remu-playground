@@ -129,7 +129,6 @@ static void disassemble_file( remu::binary::Binary* binary )
 				slice.size -= bytes_to_consume;
 			}
 			else {
-
 				size_t instr_size = disassembler->disassemble( slice, cur_off, dis, 64 );
 				printf( "%8lx:\t", cur_off );
 				size_t ii = 0;

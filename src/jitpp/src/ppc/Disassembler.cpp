@@ -488,23 +488,31 @@ void Disassembler::onMfmsr(int rt)
 void Disassembler::onMfspr(int rt, int spr)
 {
 	const char *op_name = "UNKNOWN_MTSPR_VARIANT";
+	int imm = -1;
+	bool use_ri = false;
 	switch( spr ) {
-		case 1:    op_name = "mfxer"; break;
+		case 1:   op_name = "mfxer"; break;
 
-		case 8:    op_name = "mflr";  break;
-		case 9:    op_name = "mfctr"; break;
+		case 8:   op_name = "mflr";  break;
+		case 9:   op_name = "mfctr"; break;
 
-		case 287:  op_name = "mfpvr"; break;
+		case 272: op_name = "mfsprg"; imm = 0; use_ri = true; break;
+		case 273: op_name = "mfsprg"; imm = 1; use_ri = true; break;
+		case 274: op_name = "mfsprg"; imm = 2; use_ri = true; break;
+		case 275: op_name = "mfsprg"; imm = 3; use_ri = true; break;
 
-		default: {
-			sprintf( instr_name, "mfspr" );
-			sprintf( instr_args, "r%d,%d", rt, spr );
-			return;
-		}
+		case 287: op_name = "mfpvr"; break;
+
+		default:  op_name = "mfspr"; imm = spr; use_ri = true; break;
 	}
 
-	sprintf( instr_name, "%s", op_name );
-	sprintf( instr_args, "r%d", rt );
+	if( use_ri ) {
+		print_ri( op_name, rt, imm, false );
+	}
+	else {
+		sprintf( instr_name, "%s", op_name );
+		sprintf( instr_args, "r%d", rt );
+	}
 }
 
 void Disassembler::onMftb(int rt, int tbr)
