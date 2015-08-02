@@ -16,6 +16,13 @@ private:
 		int opcd() { return op >> 26; }
 		bool rc() { return op & 1; }
 
+		//A Form
+		int a_fra() { return (op >> 16) & 0x1F; }
+		int a_frb() { return (op >> 11) & 0x1F; }
+		int a_frc() { return (op >>  6) & 0x1F; }
+		int a_frt() { return (op >> 21) & 0x1F; }
+		int a_xo()  { return (op >>  1) & 0x1F; }
+
 		//B Form
 		bool    b_aa() { return op & 2; }
 		int16_t b_bd() { return util::bitops::signExtend<int16_t, 16>(op & 0xFFFC); }
@@ -141,6 +148,7 @@ protected:
 	virtual void onDivdu(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onExtsh(int ra, int rs, bool rc) = 0;
 	virtual void onExtsw(int ra, int rs, bool rc) = 0;
+	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onIcbi(int ra, int rb) = 0;
 	virtual void onIsync() = 0;
 	virtual void onLbz(int rt, int16_t d, int ra) = 0;
