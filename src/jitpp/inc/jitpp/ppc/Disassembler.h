@@ -117,6 +117,7 @@ private:
 	void onSrad(int ra, int rs, int rb, bool rc) override final;
 	void onSradi(int ra, int rs, int sh, bool rc) override final;
 	void onSrawi(int ra, int rs, int sh, bool rc) override final;
+	void onSrw(int ra, int rs, int rb, bool rc) override final;
 	void onStb(int rs, int16_t d, int ra) override final;
 	void onStbu(int rs, int16_t d, int ra) override final;
 	void onStbx(int rs, int ra, int rb) override final;

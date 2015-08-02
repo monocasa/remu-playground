@@ -204,6 +204,7 @@ protected:
 	virtual void onSrad(int ra, int rs, int rb, bool rc) = 0;
 	virtual void onSradi(int ra, int rs, int sh, bool rc) = 0;
 	virtual void onSrawi(int ra, int rs, int sh, bool rc) = 0;
+	virtual void onSrw(int ra, int rs, int rb, bool rc) = 0;
 	virtual void onStb(int rs, int16_t d, int ra) = 0;
 	virtual void onStbu(int rs, int16_t d, int ra) = 0;
 	virtual void onStbx(int rs, int ra, int rb) = 0;

@@ -131,6 +131,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 520: onSubfc(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
 
+	case 536: onSrw(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());             break;
+
 	case 552: onSubf(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());   break;
 
 	case 598: onSync(op.x_l_sync());                                       break;

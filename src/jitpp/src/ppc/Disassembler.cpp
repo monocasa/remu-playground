@@ -782,6 +782,11 @@ void Disassembler::onSrawi(int ra, int rs, int sh, bool rc)
 	print_rri( "srawi", ra, rs, sh, rc );
 }
 
+void Disassembler::onSrw(int ra, int rs, int rb, bool rc)
+{
+	print_rrr( "srw", ra, rs, rb, rc );
+}
+
 void Disassembler::onStb(int rs, int16_t d, int ra)
 {
 	print_mem_args( "stb", rs, d, ra );
