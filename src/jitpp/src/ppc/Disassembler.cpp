@@ -408,6 +408,11 @@ void Disassembler::onFmul(int frt, int fra, int frc, bool rc)
 	print_fff( "fmul", frt, fra, frc, rc );
 }
 
+void Disassembler::onFmadd(int frt, int fra, int frc, int frb, bool rc)
+{
+	print_ffff( "fmadd", frt, fra, frc, frb, rc );
+}
+
 void Disassembler::onFmadds(int frt, int fra, int frc, int frb, bool rc)
 {
 	print_ffff( "fmadds", frt, fra, frc, frb, rc );
