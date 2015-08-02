@@ -932,7 +932,12 @@ void Disassembler::onTdi(uint8_t to, int ra, int16_t si)
 
 void Disassembler::onTlbiel(int rb, int l)
 {
-	print_ri( "tlbiel", rb, l, false );
+	if( l ) {
+		print_ri( "tlbiel", rb, l, false );
+	}
+	else {
+		print_r( "tlbiel", rb );
+	}
 }
 
 void Disassembler::onTwi(uint8_t to, int ra, int16_t si)
