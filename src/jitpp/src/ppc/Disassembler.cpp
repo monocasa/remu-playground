@@ -96,6 +96,12 @@ void Disassembler::print_rrii(const char *op, int r0, int r1, int imm0, int imm1
 	sprintf( instr_args, "r%d,r%d,%d,%d", r0, r1, imm0, imm1 );
 }
 
+void Disassembler::print_rriii(const char *op, int r0, int r1, int imm0, int imm1, int imm2, bool rc)
+{
+	sprintf( instr_name, "%s%s", op, rc ? "." : "" );
+	sprintf( instr_args, "r%d,r%d,%d,%d,%d", r0, r1, imm0, imm1, imm2 );
+}
+
 void Disassembler::print_rrr(const char *op, int r0, int r1, int r2, bool rc)
 {
 	sprintf( instr_name, "%s%s", op, rc ? "." : "" );
@@ -671,12 +677,7 @@ void Disassembler::onRldimi(int ra, int rs, int sh, int mb, bool rc)
 
 void Disassembler::onRlwimi(int ra, int rs, int sh, int mb, int me, bool rc)
 {
-	(void)ra;
-	(void)rs;
-	(void)sh;
-	(void)mb;
-	(void)me;
-	(void)rc;
+	print_rriii( "rlwimi", ra, rs, sh, mb, me, rc );
 }
 
 void Disassembler::onRlwinm(int ra, int rs, int sh, int mb, int me, bool rc)
