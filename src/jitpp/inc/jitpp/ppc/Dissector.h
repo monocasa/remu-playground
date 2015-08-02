@@ -168,6 +168,7 @@ protected:
 	virtual void onMfmsr(int rt) = 0;
 	virtual void onMfspr(int rt, int spr) = 0;
 	virtual void onMftb(int rt, int tbr) = 0;
+	virtual void onMtcrf(int fxm, int rs) = 0;
 	virtual void onMtmsr(int rs, bool l) = 0;
 	virtual void onMtmsrd(int rs, bool l) = 0;
 	virtual void onMtocrf(int fxm, int rs) = 0;

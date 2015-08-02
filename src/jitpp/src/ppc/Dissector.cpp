@@ -86,7 +86,7 @@ void Dissector::dissectSpecial(ppc_op op)
 			onMtocrf(op.xfx_fxm(), op.xfx_rs());
 		}
 		else {
-			onUnknownInstr(op.op);
+			onMtcrf(op.xfx_fxm(), op.xfx_rs());
 		}
 	}
 	break;
