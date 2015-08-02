@@ -183,7 +183,13 @@ void Dissector::dissectTable3(ppc_op op)
 
 void Dissector::dissectTable13(ppc_op op)
 {
-	onUnknownInstr(op.op);
+	switch( op.a_xo() ) {
+
+	case 29: onFmadds(op.a_frt(), op.a_fra(), op.a_frc(), op.a_frb(), op.rc()); break;
+
+	default: onIllegalInstr(op.op);
+
+	}
 }
 
 void Dissector::dissectTable4(ppc_op op)
