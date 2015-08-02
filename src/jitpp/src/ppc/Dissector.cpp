@@ -18,7 +18,7 @@ void Dissector::dissectCr(ppc_op op)
 
 	case 150: onIsync();             break;
 
-	case 528: onBctr();              break;
+	case 528: onBctr(op.xl_lk());    break;
 
 	default:  onUnknownInstr(op.op); break;
 	}

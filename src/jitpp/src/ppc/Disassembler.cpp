@@ -255,9 +255,9 @@ void Disassembler::onBc(int bo, int bi, int16_t bd, bool aa, bool lk)
 	}
 }
 
-void Disassembler::onBctr()
+void Disassembler::onBctr(bool lk)
 {
-	sprintf( instr_name, "bctr" );
+	sprintf( instr_name, "bctr%s", lk ? "l" : "" );
 }
 
 void Disassembler::onBlr()

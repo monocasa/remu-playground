@@ -91,6 +91,9 @@ private:
 		int xfx_spr() { return ((op >> 6) & 0x3E0) | ((op >> 16) & 0x1F); }
 		int xfx_tbr() { return xfx_spr(); }
 
+		//XL Form
+		bool xl_lk() { return op & 1; }
+
 		//XO Form
 		int xo_ra() { return x_ra(); }
 		int xo_rb() { return x_rb(); }
@@ -127,7 +130,7 @@ protected:
 	virtual void onAndis(int ra, int rs, uint16_t ui) = 0;
 	virtual void onB(int32_t li, bool aa, bool lk) = 0;
 	virtual void onBc(int bo, int bi, int16_t bd, bool aa, bool lk) = 0;
-	virtual void onBctr() = 0;
+	virtual void onBctr(bool lk) = 0;
 	virtual void onBlr() = 0;
 	virtual void onCmp(int bf, bool l, int ra, int rb) = 0;
 	virtual void onCmpi(int bf, bool l, int ra, int16_t si) = 0;

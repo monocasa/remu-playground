@@ -46,7 +46,7 @@ private:
 	void onAndis(int ra, int rs, uint16_t ui) override final;
 	void onB(int32_t li, bool aa, bool lk) override final;
 	void onBc(int bo, int bi, int16_t bd, bool aa, bool lk) override final;
-	void onBctr() override final;
+	void onBctr(bool lk) override final;
 	void onBlr() override final;
 	void onCmp(int bf, bool l, int ra, int rb) override final;
 	void onCmpi(int bf, bool l, int ra, int16_t si) override final;
