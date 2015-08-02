@@ -147,6 +147,7 @@ protected:
 	virtual void onDcbst(int ra, int rb) = 0;
 	virtual void onDivdu(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onDivwu(int rt, int ra, int rb, bool oe, bool rc) = 0;
+	virtual void onEieio() = 0;
 	virtual void onExtsh(int ra, int rs, bool rc) = 0;
 	virtual void onExtsw(int ra, int rs, bool rc) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;

@@ -61,6 +61,7 @@ private:
 	void onDcbst(int ra, int rb) override final;
 	void onDivdu(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onDivwu(int rt, int ra, int rb, bool oe, bool rc) override final;
+	void onEieio() override final;
 	void onExtsh(int ra, int rs, bool rc) override final;
 	void onExtsw(int ra, int rs, bool rc) override final;
 	void onFmul(int frt, int fra, int frc, bool rc) override final;

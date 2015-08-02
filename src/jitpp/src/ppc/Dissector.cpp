@@ -157,6 +157,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 826: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
 	case 827: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
 
+	case 854: onEieio();                                                   break;
+
 	case 922: onExtsh(op.x_ra(), op.x_rs(), op.rc());                      break;
 
 	case 969: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;

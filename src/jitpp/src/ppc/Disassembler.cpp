@@ -393,6 +393,11 @@ void Disassembler::onIcbi(int ra, int rb)
 	}
 }
 
+void Disassembler::onEieio()
+{
+	sprintf( instr_name, "eieio" );
+}
+
 void Disassembler::onExtsh(int ra, int rs, bool rc)
 {
 	print_rr( "extsh", ra, rs, rc );
