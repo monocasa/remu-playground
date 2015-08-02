@@ -97,6 +97,7 @@ private:
 	void onMtspr(int spr, int rs) override final;
 	void onMulld(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onMulli(int rt, int ra, int16_t si) override final;
+	void onMullw(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onNeg(int rt, int ra, bool oe, bool rc) override final;
 	void onNor(int ra, int rs, int rb, bool rc) override final;
 	void onOr(int rs, int ra, int rb, bool rc) override final;

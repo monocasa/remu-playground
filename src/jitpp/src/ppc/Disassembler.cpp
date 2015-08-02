@@ -633,6 +633,16 @@ void Disassembler::onMulli(int rt, int ra, int16_t si)
 	sprintf( instr_args, "r%d,r%d,%d", rt, ra, si );
 }
 
+void Disassembler::onMullw(int rt, int ra, int rb, bool oe, bool rc)
+{
+	if( oe ) {
+		print_rrr( "mullwo", rt, ra, rb, rc );
+	}
+	else {
+		print_rrr( "mullw", rt, ra, rb, rc );
+	}
+}
+
 void Disassembler::onNeg(int rt, int ra, bool oe, bool rc)
 {
 	if( oe ) {

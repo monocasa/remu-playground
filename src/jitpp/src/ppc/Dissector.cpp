@@ -105,6 +105,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 233: onMulld(op.x_rt(), op.x_ra(), op.x_rb(), false, op.rc());    break;
 
+	case 235: onMullw(op.x_rt(), op.x_ra(), op.x_rb(), false, op.rc());    break;
+
 	case 266: onAdd(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc());   break;
 
 	case 274: onTlbiel(op.x_rb(), op.x_l_tlbiel());                        break;
@@ -138,6 +140,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 712: onSubfze(op.xo_rt(), op.xo_ra(), true, op.rc());             break;
 
 	case 745: onMulld(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
+
+	case 747: onMullw(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
 
 	case 778: onAdd(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());    break;
 

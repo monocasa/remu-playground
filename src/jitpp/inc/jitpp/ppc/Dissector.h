@@ -184,6 +184,7 @@ protected:
 	virtual void onMtspr(int spr, int rs) = 0;
 	virtual void onMulld(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onMulli(int rt, int ra, int16_t si) = 0;
+	virtual void onMullw(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onNeg(int rt, int ra, bool oe, bool rc) = 0;
 	virtual void onNor(int ra, int rs, int rb, bool rc) = 0;
 	virtual void onOr(int rs, int ra, int rb, bool rc) = 0;
