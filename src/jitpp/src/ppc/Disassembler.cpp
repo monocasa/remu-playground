@@ -204,6 +204,16 @@ void Disassembler::onAddic(int rt, int ra, int16_t si, bool rc)
 	print_rri( "addic", rt, ra, si, rc );
 }
 
+void Disassembler::onAddze(int rt, int ra, bool oe, bool rc)
+{
+	if( oe ) {
+		print_rr( "addzeo", rt, ra, rc );
+	}
+	else {
+		print_rr( "addze", rt, ra, rc );
+	}
+}
+
 void Disassembler::onAnd(int rs, int ra, int rb, bool rc)
 {
 	print_rrr( "and", rs, ra, rb, rc );

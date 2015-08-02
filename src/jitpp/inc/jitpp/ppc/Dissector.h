@@ -136,6 +136,7 @@ protected:
 	virtual void onAddi(int rt, int ra, int16_t si) = 0;
 	virtual void onAddis(int rt, int ra, int16_t si) = 0;
 	virtual void onAddic(int rt, int ra, int16_t si, bool rc) = 0;
+	virtual void onAddze(int rt, int ra, bool oe, bool rc) = 0;
 	virtual void onAnd(int rs, int ra, int rb, bool rc) = 0;
 	virtual void onAndc(int rs, int ra, int rb, bool rc) = 0;
 	virtual void onAndi(int ra, int rs, uint16_t ui) = 0;

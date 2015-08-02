@@ -47,6 +47,7 @@ private:
 	void onAddi(int rt, int ra, int16_t si) override final;
 	void onAddis(int rt, int ra, int16_t si) override final;
 	void onAddic(int rt, int ra, int16_t si, bool rc) override final;
+	void onAddze(int rt, int ra, bool oe, bool rc) override final;
 	void onAnd(int rs, int ra, int rb, bool rc) override final;
 	void onAndc(int rs, int ra, int rb, bool rc) override final;
 	void onAndi(int ra, int rs, uint16_t ui) override final;
