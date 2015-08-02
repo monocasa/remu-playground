@@ -29,6 +29,7 @@ private:
 	void print_rri(const char *op, int r0, int r1, int imm, bool rc);
 	void print_rrii(const char *op, int r0, int r1, int imm0, int imm1, bool rc);
 	void print_rrr(const char *op, int r0, int r1, int r2, bool rc);
+	void print_rrrii(const char *op, int r0, int r1, int r2, int imm0, int imm1, bool rc);
 	void print_b(const char *op, int32_t li, bool aa);
 
 	void onUnknownInstr(uint32_t instr) override final;
