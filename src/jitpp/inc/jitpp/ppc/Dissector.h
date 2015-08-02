@@ -79,6 +79,7 @@ private:
 
 		//X Form
 		int  x_bf()       { return (op >> 23) & 0x7; }
+		int  x_ih()       { return (op >> 21) & 0x7; }
 		bool x_l_cmp()    { return (op >> 21) & 0x1; }
 		bool x_l_mtmsr()  { return (op >> 16) & 0x1; }
 		bool x_l_mtmsrd() { return (op >> 16) & 0x1; }
@@ -202,6 +203,8 @@ protected:
 	virtual void onRlwinm(int ra, int rs, int sh, int mb, int me, bool rc) = 0;
 	virtual void onRlwnm(int ra, int rs, int rb, int mb, int mr, bool rc) = 0;
 	virtual void onSc(int lev) = 0;
+	virtual void onSlbia(int ih) = 0;
+	virtual void onSlbmte(int rs, int rb) = 0;
 	virtual void onSld(int ra, int rs, int rb, bool rc) = 0;
 	virtual void onSlw(int ra, int rs, int rb, bool rc) = 0;
 	virtual void onSrad(int ra, int rs, int rb, bool rc) = 0;

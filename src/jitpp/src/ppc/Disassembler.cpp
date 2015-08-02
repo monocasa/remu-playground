@@ -778,6 +778,21 @@ void Disassembler::onSc(int lev)
 	(void)lev;
 }
 
+void Disassembler::onSlbia(int ih)
+{
+	if( ih == 0 ) {
+		sprintf( instr_name, "slbia" );
+	}
+	else {
+		print_i( "slbia", ih );
+	}
+}
+
+void Disassembler::onSlbmte(int rs, int rb)
+{
+	print_rr( "slbmte", rs, rb, false );
+}
+
 void Disassembler::onSld(int ra, int rs, int rb, bool rc)
 {
 	print_rrr( "sld", ra, rs, rb, rc );

@@ -119,6 +119,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 371: onMftb(op.xfx_rt(), op.xfx_tbr());                           break;
 
+	case 402: onSlbmte(op.x_rs(), op.x_rb());                              break;
+
 	case 407: onSthx(op.x_rs(), op.x_ra(), op.x_rb());                     break;
 
 	case 444: onOr(op.x_ra(), op.x_rs(), op.x_rb(), op.rc());              break;
@@ -128,6 +130,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 459: onDivwu(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
 
 	case 467: onMtspr(op.xfx_spr(), op.xfx_rs());                          break;
+
+	case 498: onSlbia(op.x_ih());                                          break;
 
 	case 520: onSubfc(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
 

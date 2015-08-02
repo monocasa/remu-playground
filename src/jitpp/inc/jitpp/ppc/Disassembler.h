@@ -116,6 +116,8 @@ private:
 	void onRlwinm(int ra, int rs, int sh, int mb, int me, bool rc) override final;
 	void onRlwnm(int ra, int rs, int rb, int mb, int mr, bool rc) override final;
 	void onSc(int lev) override final;
+	void onSlbia(int ih) override final;
+	void onSlbmte(int rs, int rb) override final;
 	void onSld(int ra, int rs, int rb, bool rc) override final;
 	void onSlw(int ra, int rs, int rb, bool rc) override final;
 	void onSrad(int ra, int rs, int rb, bool rc) override final;
