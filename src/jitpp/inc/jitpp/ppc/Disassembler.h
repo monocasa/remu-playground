@@ -133,6 +133,7 @@ private:
 	void onStwu(int rs, int16_t d, int ra) override final;
 	void onStwx(int rs, int ra, int rb) override final;
 	void onSubf(int rt, int ra, int rb, bool oe, bool rc) override final;
+	void onSubfc(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onSubfe(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onSubfic(int rt, int ra, int16_t si) override final;
 	void onSubfze(int rt, int ra, bool oe, bool rc) override final;

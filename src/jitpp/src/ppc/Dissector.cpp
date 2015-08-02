@@ -46,6 +46,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 0:   onCmp(op.x_bf(), op.x_l_cmp(), op.x_ra(), op.x_rb());        break;
 
+	case 8:   onSubfc(op.x_rt(), op.x_ra(), op.x_rb(), false, op.rc());    break;
+
 	case 19: {
 		if( (op.op >> 20 & 1) == 0 ) {
 			onMfcr(op.xfx_rt());
@@ -122,6 +124,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 457: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
 
 	case 467: onMtspr(op.xfx_spr(), op.xfx_rs());                          break;
+
+	case 520: onSubfc(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
 
 	case 552: onSubf(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());   break;
 

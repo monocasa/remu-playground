@@ -857,6 +857,16 @@ void Disassembler::onSubf(int rt, int ra, int rb, bool oe, bool rc)
 	}
 }
 
+void Disassembler::onSubfc(int rt, int ra, int rb, bool oe, bool rc)
+{
+	if( oe ) {
+		print_rrr( "subfco", rt, ra, rb, rc );
+	}
+	else {
+		print_rrr( "subfc", rt, ra, rb, rc );
+	}
+}
+
 void Disassembler::onSubfe(int rt, int ra, int rb, bool oe, bool rc)
 {
 	if( oe ) {
