@@ -169,6 +169,16 @@ void Disassembler::onAdd(int rt, int ra, int rb, bool oe, bool rc)
 	}
 }
 
+void Disassembler::onAdde(int rt, int ra, int rb, bool oe, bool rc)
+{
+	if( oe ) {
+		print_rrr( "addeo", rt, ra, rb, rc );
+	}
+	else {
+		print_rrr( "adde", rt, ra, rb, rc );
+	}
+}
+
 void Disassembler::onAddi(int rt, int ra, int16_t si)
 {
 	if( ra == 0 ) {

@@ -132,6 +132,7 @@ protected:
 	virtual void onRsvdInstr(uint32_t instr) = 0;
 
 	virtual void onAdd(int rt, int ra, int rb, bool oe, bool rc) = 0;
+	virtual void onAdde(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onAddi(int rt, int ra, int16_t si) = 0;
 	virtual void onAddis(int rt, int ra, int16_t si) = 0;
 	virtual void onAddic(int rt, int ra, int16_t si, bool rc) = 0;

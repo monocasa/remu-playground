@@ -83,6 +83,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 136: onSubfe(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
 
+	case 138: onAdde(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc());  break;
+
 	case 144: {
 		if( (op.op >> 20 & 1) == 1 ) {
 			onMtocrf(op.xfx_fxm(), op.xfx_rs());
@@ -148,6 +150,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 616: onNeg(op.xo_rt(), op.xo_ra(), true, op.rc());                break;
 
 	case 648: onSubfe(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;
+
+	case 650: onAdde(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());   break;
 
 	case 712: onSubfze(op.xo_rt(), op.xo_ra(), true, op.rc());             break;
 

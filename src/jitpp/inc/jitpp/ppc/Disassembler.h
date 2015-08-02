@@ -43,6 +43,7 @@ private:
 	void onRsvdInstr(uint32_t instr) override final;
 	
 	void onAdd(int rt, int ra, int rb, bool oe, bool rc) override final;
+	void onAdde(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onAddi(int rt, int ra, int16_t si) override final;
 	void onAddis(int rt, int ra, int16_t si) override final;
 	void onAddic(int rt, int ra, int16_t si, bool rc) override final;
