@@ -127,6 +127,7 @@ private:
 	void onStq(int rs, int16_t ds, int ra) override final;
 	void onStw(int rs, int16_t d, int ra) override final;
 	void onStwu(int rs, int16_t d, int ra) override final;
+	void onStwx(int rs, int ra, int rb) override final;
 	void onSubf(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onSubfe(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onSubfic(int rt, int ra, int16_t si) override final;

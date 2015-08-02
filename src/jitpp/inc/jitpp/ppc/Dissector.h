@@ -209,6 +209,7 @@ protected:
 	virtual void onStq(int rs, int16_t ds, int ra) = 0;
 	virtual void onStw(int rs, int16_t d, int ra) = 0;
 	virtual void onStwu(int rs, int16_t d, int ra) = 0;
+	virtual void onStwx(int rs, int ra, int rb) = 0;
 	virtual void onSubf(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onSubfe(int rt, int ra, int rb, bool oe, bool rc) = 0;
 	virtual void onSubfic(int rt, int ra, int16_t si) = 0;

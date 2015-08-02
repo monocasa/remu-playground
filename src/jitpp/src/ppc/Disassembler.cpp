@@ -820,6 +820,11 @@ void Disassembler::onStwu(int rs, int16_t d, int ra)
 	print_mem_args( "stwu", rs, d, ra );
 }
 
+void Disassembler::onStwx(int rs, int ra, int rb)
+{
+	print_rrr( "stwx", rs, ra, rb, false );
+}
+
 void Disassembler::onSubf(int rt, int ra, int rb, bool oe, bool rc)
 {
 	if( oe ) {
