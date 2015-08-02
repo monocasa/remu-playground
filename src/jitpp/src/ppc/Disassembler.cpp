@@ -72,6 +72,12 @@ void Disassembler::print_fff(const char *op, int fr0, int fr1, int fr2, bool rc)
 	sprintf( instr_args, "f%d,f%d,f%d", fr0, fr1, fr2 );
 }
 
+void Disassembler::print_ffff(const char *op, int fr0, int fr1, int fr2, int fr3, bool rc)
+{
+	sprintf( instr_name, "%s%s", op, rc ? "." : "" );
+	sprintf( instr_args, "f%d,f%d,f%d,f%d", fr0, fr1, fr2, fr3 );
+}
+
 void Disassembler::print_r(const char *op, int r)
 {
 	sprintf( instr_name, "%s", op );
@@ -384,6 +390,11 @@ void Disassembler::onExtsw(int ra, int rs, bool rc)
 void Disassembler::onFmul(int frt, int fra, int frc, bool rc)
 {
 	print_fff( "fmul", frt, fra, frc, rc );
+}
+
+void Disassembler::onFnmadd(int frt, int fra, int frc, int frb, bool rc)
+{
+	print_ffff( "fnmadd", frt, fra, frc, frb, rc );
 }
 
 void Disassembler::onIsync()

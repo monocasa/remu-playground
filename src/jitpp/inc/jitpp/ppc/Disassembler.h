@@ -24,6 +24,7 @@ private:
 	void print_mem_args_float(const char* op, int fr, int16_t d, int ra);
 	void print_ir(const char *op, int imm, int r);
 	void print_fff(const char *op, int fr0, int fr1, int fr2, bool rc);
+	void print_ffff(const char *op, int fr0, int fr1, int fr2, int fr3, bool rc);
 	void print_r(const char *op, int r);
 	void print_ri(const char *op, int r0, int imm, bool rc);
 	void print_rr(const char *op, int r0, int r1, bool rc);
@@ -61,6 +62,7 @@ private:
 	void onExtsh(int ra, int rs, bool rc) override final;
 	void onExtsw(int ra, int rs, bool rc) override final;
 	void onFmul(int frt, int fra, int frc, bool rc) override final;
+	void onFnmadd(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onIcbi(int ra, int rb) override final;
 	void onIsync() override final;
 	void onLbz(int rt, int16_t d, int ra) override final;

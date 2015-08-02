@@ -149,6 +149,7 @@ protected:
 	virtual void onExtsh(int ra, int rs, bool rc) = 0;
 	virtual void onExtsw(int ra, int rs, bool rc) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
+	virtual void onFnmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onIcbi(int ra, int rb) = 0;
 	virtual void onIsync() = 0;
 	virtual void onLbz(int rt, int16_t d, int ra) = 0;
