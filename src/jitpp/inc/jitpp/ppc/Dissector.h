@@ -79,6 +79,8 @@ private:
 
 		//X Form
 		int  x_bf()       { return (op >> 23) & 0x7; }
+		int  x_frt()      { return x_rt(); }
+		int  x_frb()      { return x_rb(); }
 		int  x_ih()       { return (op >> 21) & 0x7; }
 		bool x_l_cmp()    { return (op >> 21) & 0x1; }
 		bool x_l_mtmsr()  { return (op >> 16) & 0x1; }
@@ -121,6 +123,7 @@ private:
 	void dissectTable13(ppc_op op);
 	void dissectTable4(ppc_op op);
 	void dissectTable14(ppc_op op);
+	void dissectTable14_x_form(ppc_op op);
 
 protected:
 	virtual void onUnknownInstr(uint32_t instr) = 0;
@@ -151,6 +154,7 @@ protected:
 	virtual void onEieio() = 0;
 	virtual void onExtsh(int ra, int rs, bool rc) = 0;
 	virtual void onExtsw(int ra, int rs, bool rc) = 0;
+	virtual void onFabs(int frt, int frb, bool rc) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onFmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFmadds(int frt, int fra, int frc, int frb, bool rc) = 0;

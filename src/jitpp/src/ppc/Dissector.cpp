@@ -225,11 +225,24 @@ void Dissector::dissectTable14(ppc_op op)
 {
 	switch( op.a_xo() ) {
 
+	case 8:  dissectTable14_x_form(op);                                         break;
+
 	case 25: onFmul(op.a_frt(), op.a_fra(), op.a_frc(), op.rc());               break;
 
 	case 29: onFmadd(op.a_frt(), op.a_fra(), op.a_frc(), op.a_frb(), op.rc());  break;
 
 	case 31: onFnmadd(op.a_frt(), op.a_fra(), op.a_frc(), op.a_frb(), op.rc()); break;
+
+	default: onIllegalInstr(op.op);
+
+	}
+}
+
+void Dissector::dissectTable14_x_form(ppc_op op)
+{
+	switch( op.x_xo() ) {
+
+	case 264: onFabs(op.x_frt(), op.x_frb(), op.rc()); break;
 
 	default: onIllegalInstr(op.op);
 
