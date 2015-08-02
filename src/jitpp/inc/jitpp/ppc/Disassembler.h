@@ -103,6 +103,7 @@ private:
 	void onMulld(int rt, int ra, int rb, bool oe, bool rc) override final;
 	void onMulli(int rt, int ra, int16_t si) override final;
 	void onMullw(int rt, int ra, int rb, bool oe, bool rc) override final;
+	void onNand(int ra, int rs, int rb, bool rc) override final;
 	void onNeg(int rt, int ra, bool oe, bool rc) override final;
 	void onNor(int ra, int rs, int rb, bool rc) override final;
 	void onOr(int rs, int ra, int rb, bool rc) override final;
@@ -150,6 +151,7 @@ private:
 	void onTdi(uint8_t to, int ra, int16_t si) override final;
 	void onTlbiel(int rb, int l) override final;
 	void onTwi(uint8_t to, int ra, int16_t si) override final;
+	void onXor(int ra, int rs, int rb, bool rc) override final;
 	void onXori(int ra, int rs, uint16_t ui) override final;
 	void onXoris(int ra, int rs, uint16_t ui) override final;
 

@@ -674,6 +674,11 @@ void Disassembler::onMullw(int rt, int ra, int rb, bool oe, bool rc)
 	}
 }
 
+void Disassembler::onNand(int ra, int rs, int rb, bool rc)
+{
+	print_rrr( "nand", ra, rs, rb, rc );
+}
+
 void Disassembler::onNeg(int rt, int ra, bool oe, bool rc)
 {
 	if( oe ) {
@@ -985,6 +990,11 @@ void Disassembler::onTwi(uint8_t to, int ra, int16_t si)
 	(void)to;
 	(void)ra;
 	(void)si;
+}
+
+void Disassembler::onXor(int ra, int rs, int rb, bool rc)
+{
+	print_rrr( "xor", ra, rs, rb, rc );
 }
 
 void Disassembler::onXori(int ra, int rs, uint16_t ui)
