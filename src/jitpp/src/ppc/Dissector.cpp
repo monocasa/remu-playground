@@ -125,6 +125,8 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 457: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
 
+	case 459: onDivwu(op.xo_rt(), op.xo_ra(), op.xo_rb(), false, op.rc()); break;
+
 	case 467: onMtspr(op.xfx_spr(), op.xfx_rs());                          break;
 
 	case 520: onSubfc(op.x_rt(), op.x_ra(), op.x_rb(), true, op.rc());     break;
@@ -156,6 +158,8 @@ void Dissector::dissectSpecial(ppc_op op)
 	case 922: onExtsh(op.x_ra(), op.x_rs(), op.rc());                      break;
 
 	case 969: onDivdu(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;
+
+	case 971: onDivwu(op.xo_rt(), op.xo_ra(), op.xo_rb(), true, op.rc());  break;
 
 	case 982: onIcbi(op.x_ra(), op.x_rb());                                break;
 

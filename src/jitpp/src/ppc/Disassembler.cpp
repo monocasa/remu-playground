@@ -367,6 +367,16 @@ void Disassembler::onDivdu(int rt, int ra, int rb, bool oe, bool rc)
 	}
 }
 
+void Disassembler::onDivwu(int rt, int ra, int rb, bool oe, bool rc)
+{
+	if( oe ) {
+		print_rrr( "divwuo", rt, ra, rb, rc );
+	}
+	else {
+		print_rrr( "divwu", rt, ra, rb, rc );
+	}
+}
+
 void Disassembler::onIcbi(int ra, int rb)
 {
 	if( ra == 0 ) {
