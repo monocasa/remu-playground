@@ -526,7 +526,6 @@ void Disassembler::onMfspr(int rt, int spr)
 
 		default:  print_ri("mfspr", rt, spr, false); break;
 	}
-
 }
 
 void Disassembler::onMftb(int rt, int tbr)
