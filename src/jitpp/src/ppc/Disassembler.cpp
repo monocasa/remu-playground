@@ -645,6 +645,8 @@ void Disassembler::onMtspr(int spr, int rs)
 		case 8:    print_r("mtlr", rs);   break;
 		case 9:    print_r("mtctr", rs);  break;
 
+		case 22:   print_r("mtdec", rs);  break;
+
 		case 26:   print_r("mtsrr0", rs); break;
 		case 27:   print_r("mtsrr1", rs); break;
 
