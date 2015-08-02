@@ -22,6 +22,7 @@ private:
 
 	void print_mem_args(const char *op, int r, int16_t d, int ra);
 	void print_mem_args_float(const char* op, int fr, int16_t d, int ra);
+	void print_i(const char *op, int imm);
 	void print_ir(const char *op, int imm, int r);
 	void print_fff(const char *op, int fr0, int fr1, int fr2, bool rc);
 	void print_ffff(const char *op, int fr0, int fr1, int fr2, int fr3, bool rc);

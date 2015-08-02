@@ -60,6 +60,12 @@ void Disassembler::print_mem_args_float(const char* op, int fr, int16_t d, int r
 	sprintf( instr_args, "f%d,%d(r%d)", fr, d, ra );
 }
 
+void Disassembler::print_i(const char *op, int imm)
+{
+	sprintf( instr_name, "%s", op );
+	sprintf( instr_args, "%d", imm );
+}
+
 void Disassembler::print_ir(const char *op, int imm, int r)
 {
 	sprintf( instr_name, "%s", op );
@@ -919,8 +925,12 @@ void Disassembler::onSubfze(int rt, int ra, bool oe, bool rc)
 
 void Disassembler::onSync(int l)
 {
-	(void)l;
-	sprintf( instr_name, "sync    " );
+	switch( l ) {
+	case 0:  sprintf( instr_name, "sync    " ); break;
+	case 1:  sprintf( instr_name, "lwsync" );   break;
+	case 2:  sprintf( instr_name, "ptesync" );  break;
+	default: print_i( "sync", l );              break;
+	}
 }
 
 void Disassembler::onTdi(uint8_t to, int ra, int16_t si)
