@@ -172,6 +172,7 @@ protected:
 	virtual void onFdivs(int frt, int fra, int frb, bool rc) = 0;
 	virtual void onFmr(int frt, int frb, bool rc) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
+	virtual void onFmuls(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onFmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFmadds(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFnmadd(int frt, int fra, int frc, int frb, bool rc) = 0;

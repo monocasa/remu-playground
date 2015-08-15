@@ -82,6 +82,7 @@ private:
 	void onFdivs(int frt, int fra, int frb, bool rc) override final;
 	void onFmr(int frt, int frb, bool rc) override final;
 	void onFmul(int frt, int fra, int frc, bool rc) override final;
+	void onFmuls(int frt, int fra, int frc, bool rc) override final;
 	void onFmadd(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onFmadds(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onFnmadd(int frt, int fra, int frc, int frb, bool rc) override final;

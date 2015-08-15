@@ -225,6 +225,8 @@ void Dissector::dissectTable13(ppc_op op)
 
 	case 21: onFadds(op.a_frt(), op.a_fra(), op.a_frb(), op.rc());              break;
 
+	case 25: onFmuls(op.a_frt(), op.a_fra(), op.a_frc(), op.rc());              break;
+
 	case 29: onFmadds(op.a_frt(), op.a_fra(), op.a_frc(), op.a_frb(), op.rc()); break;
 
 	default: onIllegalInstr(op.op);
