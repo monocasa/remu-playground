@@ -105,6 +105,16 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 146: onMtmsr(op.x_rs(), op.x_l_mtmsr());                          break;
 
+	case 150: {
+		if( op.rc() ) {
+			onStwcx(op.x_rs(), op.x_ra(), op.x_rb());
+		}
+		else {
+			onIllegalInstr(op.op);
+		}
+	}
+	break;
+
 	case 151: onStwx(op.x_rs(), op.x_ra(), op.x_rb());                     break;
 
 	case 178: onMtmsrd(op.x_rs(), op.x_l_mtmsrd());                        break;

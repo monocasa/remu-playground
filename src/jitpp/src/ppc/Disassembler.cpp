@@ -126,6 +126,19 @@ void Disassembler::print_rr(const char *op, int r0, int r1, bool rc)
 	sprintf( instr_args, "r%d,r%d", r0, r1 );
 }
 
+void Disassembler::print_rr0r(const char *op, int r0, int r1, int r2, bool rc)
+{
+	sprintf( instr_name, "%s%s", op, rc ? "." : "" );
+
+	if( r1 == 0 ) {
+		sprintf( instr_args, "r%d,0,r%d", r0, r2 );
+	}
+	else {
+		sprintf( instr_args, "r%d,r%d,r%d", r0, r1, r2 );
+
+	}
+}
+
 void Disassembler::print_rri(const char *op, int r0, int r1, int imm, bool rc)
 {
 	sprintf( instr_name, "%s%s", op, rc ? "." : "" );
@@ -1049,6 +1062,11 @@ void Disassembler::onStq(int rs, int16_t ds, int ra)
 void Disassembler::onStw(int rs, int16_t d, int ra)
 {
 	print_mem_args( "stw", rs, d, ra );
+}
+
+void Disassembler::onStwcx(int rs, int ra, int rb)
+{
+	print_rr0r( "stwcx", rs, ra, rb, true );
 }
 
 void Disassembler::onStwu(int rs, int16_t d, int ra)

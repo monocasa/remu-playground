@@ -32,6 +32,7 @@ private:
 	void print_r(const char *op, int r);
 	void print_ri(const char *op, int r0, int imm, bool rc);
 	void print_rr(const char *op, int r0, int r1, bool rc);
+	void print_rr0r(const char *op, int r0, int r1, int r2, bool rc);
 	void print_rri(const char *op, int r0, int r1, int imm, bool rc);
 	void print_rrii(const char *op, int r0, int r1, int imm0, int imm1, bool rc);
 	void print_rriii(const char *op, int r0, int r1, int imm0, int imm1, int imm2, bool rc);
@@ -153,6 +154,7 @@ private:
 	void onStmw(int rs, int16_t d, int ra) override final;
 	void onStq(int rs, int16_t ds, int ra) override final;
 	void onStw(int rs, int16_t d, int ra) override final;
+	void onStwcx(int rs, int ra, int rb) override final;
 	void onStwu(int rs, int16_t d, int ra) override final;
 	void onStwx(int rs, int ra, int rb) override final;
 	void onSubf(int rt, int ra, int rb, bool oe, bool rc) override final;
