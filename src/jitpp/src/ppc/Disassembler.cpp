@@ -60,6 +60,18 @@ void Disassembler::print_mem_args_float(const char* op, int fr, int16_t d, int r
 	sprintf( instr_args, "f%d,%d(r%d)", fr, d, ra );
 }
 
+void Disassembler::print_condition(int bit, char *buffer, int size)
+{
+	static const char* fields[4] = {
+		"lt", "gt", "eq", "so"
+	};
+
+	const int cr_num = bit / 4;
+	const int cr_bit = bit % 4;
+
+	snprintf(buffer, size, "4*cr%d+%s", cr_num, fields[cr_bit]);
+} 
+
 void Disassembler::print_i(const char *op, int imm)
 {
 	sprintf( instr_name, "%s", op );
@@ -366,6 +378,86 @@ void Disassembler::onCmpli(int bf, bool l, int ra, uint16_t ui)
 	}
 	else {
 		sprintf( instr_args, "cr%d,r%d,%d", bf, ra, ui );
+	}
+}
+
+void Disassembler::onCrnor(int bt, int ba, int bb)
+{
+	char bt_str[20];
+	char ba_str[20];
+	char bb_str[20];
+
+	print_condition(bt, bt_str, 20);
+	print_condition(ba, ba_str, 20);
+	print_condition(bb, bb_str, 20);
+
+	if( ba == bb ) {
+		sprintf( instr_name, "crnot" );
+		sprintf( instr_args, "%s,%s", bt_str, ba_str );
+	}
+	else {
+		sprintf( instr_name, "crnor" );
+		sprintf( instr_args, "%s,%s,%s", bt_str, ba_str, bb_str );
+	}
+}
+
+void Disassembler::onCror(int bt, int ba, int bb)
+{
+	char bt_str[20];
+	char ba_str[20];
+	char bb_str[20];
+
+	print_condition(bt, bt_str, 20);
+	print_condition(ba, ba_str, 20);
+	print_condition(bb, bb_str, 20);
+
+	if( ba == bb ) {
+		sprintf( instr_name, "crmove" );
+		sprintf( instr_args, "%s,%s", bt_str, ba_str );
+	}
+	else {
+		sprintf( instr_name, "cror" );
+		sprintf( instr_args, "%s,%s,%s", bt_str, ba_str, bb_str );
+	}
+}
+
+void Disassembler::onCreqv(int bt, int ba, int bb)
+{
+	char bt_str[20];
+	char ba_str[20];
+	char bb_str[20];
+
+	print_condition(bt, bt_str, 20);
+	print_condition(ba, ba_str, 20);
+	print_condition(bb, bb_str, 20);
+
+	if( (bt == ba) && (ba == bb) ) {
+		sprintf( instr_name, "crset" );
+		sprintf( instr_args, "%s", bt_str );
+	}
+	else {
+		sprintf( instr_name, "creqv" );
+		sprintf( instr_args, "%s,%s,%s", bt_str, ba_str, bb_str );
+	}
+}
+
+void Disassembler::onCrxor(int bt, int ba, int bb)
+{
+	char bt_str[20];
+	char ba_str[20];
+	char bb_str[20];
+
+	print_condition(bt, bt_str, 20);
+	print_condition(ba, ba_str, 20);
+	print_condition(bb, bb_str, 20);
+
+	if( (bt == ba) && (ba == bb) ) {
+		sprintf( instr_name, "crclr" );
+		sprintf( instr_args, "%s", bt_str );
+	}
+	else {
+		sprintf( instr_name, "crxor" );
+		sprintf( instr_args, "%s,%s,%s", bt_str, ba_str, bb_str );
 	}
 }
 

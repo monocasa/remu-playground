@@ -102,6 +102,9 @@ private:
 		int xfx_tbr() { return xfx_spr(); }
 
 		//XL Form
+		int  xl_ba() { return (op >> 16) & 0x1F; }
+		int  xl_bb() { return (op >> 11) & 0x1F; }
+		int  xl_bt() { return (op >> 21) & 0x1F; }
 		bool xl_lk() { return op & 1; }
 
 		//XO Form
@@ -149,6 +152,10 @@ protected:
 	virtual void onCmpi(int bf, bool l, int ra, int16_t si) = 0;
 	virtual void onCmpl(int bf, bool l, int ra, int rb) = 0;
 	virtual void onCmpli(int bf, bool l, int ra, uint16_t ui) = 0;
+	virtual void onCreqv(int bt, int ba, int bb) = 0;
+	virtual void onCrnor(int bt, int ba, int bb) = 0;
+	virtual void onCror(int bt, int ba, int bb) = 0;
+	virtual void onCrxor(int bt, int ba, int bb) = 0;
 	virtual void onDcbf(int ra, int rb) = 0;
 	virtual void onDcbst(int ra, int rb) = 0;
 	virtual void onDivdu(int rt, int ra, int rb, bool oe, bool rc) = 0;

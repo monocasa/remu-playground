@@ -22,6 +22,7 @@ private:
 
 	void print_mem_args(const char *op, int r, int16_t d, int ra);
 	void print_mem_args_float(const char* op, int fr, int16_t d, int ra);
+	void print_condition(int bit, char *buffer, int size);
 	void print_i(const char *op, int imm);
 	void print_ir(const char *op, int imm, int r);
 	void print_ff(const char *op, int fr0, int fr1, bool rc);
@@ -60,6 +61,10 @@ private:
 	void onCmpi(int bf, bool l, int ra, int16_t si) override final;
 	void onCmpl(int bf, bool l, int ra, int rb) override final;
 	void onCmpli(int bf, bool l, int ra, uint16_t ui) override final;
+	void onCreqv(int bt, int ba, int bb) override final;
+	void onCrnor(int bt, int ba, int bb) override final;
+	void onCror(int bt, int ba, int bb) override final;
+	void onCrxor(int bt, int ba, int bb) override final;
 	void onDcbf(int ra, int rb) override final;
 	void onDcbst(int ra, int rb) override final;
 	void onDivdu(int rt, int ra, int rb, bool oe, bool rc) override final;

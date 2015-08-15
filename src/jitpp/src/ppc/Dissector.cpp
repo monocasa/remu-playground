@@ -12,15 +12,23 @@ void Dissector::dissectVectorOp4(ppc_op op)
 void Dissector::dissectCr(ppc_op op)
 {
 	switch( op.x_xo() ) {
-	case 16:  onBlr();               break;
+	case 16:  onBlr();                                      break;
 
-	case 18:  onRfid();              break;
+	case 18:  onRfid();                                     break;
 
-	case 150: onIsync();             break;
+	case 33:  onCrnor(op.xl_bt(), op.xl_ba(), op.xl_bb());  break;
 
-	case 528: onBctr(op.xl_lk());    break;
+	case 150: onIsync();                                    break;
 
-	default:  onUnknownInstr(op.op); break;
+	case 193: onCrxor(op.xl_bt(), op.xl_ba(), op.xl_bb());  break;
+
+	case 289: onCreqv(op.xl_bt(), op.xl_ba(), op.xl_bb());  break;
+
+	case 449: onCror(op.xl_bt(), op.xl_ba(), op.xl_bb());   break;
+
+	case 528: onBctr(op.xl_lk());                           break;
+
+	default:  onUnknownInstr(op.op);                        break;
 	}
 }
 
