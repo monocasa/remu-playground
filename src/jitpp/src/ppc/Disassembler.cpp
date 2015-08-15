@@ -565,6 +565,16 @@ void Disassembler::onFcmpu(int bf, int fra, int frb)
 	print_cff( "fcmpu", bf, fra, frb );
 }
 
+void Disassembler::onFdiv(int frt, int fra, int frb, bool rc)
+{
+	print_fff( "fdiv", frt, fra, frb, rc );
+}
+
+void Disassembler::onFdivs(int frt, int fra, int frb, bool rc)
+{
+	print_fff( "fdivs", frt, fra, frb, rc );
+}
+
 void Disassembler::onFmr(int frt, int frb, bool rc)
 {
 	print_ff( "fmr", frt, frb, rc );

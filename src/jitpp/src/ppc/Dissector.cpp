@@ -221,6 +221,8 @@ void Dissector::dissectTable13(ppc_op op)
 {
 	switch( op.a_xo() ) {
 
+	case 18: onFdivs(op.a_frt(), op.a_fra(), op.a_frb(), op.rc());              break;
+
 	case 21: onFadds(op.a_frt(), op.a_fra(), op.a_frb(), op.rc());              break;
 
 	case 29: onFmadds(op.a_frt(), op.a_fra(), op.a_frc(), op.a_frb(), op.rc()); break;
@@ -255,6 +257,8 @@ void Dissector::dissectTable14(ppc_op op)
 	case 0:  dissectTable14_x_form(op);                                         break;
 
 	case 8:  dissectTable14_x_form(op);                                         break;
+
+	case 18: onFdiv(op.a_frt(), op.a_fra(), op.a_frb(), op.rc());               break;
 
 	case 21: onFadd(op.a_frt(), op.a_fra(), op.a_frb(), op.rc());               break;
 
