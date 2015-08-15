@@ -72,6 +72,12 @@ void Disassembler::print_condition(int bit, char *buffer, int size)
 	snprintf(buffer, size, "4*cr%d+%s", cr_num, fields[cr_bit]);
 } 
 
+void Disassembler::print_cff(const char *op, int cr, int fr0, int fr1)
+{
+	sprintf( instr_name, "%s", op );
+	sprintf( instr_args, "cr%d,f%d,f%d", cr, fr0, fr1 );
+}
+
 void Disassembler::print_i(const char *op, int imm)
 {
 	sprintf( instr_name, "%s", op );
@@ -539,6 +545,11 @@ void Disassembler::onFadd(int frt, int fra, int frb, bool rc)
 void Disassembler::onFadds(int frt, int fra, int frb, bool rc)
 {
 	print_fff( "fadds", frt, fra, frb, rc );
+}
+
+void Disassembler::onFcmpu(int bf, int fra, int frb)
+{
+	print_cff( "fcmpu", bf, fra, frb );
 }
 
 void Disassembler::onFmul(int frt, int fra, int frc, bool rc)

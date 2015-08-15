@@ -79,8 +79,9 @@ private:
 
 		//X Form
 		int  x_bf()       { return (op >> 23) & 0x7; }
-		int  x_frt()      { return x_rt(); }
+		int  x_fra()      { return x_ra(); }
 		int  x_frb()      { return x_rb(); }
+		int  x_frt()      { return x_rt(); }
 		int  x_ih()       { return (op >> 21) & 0x7; }
 		bool x_l_cmp()    { return (op >> 21) & 0x1; }
 		bool x_l_mtmsr()  { return (op >> 16) & 0x1; }
@@ -166,6 +167,7 @@ protected:
 	virtual void onFabs(int frt, int frb, bool rc) = 0;
 	virtual void onFadd(int frt, int fra, int frb, bool rc) = 0;
 	virtual void onFadds(int frt, int fra, int frb, bool rc) = 0;
+	virtual void onFcmpu(int bf, int fra, int frb) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onFmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFmadds(int frt, int fra, int frc, int frb, bool rc) = 0;

@@ -242,6 +242,7 @@ void Dissector::dissectTable4(ppc_op op)
 void Dissector::dissectTable14(ppc_op op)
 {
 	switch( op.a_xo() ) {
+	case 0:  dissectTable14_x_form(op);                                         break;
 
 	case 8:  dissectTable14_x_form(op);                                         break;
 
@@ -261,8 +262,9 @@ void Dissector::dissectTable14(ppc_op op)
 void Dissector::dissectTable14_x_form(ppc_op op)
 {
 	switch( op.x_xo() ) {
+	case 0: onFcmpu(op.x_bf(), op.x_fra(), op.x_frb()); break;
 
-	case 264: onFabs(op.x_frt(), op.x_frb(), op.rc()); break;
+	case 264: onFabs(op.x_frt(), op.x_frb(), op.rc());  break;
 
 	default: onIllegalInstr(op.op);
 
