@@ -187,7 +187,7 @@ void Dissector::dissectSpecial(ppc_op op)
 
 	case 824: onSrawi(op.x_ra(), op.x_rs(), op.x_sh(), op.rc());           break;
 
-	//Doubled up because the 6th shift bit is shard with x_xo
+	//Doubled up because the 6th shift bit is shared with x_xo
 	case 826: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
 	case 827: onSradi(op.xs_ra(), op.xs_rs(), op.xs_sh(), op.rc());        break;
 
