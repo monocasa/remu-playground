@@ -175,6 +175,8 @@ protected:
 	virtual void onFmuls(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onFmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFmadds(int frt, int fra, int frc, int frb, bool rc) = 0;
+	virtual void onFmsub(int frt, int fra, int frc, int frb, bool rc) = 0;
+	virtual void onFmsubs(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFnmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onIcbi(int ra, int rb) = 0;
 	virtual void onIsync() = 0;

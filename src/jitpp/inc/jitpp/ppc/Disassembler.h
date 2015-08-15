@@ -85,6 +85,8 @@ private:
 	void onFmuls(int frt, int fra, int frc, bool rc) override final;
 	void onFmadd(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onFmadds(int frt, int fra, int frc, int frb, bool rc) override final;
+	void onFmsub(int frt, int fra, int frc, int frb, bool rc) override final;
+	void onFmsubs(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onFnmadd(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onIcbi(int ra, int rb) override final;
 	void onIsync() override final;

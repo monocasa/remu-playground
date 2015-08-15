@@ -600,6 +600,16 @@ void Disassembler::onFmadds(int frt, int fra, int frc, int frb, bool rc)
 	print_ffff( "fmadds", frt, fra, frc, frb, rc );
 }
 
+void Disassembler::onFmsub(int frt, int fra, int frc, int frb, bool rc)
+{
+	print_ffff( "fmsub", frt, fra, frc, frb, rc );
+}
+
+void Disassembler::onFmsubs(int frt, int fra, int frc, int frb, bool rc)
+{
+	print_ffff( "fmsubs", frt, fra, frc, frb, rc );
+}
+
 void Disassembler::onFnmadd(int frt, int fra, int frc, int frb, bool rc)
 {
 	print_ffff( "fnmadd", frt, fra, frc, frb, rc );
