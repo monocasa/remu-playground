@@ -73,6 +73,8 @@ private:
 	void onExtsh(int ra, int rs, bool rc) override final;
 	void onExtsw(int ra, int rs, bool rc) override final;
 	void onFabs(int frt, int frb, bool rc) override final;
+	void onFadd(int frt, int fra, int frb, bool rc) override final;
+	void onFadds(int frt, int fra, int frb, bool rc) override final;
 	void onFmul(int frt, int fra, int frc, bool rc) override final;
 	void onFmadd(int frt, int fra, int frc, int frb, bool rc) override final;
 	void onFmadds(int frt, int fra, int frc, int frb, bool rc) override final;

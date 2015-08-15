@@ -164,6 +164,8 @@ protected:
 	virtual void onExtsh(int ra, int rs, bool rc) = 0;
 	virtual void onExtsw(int ra, int rs, bool rc) = 0;
 	virtual void onFabs(int frt, int frb, bool rc) = 0;
+	virtual void onFadd(int frt, int fra, int frb, bool rc) = 0;
+	virtual void onFadds(int frt, int fra, int frb, bool rc) = 0;
 	virtual void onFmul(int frt, int fra, int frc, bool rc) = 0;
 	virtual void onFmadd(int frt, int fra, int frc, int frb, bool rc) = 0;
 	virtual void onFmadds(int frt, int fra, int frc, int frb, bool rc) = 0;

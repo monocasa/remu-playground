@@ -531,6 +531,16 @@ void Disassembler::onFabs(int frt, int frb, bool rc)
 	print_ff( "fabs", frt, frb, rc );
 }
 
+void Disassembler::onFadd(int frt, int fra, int frb, bool rc)
+{
+	print_fff( "fadd", frt, fra, frb, rc );
+}
+
+void Disassembler::onFadds(int frt, int fra, int frb, bool rc)
+{
+	print_fff( "fadds", frt, fra, frb, rc );
+}
+
 void Disassembler::onFmul(int frt, int fra, int frc, bool rc)
 {
 	print_fff( "fmul", frt, fra, frc, rc );
