@@ -171,9 +171,6 @@ int main( int argc, char **argv )
 		exit( 1 );
 	}
 
-	if( binary->machineType() == remu::binary::MachineType::UNKNOWN ) {
-	}
-
 	switch( binary->machineType() ) {
 		case remu::binary::MachineType::UNKNOWN: {
 			fprintf( stderr, "Error: Unknown machine type in file \"%s\"\n", binary_name );
